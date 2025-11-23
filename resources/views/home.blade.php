@@ -87,9 +87,9 @@
                 <!-- <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"> -->
                   
                     <div class="flex items-center gap-4 text-sm justify-center mt-4 mb-4">
-                        <button class="px-3 py-1 rounded hover:bg-gray-200">&lsaquo;</button>
-                        <span class="font-semibold text-orange-500">November, 2022</span>
-                        <button class="px-3 py-1 rounded hover:bg-gray-200">&rsaquo;</button>
+                        <button id="prevBtn" class="px-3 py-1 rounded hover:bg-gray-200">&lsaquo;</button>
+                        <span id="monthLabel" class="font-semibold text-orange-500"><?php echo date('F, Y'); ?></span>
+                        <button id="nextBtn" class="px-3 py-1 rounded hover:bg-gray-200">&rsaquo;</button>
                     </div>
                 </div>
 
@@ -107,9 +107,79 @@
                         <div class="font-semibold">Jumat</div>
                         <div class="font-semibold">Sabtu</div>
                     </div>
+        <!-- calender grid -->
+         <div id="calenderGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
+    </div>
 
-        <tbody>
-            {{-- baris 1 --}}
+    <script>
+        const events = {!! json_encode($sevents ?? []) !!};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('calenderGrid');
+            const monthLabel = document.getElementById('mothLabel');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+
+            function renderCalendar(year, month) {
+                if (monthLabel) monthLabel.textContent = new Date(year, month).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+                grid.innerHTML = '';
+
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                                // empty cells before first day
+                for (let i = 0; i < firstDay; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'h-10';
+                    grid.appendChild(empty);
+                }
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'flex flex-col items-center justify-center h-16';
+
+                    const dateEl = document.createElement('div');
+                    dateEl.textContent = d;
+                    dateEl.className = 'text-sm';
+
+                    if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+                        dateEl.className += ' w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white';
+                    }
+
+                    cell.appendChild(dateEl);
+
+                    const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    if (events[key]) {
+                        const ev = document.createElement('div');
+                        ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center';
+                        ev.textContent = Array.isArray(events[key]) ? events[key][0] : events[key];
+                        cell.appendChild(ev);
+                    }
+                                        grid.appendChild(cell);
+                }
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+                renderCalendar(currentYear, currentMonth);
+            });
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+                renderCalendar(currentYear, currentMonth);
+            });
+
+            renderCalendar(currentYear, currentMonth);
+        });
+        
+    </script>
+        
+            <!-- {{-- baris 1 --}}
             <tr>
                 <td class="text-center"></td>
                 <td class="text-center"></td>
@@ -175,7 +245,7 @@
             </tr>
         </tbody>
     </table>
-</div>
+</div> -->
 
 
             {{-- BEM --}}
