@@ -42,7 +42,8 @@
         {{-- NAVBAR ATAS --}}
         <header class="h-16 bg-white shadow flex items-center justify-between px-6">
             <div class="font-medium text-sm">Dashboard</div>
-            <button class="px-4 py-1.5 bg-orange-500 text-white text-xs font-semibold rounded-full hover:bg-orange-600">
+            <button class="px-4 py-1.5 bg-orange-500 text-white text-xs font-semibold rounded-full hover:bg-orange-600"
+             onclick="window.location.href='{{route('login')}}'">
                 LOGIN
             </button>
         </header>
