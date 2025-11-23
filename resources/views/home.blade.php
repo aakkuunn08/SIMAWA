@@ -50,7 +50,7 @@
         {{-- KONTEN SCROLL --}}
         <main class="flex-1 overflow-y-auto">
 
-            {{-- HERO ABU-ABU + JUDUL --}}
+            {{-- ABU-ABU + JUDUL --}}
             <section id="kalender" class="bg-gray-600 text-white text-center py-16">
                 <p class="text-xs tracking-[0.3em] mb-2">WELCOME TO</p>
                 <h1 class="text-4xl font-bold mb-2">SIMAWA</h1>
@@ -108,15 +108,15 @@
                         <div class="font-semibold">Sabtu</div>
                     </div>
         <!-- calender grid -->
-         <div id="calenderGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
+         <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
     </div>
 
     <script>
         const events = {!! json_encode($sevents ?? []) !!};
 
         document.addEventListener('DOMContentLoaded', () => {
-            const grid = document.getElementById('calenderGrid');
-            const monthLabel = document.getElementById('mothLabel');
+            const grid = document.getElementById('calendarGrid');
+            const monthLabel = document.getElementById('monthLabel');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
 
@@ -159,7 +159,7 @@
                         ev.textContent = Array.isArray(events[key]) ? events[key][0] : events[key];
                         cell.appendChild(ev);
                     }
-                                        grid.appendChild(cell);
+                    grid.appendChild(cell);
                 }
             }
 
