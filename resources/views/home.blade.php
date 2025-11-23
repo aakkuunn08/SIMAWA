@@ -55,29 +55,38 @@
                 <p class="text-xs tracking-[0.3em] mb-2">WELCOME TO</p>
                 <h1 class="text-4xl font-bold mb-2">SIMAWA</h1>
                 <p class="text-sm">
-                    Institut Teknologi Indonesia — Sistem Informasi Mahasiswa
+                    Institut Teknologi Bacharuddin Jusuf Habibie — Sistem Informasi Organisasi Mahasiswa
                 </p>
             </section>
 
             {{-- SEARCH + BULAN + KALENDER --}}
-            <section class="bg-white px-10 pt-6 pb-10">
+            <div class="mt-10 flex-col items-center">
                 {{-- SEARCH --}}
-                <div class="flex justify-center mb-6">
-                    <div class="w-full max-w-md flex items-center border border-gray-300 rounded-full px-4 py-2 bg-white">
-                        <input type="text" placeholder="Cari Kegiatan"
-                               class="flex-1 text-sm outline-none bg-transparent">
-                        <span class="text-gray-400 text-sm">&#128269;</span>
-                    </div>
-                </div>
+
+            <div class="mt-10 w-full flex flex-col items-center">
+                <div class="w-full max-w-4xl px-4">
+                    {{-- SEARCH --}}
+                    <div class="relative mx-auto w-full max-w-xs">
+                        <input
+                            type="text"
+                            placeholder="Cari Kegiatan"
+                            class="px-4 py-2 w-full bg-gray-100 rounded-md border focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        >
+                {{-- TOMBOL SEARCH (bisa diklik) --}}
+                <button class="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.2-5.2m0 0A7 7 0 1 0 5 5a7 7 0 0 0 10.8 10.8Z" />
+                    </svg>
+                </button>
+            </div>
 
                 {{-- FILTER + BULAN --}}
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-                    <button
-                        class="border border-gray-300 rounded-md px-4 py-2 text-sm bg-white hover:bg-gray-100">
-                        Semua Kategori
-                    </button>
-
-                    <div class="flex items-center gap-4 text-sm">
+                <!-- <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"> -->
+                  
+                    <div class="flex items-center gap-4 text-sm justify-center mt-4 mb-4">
                         <button class="px-3 py-1 rounded hover:bg-gray-200">&lsaquo;</button>
                         <span class="font-semibold text-orange-500">November, 2022</span>
                         <button class="px-3 py-1 rounded hover:bg-gray-200">&rsaquo;</button>
@@ -85,19 +94,19 @@
                 </div>
 
             {{-- AREA ABU-ABU TUA + KALENDER --}}
-<div class="bg-gray-300 px-8 py-6">
-    <table class="w-full text-sm border-separate border-spacing-y-10">
-        <thead>
-            <tr class="border-b border-gray-400">
-                <th class="py-2 text-center font-semibold">Minggu</th>
-                <th class="py-2 text-center font-semibold">Senin</th>
-                <th class="py-2 text-center font-semibold">Selasa</th>
-                <th class="py-2 text-center font-semibold">Rabu</th>
-                <th class="py-2 text-center font-semibold">Kamis</th>
-                <th class="py-2 text-center font-semibold">Jumat</th>
-                <th class="py-2 text-center font-semibold">Sabtu</th>
-            </tr>
-        </thead>
+    <div class="bg-gray-300 px-8 py-6">
+    <div class="bg-gray-300 px-8 py-6 w-full max-w-2xl mx-auto">
+    <!-- <table class="w-full text-sm border-separate border-spacing-y-10"> -->
+        <div class="grid grid-cols-7 gap-4 mb-4 text-sm text-center"
+                    <div class="grid grid-cols-7 gap-4 mb-4 text-sm text-center">
+                        <div class="font-semibold">Minggu</div>
+                        <div class="font-semibold">Senin</div>
+                        <div class="font-semibold">Selasa</div>
+                        <div class="font-semibold">Rabu</div>
+                        <div class="font-semibold">Kamis</div>
+                        <div class="font-semibold">Jumat</div>
+                        <div class="font-semibold">Sabtu</div>
+                    </div>
 
         <tbody>
             {{-- baris 1 --}}
