@@ -26,7 +26,7 @@
                 NEWS
             </a>
             <a href="#ukm" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
-                Daftar UKM
+                Daftar UKM/SC
             </a>
             <a href="#tes-minat" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
                 Tes Minat
@@ -51,13 +51,13 @@
 
             {{-- ABU-ABU + JUDUL --}}
             <section class="relative w-full">
-                <img src="/images/ith.jpg" class="w-full h-64 object-cover">
+                <img src="/images/ith.jpg" class="w-full h-56 md:h-72 lg:h-80 object-cover">
                     <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
 
                    
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
-                    <h2 class="text-3xl font-bold">WELCOME<br>TO<br>SIMAWA</h2>
-                    <p class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa Institut Teknologi Bacharuddin Jusuf Habibie</p>
+                    <h2 class="text-3xl mt:text-4xl font-bold leading leading-tight">WELCOME<br>TO<br>SIMAWA</h2>
+                    <p class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie</p>
                 </div>
             </section>
 
@@ -182,8 +182,6 @@
         
     </script>
         
-
-
             {{-- BEM --}}
             <section id="bem" class="bg-white mt-6 px-10 pt-10 pb-8">
                 <h2 class="text-center text-lg font-semibold mb-6">
@@ -250,8 +248,8 @@
             </section>
 
             {{-- DAFTAR UKM --}}
-            <section id="ukm" class="bg-[#f3b7a0] px-6 pt-8 pb-10 mt-2">
-                <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM</h2>
+            <section id="ukm" class="bg-[#edb59fc2] px-6 pt-8 pb-10 mt-2">
+                <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM/SC</h2>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
                     <!-- HERO -->
