@@ -258,16 +258,16 @@
             </section>
 
             {{-- DAFTAR UKM --}}
-            <section id="ukm" class="bg-[#f3b7a0] px-10 pt-8 pb-10 mt-2">
+            <section id="ukm" class="bg-[#f3b7a0] px-6 pt-8 pb-10 mt-2">
                 <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM</h2>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
-                        <img src="https://via.placeholder.com/80x80?text=HERO" class="mb-2" alt="">
+                        <img src="/images/logohero.jpg" class="mb-2" alt="">
                         <span class="font-semibold text-xs">HERO</span>
                     </div>
                     <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
-                        <img src="https://via.placeholder.com/80x80?text=HCC" class="mb-2" alt="">
+                        <img src="/images/logohcc.jpg" class="mb-2" alt="">
                         <span class="font-semibold text-xs">HCC</span>
                     </div>
                     <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
@@ -282,12 +282,15 @@
             {{-- TES MINAT --}}
             <section id="tes-minat" class="bg-white py-10 text-center">
                 <h3 class="text-sm font-semibold mb-3 tracking-wide">TES MINAT</h3>
-                <button
+                <!-- <button
                     class="px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
                     Ayo Mulai Tes!
-                </button>
+                </button> -->
+                <a href="{{ url('tesminat') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Ayo Mulai Tes!
+                </a>
             </section>
-
         </main>
     </div>
 </div>
