@@ -51,13 +51,13 @@
 
             {{-- ABU-ABU + JUDUL --}}
             <section class="relative w-full">
-                <img src="/images/ith.jpg" class="w-full h-56 md:h-72 lg:h-80 object-cover">
+                <img src="/images/ith.jpg" class="w-full h-96 md:h-[28rem] lg:h-[34rem] object-cover">
                     <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
 
                    
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
-                    <h2 class="text-3xl mt:text-4xl font-bold leading leading-tight">WELCOME<br>TO<br>SIMAWA</h2>
-                    <p class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie</p>
+                    <h1 class="text-3xl mt:text-4xl font-bold leading leading-tight">WELCOME<br>TO<br>SIMAWA</h1>
+                    <h2 class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie</h2>
                 </div>
             </section>
 
@@ -256,7 +256,7 @@
                         <div class="flex flex-col items-center">
                             <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
                                 <a href="{{ url('/ukm/hero') }}" class="w-full h-full flex items-center justify-center">
-                                    <img src="/images/logohero.jpg" alt="HERO" class="max-h-full max-w-full object-contain">
+                                    <img src="/images/logohero.png" alt="HERO" class="max-h-full max-w-full object-contain">
                                 </a>
                             </div>
                             <span class="mt-3 text-center font-semibold text-xs">HERO</span>
