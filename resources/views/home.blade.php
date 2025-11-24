@@ -261,20 +261,46 @@
             <section id="ukm" class="bg-[#f3b7a0] px-6 pt-8 pb-10 mt-2">
                 <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM</h2>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
-                        <img src="/images/logohero.jpg" class="mb-2" alt="">
-                        <span class="font-semibold text-xs">HERO</span>
-                    </div>
-                    <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
-                        <img src="/images/logohcc.jpg" class="mb-2" alt="">
-                        <span class="font-semibold text-xs">HCC</span>
-                    </div>
-                    <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
-                        <span class="font-semibold text-xs">SENI</span>
-                    </div>
-                    <div class="bg-white rounded-xl border border-gray-800 flex flex-col items-center justify-center py-6">
-                        <span class="font-semibold text-xs">OLAHRAGA</span>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
+                    <!-- HERO -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                                <a href="{{ url('/ukm/hero') }}" class="w-full h-full flex items-center justify-center">
+                                    <img src="/images/logohero.jpg" alt="HERO" class="max-h-full max-w-full object-contain">
+                                </a>
+                            </div>
+                            <span class="mt-3 text-center font-semibold text-xs">HERO</span>
+                        </div>
+
+                    <!-- HCC -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                                <a href="{{ url('/ukm/hcc') }}" class="w-full h-full flex items-center justify-center">
+                                    <img src="/images/logohcc.png" alt="HCC" class="max-h-full max-w-full object-contain">
+                                </a>
+                            </div>
+                            <span class="mt-3 text-center font-semibold text-xs">HCC</span>
+                        </div>
+
+                    <!-- SENI -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                                <a href="{{ url('/ukm/seni') }}" class="w-full h-full flex items-center justify-center">
+                                    <img src="/images/logoseni.png" alt="SENI" class="max-h-full max-w-full object-contain">
+                                </a>
+                            </div>
+                            <span class="mt-3 text-center font-semibold text-xs">SENI</span>
+                        </div>
+
+                    <!-- OLAHRAGA -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                                <a href="{{ url('/ukm/olahraga') }}" class="w-full h-full flex items-center justify-center">
+                                    <img src="/images/logo.png" alt="OLAHRAGA" class="max-h-full max-w-full object-contain">
+                                </a>
+                            </div>
+                            <span class="mt-3 text-center font-semibold text-xs">OLAHRAGA</span>
+                        </div>
                     </div>
                 </div>
             </section>
