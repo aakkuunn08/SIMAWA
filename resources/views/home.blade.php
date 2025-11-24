@@ -52,13 +52,23 @@
         <main class="flex-1 overflow-y-auto">
 
             {{-- ABU-ABU + JUDUL --}}
-            <section id="kalender" class="bg-gray-600 text-white text-center py-16">
+            <section class="relative w-full">
+                <img src="/images/ith.jpg" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
+
+                   
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
+                    <h2 class="text-3xl font-bold">WELCOME<br>TO<br>SIMAWA</h2>
+                    <p class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa Institut Teknologi Bacharuddin Jusuf Habibie</p>
+                </div>
+            </section>
+            <!-- <section id="kalender" class="bg-gray-600 text-white text-center py-16">
                 <p class="text-xs tracking-[0.3em] mb-2">WELCOME TO</p>
                 <h1 class="text-4xl font-bold mb-2">SIMAWA</h1>
                 <p class="text-sm">
                     Institut Teknologi Bacharuddin Jusuf Habibie — Sistem Informasi Organisasi Mahasiswa
                 </p>
-            </section>
+            </section> -->
 
             {{-- SEARCH + BULAN + KALENDER --}}
             <div class="mt-10 flex-col items-center">
@@ -180,73 +190,6 @@
         
     </script>
         
-            <!-- {{-- baris 1 --}}
-            <tr>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center">1</td>
-                <td class="text-center">2</td>
-                <td class="text-center">3</td>
-                <td class="text-center">4</td>
-            </tr>
-
-            {{-- baris 2 --}}
-            <tr>
-                <td class="text-center"></td>
-                <td class="text-center">6</td>
-                <td class="text-center">7</td>
-                <td class="text-center">8</td>
-                <td class="text-center">9</td>
-                <td class="text-center">10</td>
-                <td class="text-center">11</td>
-            </tr>
-
-            {{-- baris 3 (tanggal 16 ada event) --}}
-            <tr>
-                <td class="text-center">13</td>
-                <td class="text-center">14</td>
-                <td class="text-center">15</td>
-                <td class="text-center">
-                    <div class="flex flex-col items-center">
-                        <div
-                            class="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white text-xs">
-                            16
-                        </div>
-                        <span class="mt-1 text-[10px] leading-3 text-red-700 text-center">
-                            Seminar
-                        </span>
-                    </div>
-                </td>
-                <td class="text-center">17</td>
-                <td class="text-center">18</td>
-                <td class="text-center">19</td>
-            </tr>
-
-            {{-- baris 4 --}}
-            <tr>
-                <td class="text-center">20</td>
-                <td class="text-center">21</td>
-                <td class="text-center">22</td>
-                <td class="text-center">23</td>
-                <td class="text-center">24</td>
-                <td class="text-center">25</td>
-                <td class="text-center">26</td>
-            </tr>
-
-            {{-- baris 5 --}}
-            <tr>
-                <td class="text-center">27</td>
-                <td class="text-center">28</td>
-                <td class="text-center">29</td>
-                <td class="text-center">30</td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-            </tr>
-        </tbody>
-    </table>
-</div> -->
 
 
             {{-- BEM --}}
@@ -255,21 +198,24 @@
                     Badan Eksekutif Mahasiswa
                 </h2>
 
-                <div class="flex flex-col items-center gap-6">
-                    <div
-                        class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden">
-                        {{-- ganti src logo sesuai file kamu --}}
-                        <img src="https://via.placeholder.com/120x120?text=BEM"
-                             alt="Logo BEM" class="object-cover w-full h-full">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <div class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <a href="{{ url('/bem') }}" title="BEM" aria-label="Badan Eksekutif Mahasiswa" class="w-full h-full flex items-center justify-center block hover:opacity-90">
+                            <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
+                        </a>
                     </div>
 
-                    <p class="max-w-3xl text-sm text-gray-700 leading-relaxed text-center">
-                        Badan Eksekutif Mahasiswa hadir sebagai penggerak utama dinamika kampus. Melalui
-                        nilai-nilai kepemimpinan, integritas, dan pelayanan, BEM berupaya memberikan ruang bagi
-                        mahasiswa untuk tumbuh, memimpin, dan berkontribusi secara nyata.
-                    </p>
+                    <div class="flex-1">
+                        <!-- <h3 class="hidden md:block text-lg font-semibold mb-2">Badan Eksekutif Mahasiswa</h3> -->
+                        <p class="max-w-3xl text-sm text-gray-700 leading-relaxed text-left">
+                            Badan Eksekutif Mahasiswa hadir sebagai penggerak utama dinamika kampus. Melalui
+                            nilai-nilai kepemimpinan, integritas, dan pelayanan, BEM berupaya memberikan ruang bagi
+                            mahasiswa untuk tumbuh, memimpin, dan berkontribusi secara nyata.
+                        </p>
+                    </div>
                 </div>
             </section>
+
 
             {{-- NEWS --}}
             <section id="news" class="bg-white px-10 pt-8 pb-10">
