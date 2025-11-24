@@ -38,7 +38,7 @@
     <div class="flex-1 flex flex-col">
 
         {{-- NAVBAR ATAS --}}
-        <header class="h-16 bg-white shadow flex items-center justify-between px-6">
+        <header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-white shadow flex items-center justify-between px-6 z-50">
             <div class="font-medium text-sm">Dashboard</div>
             <button class="px-4 py-1.5 bg-orange-500 text-white text-xs font-semibold rounded-full hover:bg-orange-600"
              onclick="window.location.href='{{route('login')}}'">
@@ -51,13 +51,13 @@
 
             {{-- ABU-ABU + JUDUL --}}
             <section class="relative w-full">
-                <img src="/images/ith.jpg" class="w-full h-96 md:h-[28rem] lg:h-[34rem] object-cover">
+                <img src="/images/ith.jpg" class="w-full h-100 md:h-[30rem] lg:h-[35rem] object-cover">
                     <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
 
                    
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
-                    <h1 class="text-3xl mt:text-4xl font-bold leading leading-tight">WELCOME<br>TO<br>SIMAWA</h1>
-                    <h2 class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie</h2>
+                    <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">WELCOME<br>TO<br>SIMAWA</h1>
+                    <h2 class="mt-3 text-base md:text-xl lg:text-2xl text-white/95 font-bold ">Sistem Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie</h2>
                 </div>
             </section>
 
@@ -88,10 +88,10 @@
                 {{-- FILTER + BULAN --}}
                 <!-- <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"> -->
                   
-                    <div class="flex items-center gap-4 text-sm justify-center mt-4 mb-4">
-                        <button id="prevBtn" class="px-3 py-1 rounded hover:bg-gray-200">&lsaquo;</button>
-                        <span id="monthLabel" class="font-semibold text-orange-500"><?php echo date('F, Y'); ?></span>
-                        <button id="nextBtn" class="px-3 py-1 rounded hover:bg-gray-200">&rsaquo;</button>
+                    <div class="flex items-center gap-4 justify-center mt-4 mb-4">
+                        <button id="prevBtn" class="px-3 py-1 rounded hover:bg-gray-200 text-lg">&lsaquo;</button>
+                        <span id="monthLabel" class="font-semibold text-orange-500 text-lg md:text-xl lg:text-2xl"><?php echo date('F, Y'); ?></span>
+                        <button id="nextBtn" class="px-3 py-1 rounded hover:bg-gray-200 text-lg">&rsaquo;</button>
                     </div>
                 </div>
 
