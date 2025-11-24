@@ -11,26 +11,24 @@
 <div class="min-h-screen flex">
 
     {{-- SIDEBAR KIRI --}}
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col sticky top-0 h-screen">
         <div class="h-16 flex items-center px-6 border-b border-gray-200">
             <span class="font-semibold text-sm tracking-wide">SIMAWA ITH</span>
         </div>
-
         <nav class="flex-1 pt-4 text-sm">
-            <a href="#kalender"
-               class="flex items-center px-6 py-2 bg-orange-50 border-l-4 border-orange-500 text-gray-900">
+            <a href="#kalender" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
                 Kalender Kegiatan
             </a>
-            <a href="#bem" class="flex items-center px-6 py-2 hover:bg-gray-100">
+            <a href="#bem" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
                 Badan Eksekutif Mahasiswa
             </a>
-            <a href="#news" class="flex items-center px-6 py-2 hover:bg-gray-100">
+            <a href="#news" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
                 NEWS
             </a>
-            <a href="#ukm" class="flex items-center px-6 py-2 hover:bg-gray-100">
+            <a href="#ukm" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
                 Daftar UKM
             </a>
-            <a href="#tes-minat" class="flex items-center px-6 py-2 hover:bg-gray-100">
+            <a href="#tes-minat" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
                 Tes Minat
             </a>
         </nav>
@@ -62,13 +60,6 @@
                     <p class="mt-2 text-sm max-w-md">Sistem Informasi Organisasi Mahasiswa Institut Teknologi Bacharuddin Jusuf Habibie</p>
                 </div>
             </section>
-            <!-- <section id="kalender" class="bg-gray-600 text-white text-center py-16">
-                <p class="text-xs tracking-[0.3em] mb-2">WELCOME TO</p>
-                <h1 class="text-4xl font-bold mb-2">SIMAWA</h1>
-                <p class="text-sm">
-                    Institut Teknologi Bacharuddin Jusuf Habibie — Sistem Informasi Organisasi Mahasiswa
-                </p>
-            </section> -->
 
             {{-- SEARCH + BULAN + KALENDER --}}
             <div class="mt-10 flex-col items-center">
@@ -105,10 +96,9 @@
                 </div>
 
             {{-- AREA ABU-ABU TUA + KALENDER --}}
-    <div class="bg-gray-300 px-8 py-6">
-    <div class="bg-gray-300 px-8 py-6 w-full max-w-2xl mx-auto">
-    <!-- <table class="w-full text-sm border-separate border-spacing-y-10"> -->
-        <div class="grid grid-cols-7 gap-4 mb-4 text-sm text-center"
+            </div>
+            <section id="kalender" class="bg-gray-300 px-8 py-6 scroll-mt-16">
+                <div class="w-full max-w-2xl mx-auto">
                     <div class="grid grid-cols-7 gap-4 mb-4 text-sm text-center">
                         <div class="font-semibold">Minggu</div>
                         <div class="font-semibold">Senin</div>
@@ -118,9 +108,11 @@
                         <div class="font-semibold">Jumat</div>
                         <div class="font-semibold">Sabtu</div>
                     </div>
-        <!-- calender grid -->
-         <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
-    </div>
+
+                    <!-- calendar grid -->
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
+                </div>
+            </section>
 
     <script>
         const events = {!! json_encode($sevents ?? []) !!};
@@ -320,6 +312,76 @@
         </main>
     </div>
 </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = Array.from(document.querySelectorAll('aside .nav-link'));
+        if (!links.length) return;
 
+        const ACTIVE = ['bg-orange-50', 'border-l-4', 'border-orange-500', 'text-gray-900'];
+
+        function clearActive() {
+            links.forEach(l => {
+                l.classList.remove(...ACTIVE);
+                l.classList.add('hover:bg-gray-100');
+            });
+        }
+
+        function setActive(el) {
+            if (!el) return;
+            clearActive();
+            el.classList.add(...ACTIVE);
+            el.classList.remove('hover:bg-gray-100');
+        }
+
+        // initial highlight: prefer hash -> existing active -> default #kalender
+        const hashLink = location.hash ? document.querySelector('aside .nav-link[href="' + location.hash + '"]') : null;
+        const alreadyActive = links.find(l => ACTIVE.some(c => l.classList.contains(c)));
+        if (hashLink) {
+            setActive(hashLink);
+        } else if (alreadyActive) {
+            setActive(alreadyActive);
+        } else {
+            const def = document.querySelector('aside .nav-link[href="#kalender"]');
+            if (def) setActive(def);
+        }
+
+        // flag to ignore observer right after a click (prevents observer from immediately overriding)
+        let skipObserverUntil = 0;
+
+        // click: set active immediately (allow anchor default scroll)
+        links.forEach(l => {
+            l.addEventListener('click', (e) => {
+                setActive(l);
+                // ignore observer updates for a short time while browser scrolls
+                skipObserverUntil = Date.now() + 700;
+                // allow default anchor behavior (keeps native scroll) — if you use manual scroll, preventDefault here
+            });
+        });
+
+        // observe sections and update active on scroll — pick most visible section
+        const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+        if (sections.length) {
+            const observer = new IntersectionObserver((entries) => {
+                // skip if recently clicked to avoid override during programmatic/anchor scroll
+                if (Date.now() < skipObserverUntil) return;
+
+                // choose entry with largest intersectionRatio
+                let best = entries[0];
+                for (const e of entries) {
+                    if (e.intersectionRatio > (best?.intersectionRatio ?? 0)) best = e;
+                }
+                if (!best) return;
+                // ensure it's meaningfully visible
+                if (best.intersectionRatio > 0.01) {
+                    const id = '#' + best.target.id;
+                    const link = document.querySelector('aside .nav-link[href="' + id + '"]');
+                    if (link) setActive(link);
+                }
+            }, { root: null, rootMargin: '-20% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+
+            sections.forEach(s => observer.observe(s));
+        }
+    });
+    </script>
 </body>
 </html>
