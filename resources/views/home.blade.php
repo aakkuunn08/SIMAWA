@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SIMAWA ITH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -47,10 +48,10 @@
 
         </header>
 
-        {{-- KONTEN SCROLL --}}
+        <!-- {{-- KONTEN SCROLL --}}
         <main class="flex-1 overflow-y-auto">
 
-            {{-- ABU-ABU + JUDUL --}}
+            {{-- ABU-ABU + JUDUL --}} -->
             <!-- <section class="relative w-full">
                 <img src="/images/ith.jpg" class="w-full h-100 md:h-[30rem] lg:h-[35rem] object-cover">
                     <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
@@ -76,24 +77,26 @@
                 </div>
             </section> -->
 
-        {{-- KONTEN SCROLL --}}
-        <main class="flex-1 overflow-y-auto">
         {{-- KONTEN SCROLL (beri padding top agar header fixed tidak menutup konten) --}}
         <main class="flex-1 overflow-y-auto pt-16">
  
             <section class="relative w-full min-h-[calc(110vh-4rem)] md:min-h-[calc(100vh-4rem)]">
                 <img src="/images/ith.jpg" class="absolute inset-0 w-full h-full object-cover" alt="ITH">
-                 <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
-                 <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
-                     <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight">
+                 <div class="absolute inset-0 bg-orange-500 opacity-40"></div> 
+                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+                     <h1 
+                     style="font-family:'Playfair Display', serif; -webkit-text-stroke:0.8px rgba(0,0,0,0.12);"
+                     class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-wide drop-shadow-2xl bg-clip-text text-transparent bg-gradient-to-r from-white/95 via-white/85 to-white/95">
                          WELCOME<br>TO<br>SIMAWA
                      </h1>
-                     <h2 class="mt-3 text-base md:text-lg lg:text-xl text-white/95 font-bold">
-                         <span class="block text-lg md:text-xl lg:text-2xl font-bold leading-tight">Sistem</span>
-                         Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie
+                     <h2 
+                     style="font-family:'Poppins', sans-serif;"
+                        class="mt-4 text-base md:text-lg lg:text-xl text-white/95 font-semibold drop-shadow">                                                    
+                        <span class="block text-lg md:text-xl lg:text-2xl font-bold">Sistem Informasi Organisasi Mahasiswa</span>
+                         Institut Teknologi Bacharuddin Jusuf Habibie
                      </h2>
                  </div>
-             </section> 
+                </section>  
 
             
             {{-- SEARCH + BULAN + KALENDER --}}
@@ -149,9 +152,10 @@
                 </div>
             </section>
 
+    
     <script>
-        const events = {!! json_encode($sevents ?? []) !!};
-
+        const events = JSON.parse(`{!! json_encode($sevents ?? []) !!}`);
+        
         document.addEventListener('DOMContentLoaded', () => {
             const grid = document.getElementById('calendarGrid');
             const monthLabel = document.getElementById('monthLabel');
