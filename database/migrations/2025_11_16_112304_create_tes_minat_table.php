@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('tes_minat', function (Blueprint $table) {
             $table->id('id_tes');
-            $table->unsignedBigInteger('id_akun')->nullable();      // siapa yang tes
+            $table->unsignedBigInteger('user_id')->nullable();      // siapa yang tes
             $table->unsignedBigInteger('id_jawaban')->nullable();   // bisa disesuaikan nanti
             $table->unsignedBigInteger('id_soal')->nullable();      // jika perlu
             $table->string('hasil_rekomendasi', 255)->nullable();   // jurusan/minat
 
-            // FK ke tabel akun
-            $table->foreign('id_akun')
-                  ->references('id')->on('akun')   // atau 'users' kalau pakai tabel users
+            // FK ke tabel users
+            $table->foreign('user_id')
+                  ->references('id')->on('users')
                   ->onDelete('set null');
 
             $table->timestamps();

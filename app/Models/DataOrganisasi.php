@@ -18,11 +18,11 @@ class DataOrganisasi extends Model
         'deskripsi_organisasi',
         'email',
         'whatsapp',
-        'id_akun',
+        'user_id',
     ];
 
-    public function akun()
+    public function user()
     {
-        return $this->belongsTo(Akun::class, 'id_akun', 'id_akun');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

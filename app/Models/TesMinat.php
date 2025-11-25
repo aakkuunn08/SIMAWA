@@ -13,15 +13,15 @@ class TesMinat extends Model
     protected $primaryKey = 'id_tes';
 
     protected $fillable = [
-        'id_akun',
+        'user_id',
         'id_jawaban',
         'id_soal',
         'hasil_rekomendasi',
     ];
 
-    public function akun()
+    public function user()
     {
-        return $this->belongsTo(Akun::class, 'id_akun', 'id_akun');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function jawaban()

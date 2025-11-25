@@ -38,4 +38,36 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Relasi: 1 user punya banyak organisasi
+     */
+    public function dataOrganisasi()
+    {
+        return $this->hasMany(DataOrganisasi::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relasi: 1 user punya banyak kegiatan
+     */
+    public function daftarKegiatan()
+    {
+        return $this->hasMany(DaftarKegiatan::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relasi: 1 user punya banyak berita
+     */
+    public function berita()
+    {
+        return $this->hasMany(Berita::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relasi: 1 user punya banyak tes minat
+     */
+    public function tesMinat()
+    {
+        return $this->hasMany(TesMinat::class, 'user_id', 'id');
+    }
 }

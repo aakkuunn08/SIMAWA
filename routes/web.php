@@ -1,16 +1,16 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\OrmawaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// ================= ORMAWA (TES DULU) =================
+// ================= ORMAWA =================
 Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
-// =====================================================
+// ==========================================
 
 // Semua route yang butuh login
 Route::middleware('auth')->group(function () {
@@ -29,18 +29,6 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-
-    // Hanya ADMIN yang boleh akses route di dalam grup ini
-    Route::middleware('admin')->group(function () {
-
-        // Form tambah user
-        Route::get('/admin/users/create', [UserController::class, 'create'])
-            ->name('admin.users.create');
-
-        // Proses simpan user baru
-        Route::post('/admin/users', [UserController::class, 'store'])
-            ->name('admin.users.store');
-    });
 });
 
 require __DIR__.'/auth.php';

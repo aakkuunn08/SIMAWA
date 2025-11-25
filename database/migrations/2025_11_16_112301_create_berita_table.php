@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('gambar', 255)->nullable();
             $table->string('sumber', 150)->nullable();
 
-            $table->unsignedBigInteger('id_akun'); // akun yg input berita
+            $table->unsignedBigInteger('user_id'); // user yang input berita
 
-            $table->foreign('id_akun')
-                  ->references('id')->on('akun')   // atau 'users' kalau pakai tabel users
+            $table->foreign('user_id')
+                  ->references('id')->on('users')
                   ->onDelete('cascade');
 
             $table->timestamps();

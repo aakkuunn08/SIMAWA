@@ -13,15 +13,15 @@ class DaftarKegiatan extends Model
     protected $primaryKey = 'id_kegiatan';
 
     protected $fillable = [
-        'id_akun',
+        'user_id',
         'nama_kegiatan',
         'tanggal_kegiatan',
         'status_kegiatan',
     ];
 
-    public function akun()
+    public function user()
     {
-        return $this->belongsTo(Akun::class, 'id_akun', 'id_akun');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function lpj()

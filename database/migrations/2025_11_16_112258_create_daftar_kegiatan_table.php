@@ -10,13 +10,13 @@ class CreateDaftarKegiatanTable extends Migration
     {
         Schema::create('daftar_kegiatan', function (Blueprint $table) {
             $table->id('id_kegiatan');
-            $table->unsignedBigInteger('id_akun');
+            $table->unsignedBigInteger('user_id');
             $table->string('nama_kegiatan', 200);
             $table->date('tanggal_kegiatan');
             $table->string('status_kegiatan', 50);
 
-            $table->foreign('id_akun')
-                  ->references('id')->on('akun')   // atau 'users' kalau pakai users
+            $table->foreign('user_id')
+                  ->references('id')->on('users')
                   ->onDelete('cascade');
 
             $table->timestamps();

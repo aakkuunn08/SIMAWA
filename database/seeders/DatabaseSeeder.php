@@ -18,5 +18,10 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        // Panggil OrmawaSeeder
+        $this->call([
+            OrmawaSeeder::class,
+        ]);
     }
 }
