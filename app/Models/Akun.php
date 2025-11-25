@@ -15,7 +15,7 @@ class Akun extends Model
     protected $fillable = [
         'username',
         'password',
-        'role',
+        'role' => 'adminbem'/'admin',
     ];
 
     // 1 akun punya banyak organisasi
