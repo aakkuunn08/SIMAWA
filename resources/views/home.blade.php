@@ -154,8 +154,8 @@
 
     
     <script>
-        const events = @json_encode($sevents ?? []);
-
+        const events = {!! json_encode($sevents ?? []) !!}; 
+        
         document.addEventListener('DOMContentLoaded', () => {
             const grid = document.getElementById('calendarGrid');
             const monthLabel = document.getElementById('monthLabel');
