@@ -50,7 +50,7 @@
         <main class="flex-1 overflow-y-auto">
 
             {{-- ABU-ABU + JUDUL --}}
-            <section class="relative w-full">
+            <!-- <section class="relative w-full">
                 <img src="/images/ith.jpg" class="w-full h-100 md:h-[30rem] lg:h-[35rem] object-cover">
                     <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
 
@@ -58,6 +58,20 @@
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
                     <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">WELCOME<br>TO<br>SIMAWA</h1>
                     <h2 class="mt-3 text-base md:text-xl lg:text-2xl text-white/95 font-bold ">Sistem Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie</h2>
+                </div>
+            </section>
+ -->
+            <section class="relative w-full min-h-[calc(100vh-4rem)]">
+                <img src="/images/ith.jpg" class="absolute inset-0 w-full h-full object-cover" alt="ITH">
+                <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight">
+                        WELCOME<br>TO<br>SIMAWA
+                    </h1>
+                    <h2 class="mt-3 text-base md:text-lg lg:text-xl text-white/95 font-bold">
+                        <span class="block text-lg md:text-xl lg:text-2xl font-bold leading-tight">Sistem</span>
+                        Informasi Organisasi Mahasiswa<br>Institut Teknologi Bacharuddin Jusuf Habibie
+                    </h2>
                 </div>
             </section>
 
