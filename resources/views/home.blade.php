@@ -41,10 +41,11 @@
         {{-- NAVBAR ATAS --}}
         <header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-white shadow flex items-center justify-between px-6 z-50">
             <div class="font-medium text-sm">Dashboard</div>
-            <button class="px-4 py-1.5 bg-orange-500 text-white text-xs font-semibold rounded-full hover:bg-orange-600"
-             onclick="window.location.href='{{route('login')}}'">
+            <button class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600"
+                onclick="window.location.href='{{ route('login') }}'">
                 LOGIN
             </button>
+
         </header>
 
         <!-- {{-- KONTEN SCROLL --}}

@@ -9,7 +9,7 @@ Route::get('/', function () {
 })->name('home');
 
 // ================= ORMAWA (TES DULU) =================
-Route::view('/ormawa', 'ormawa')->name('ormawa');
+Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
 // =====================================================
 
 // Semua route yang butuh login
