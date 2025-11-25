@@ -13,7 +13,7 @@ class Berita extends Model
     protected $primaryKey = 'id_berita';
 
     protected $fillable = [
-        'id_akun',
+        'user_id',
         'judul_berita',
         'url_sumber',
         'tanggal_publikasi',
@@ -21,8 +21,8 @@ class Berita extends Model
         'sumber',
     ];
 
-    public function akun()
+    public function user()
     {
-        return $this->belongsTo(Akun::class, 'id_akun', 'id_akun');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dataorganisasi', function (Blueprint $table) {
-            $table->id('id_kegiatan');
-            $table->unsignedBigInteger('akun_id');     // siapa yang input
-            $table->string('nama_kegiatan', 200);
-            $table->date('tanggal_kegiatan');
-            $table->string('status_kegiatan', 50);
+            $table->id('id_organisasi');
+            $table->unsignedBigInteger('user_id');     // siapa yang input
+            $table->string('kode_kepengurusan', 100)->nullable();
+            $table->string('nama_organisasi', 200);
+            $table->text('deskripsi_organisasi')->nullable();
+            $table->string('email', 100)->nullable();
+            $table->string('whatsapp', 20)->nullable();
 
-            $table->foreign('akun_id')
-                  ->references('id')->on('akun')        // PK tabel akun = id
+            $table->foreign('user_id')
+                  ->references('id')->on('users')
                   ->onDelete('cascade');
 
             $table->timestamps();
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('daftar_kegiatan');
+        Schema::dropIfExists('dataorganisasi');
     }
 };
