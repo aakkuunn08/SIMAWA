@@ -154,7 +154,8 @@
             </section>
 
     <script>
-        const events = {!! json_encode($sevents ?? []) !!};
+        const events = JSON.parse(`{!! json_encode($sevents ?? []) !!}`);
+        
 
         document.addEventListener('DOMContentLoaded', () => {
             const grid = document.getElementById('calendarGrid');
