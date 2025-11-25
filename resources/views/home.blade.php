@@ -224,9 +224,12 @@
 
                 <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <div class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        <a href="{{ url('/ormawa') }}" title="BEM" aria-label="Badan Eksekutif Mahasiswa" class="w-full h-full flex items-center justify-center block hover:opacity-90">
-                            <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
-                        </a>
+                        <a href="{{ route('ormawa.show', 'bem') }}" 
+   title="BEM" aria-label="Badan Eksekutif Mahasiswa"
+   class="w-full h-full flex items-center justify-center block hover:opacity-90">
+    <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
+</a>
+
                     </div>
 
                     <div class="flex-1">
@@ -286,46 +289,21 @@
                 <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM/SC</h2>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
-                    <!-- HERO -->
+                    @foreach ($ormawas->where('tipe', 'ukm') as $item)
                         <div class="flex flex-col items-center">
                             <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
-                                <a href="{{ url('/ukm/hero') }}" class="w-full h-full flex items-center justify-center">
-                                    <img src="/images/logohero.png" alt="HERO" class="max-h-full max-w-full object-contain">
+                                <a href="{{ route('ormawa.show', $item->slug) }}"
+                                   class="w-full h-full flex items-center justify-center">
+                                    <img src="{{ asset($item->logo) }}" 
+                                         alt="{{ $item->nama }}" 
+                                         class="max-h-full max-w-full object-contain">
                                 </a>
                             </div>
-                            <span class="mt-3 text-center font-semibold text-xs">HERO</span>
+                            <span class="mt-3 text-center font-semibold text-xs">
+                                {{ strtoupper($item->nama) }}
+                            </span>
                         </div>
-
-                    <!-- HCC -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
-                                <a href="{{ url('/ukm/hcc') }}" class="w-full h-full flex items-center justify-center">
-                                    <img src="/images/logohcc.png" alt="HCC" class="max-h-full max-w-full object-contain">
-                                </a>
-                            </div>
-                            <span class="mt-3 text-center font-semibold text-xs">HCC</span>
-                        </div>
-
-                    <!-- SENI -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
-                                <a href="{{ url('/ukm/seni') }}" class="w-full h-full flex items-center justify-center">
-                                    <img src="/images/logoseni.png" alt="SENI" class="max-h-full max-w-full object-contain">
-                                </a>
-                            </div>
-                            <span class="mt-3 text-center font-semibold text-xs">SENI</span>
-                        </div>
-
-                    <!-- OLAHRAGA -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
-                                <a href="{{ url('/ukm/olahraga') }}" class="w-full h-full flex items-center justify-center">
-                                    <img src="/images/logo.png" alt="OLAHRAGA" class="max-h-full max-w-full object-contain">
-                                </a>
-                            </div>
-                            <span class="mt-3 text-center font-semibold text-xs">OLAHRAGA</span>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </section>
 

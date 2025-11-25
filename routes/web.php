@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\OrmawaController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Ormawa; // <- pastikan baris ini ada di atas, bersama use lainnya
 
 Route::get('/', function () {
-    return view('home');
+    $ormawas = Ormawa::all();   // ambil semua data ormawa dari database
+    return view('home', compact('ormawas')); // kirim ke view
 })->name('home');
 
 // ================= ORMAWA (TES DULU) =================
