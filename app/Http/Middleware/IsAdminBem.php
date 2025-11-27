@@ -5,12 +5,14 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class IsAdmin
+class IsAdminBem
 {
     /**
      * Handle an incoming request.
      * 
-     * Middleware ini mengizinkan akses untuk user dengan role 'admin' atau 'adminbem'
+     * Middleware ini hanya mengizinkan akses untuk user dengan role 'adminbem' (super admin)
+     * Digunakan untuk fitur-fitur yang hanya bisa diakses oleh super admin,
+     * seperti user management, mengelola akun admin, dll.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -25,10 +27,9 @@ class IsAdmin
 
         $user = auth()->user();
 
-        // Cek apakah user memiliki role admin atau adminbem
-        // Juga support backward compatibility dengan is_admin boolean field
-        if (!$user->isAnyAdmin() && $user->is_admin !== 1) {
-            abort(403, 'Access denied - Admin access required');
+        // Hanya izinkan user dengan role 'adminbem'
+        if (!$user->isAdminBem()) {
+            abort(403, 'Access denied - Super Admin (AdminBEM) access required');
         }
 
         return $next($request);

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'username',    // kalau nanti tidak pakai email, bisa diganti 'username'
         'password',
         'role',         // tambahkan kolom role
+        'is_admin',     // tambahkan kolom is_admin untuk backward compatibility
     ];
 
     /**
@@ -69,5 +70,46 @@ class User extends Authenticatable
     public function tesMinat()
     {
         return $this->hasMany(TesMinat::class, 'user_id', 'id');
+    }
+
+    /**
+     * Helper method: Cek apakah user adalah admin
+     * 
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Helper method: Cek apakah user adalah adminbem (super admin)
+     * 
+     * @return bool
+     */
+    public function isAdminBem()
+    {
+        return $this->role === 'adminbem';
+    }
+
+    /**
+     * Helper method: Cek apakah user memiliki role tertentu
+     * 
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
+    /**
+     * Helper method: Cek apakah user adalah admin atau adminbem
+     * 
+     * @return bool
+     */
+    public function isAnyAdmin()
+    {
+        return in_array($this->role, ['admin', 'adminbem']);
     }
 }

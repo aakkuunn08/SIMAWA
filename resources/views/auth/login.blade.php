@@ -65,6 +65,17 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
+                <!-- Remember Me -->
+                <div class="mt-4 flex items-center">
+                    <input id="remember" 
+                           type="checkbox" 
+                           name="remember"
+                           class="rounded border-gray-300 text-orange-500 focus:ring-orange-400">
+                    <label for="remember" class="ml-2 text-sm text-gray-700">
+                        Ingat Saya
+                    </label>
+                </div>
+
                 <!-- Login Button -->
                 <div class="mt-6">
                     <button type="submit"
