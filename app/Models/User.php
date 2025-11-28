@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+    use HasRoles;
 
     /**
      * Kolom yang boleh diisi (register / update)
@@ -74,42 +76,64 @@ class User extends Authenticatable
 
     /**
      * Helper method: Cek apakah user adalah admin
+     * Uses Spatie's hasRole() method with fallback to legacy role column
      * 
      * @return bool
      */
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        // Check using Spatie first, fallback to legacy column
+        return $this->hasRole('admin') || $this->role === 'admin';
     }
 
     /**
      * Helper method: Cek apakah user adalah adminbem (super admin)
+     * Uses Spatie's hasRole() method with fallback to legacy role column
      * 
      * @return bool
      */
     public function isAdminBem()
     {
-        return $this->role === 'adminbem';
-    }
-
-    /**
-     * Helper method: Cek apakah user memiliki role tertentu
-     * 
-     * @param string $role
-     * @return bool
-     */
-    public function hasRole($role)
-    {
-        return $this->role === $role;
+        // Check using Spatie first, fallback to legacy column
+        return $this->hasRole('adminbem') || $this->role === 'adminbem';
     }
 
     /**
      * Helper method: Cek apakah user adalah admin atau adminbem
+     * Uses Spatie's hasAnyRole() method with fallback to legacy column
      * 
      * @return bool
      */
     public function isAnyAdmin()
     {
-        return in_array($this->role, ['admin', 'adminbem']);
+        // Check using Spatie first, fallback to legacy column
+        return $this->hasAnyRole(['admin', 'adminbem']) || in_array($this->role, ['admin', 'adminbem']);
+    }
+
+    /**
+     * Override Spatie's hasRole to maintain backward compatibility
+     * This allows both Spatie roles and legacy role column to work
+     * 
+     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     * @param string|null $guard
+     * @return bool
+     */
+    public function hasRole($roles, string $guard = null): bool
+    {
+        // Try Spatie's method first
+        if (parent::hasRole($roles, $guard)) {
+            return true;
+        }
+
+        // Fallback to legacy role column for backward compatibility
+        if (is_string($roles)) {
+            return $this->role === $roles;
+        }
+
+        if (is_array($roles)) {
+            return in_array($this->role, $roles);
+        }
+
+        return false;
     }
 }

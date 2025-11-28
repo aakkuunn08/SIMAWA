@@ -11,6 +11,7 @@ class IsAdmin
      * Handle an incoming request.
      * 
      * Middleware ini mengizinkan akses untuk user dengan role 'admin' atau 'adminbem'
+     * Menggunakan Spatie Laravel Permission dengan fallback ke legacy system
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -25,9 +26,9 @@ class IsAdmin
 
         $user = auth()->user();
 
-        // Cek apakah user memiliki role admin atau adminbem
-        // Juga support backward compatibility dengan is_admin boolean field
-        if (!$user->isAnyAdmin() && $user->is_admin !== 1) {
+        // Cek menggunakan Spatie's hasAnyRole() method
+        // Dengan fallback ke legacy system untuk backward compatibility
+        if (!$user->hasAnyRole(['admin', 'adminbem']) && !$user->isAnyAdmin() && $user->is_admin !== 1) {
             abort(403, 'Access denied - Admin access required');
         }
 

@@ -13,6 +13,7 @@ class IsAdminBem
      * Middleware ini hanya mengizinkan akses untuk user dengan role 'adminbem' (super admin)
      * Digunakan untuk fitur-fitur yang hanya bisa diakses oleh super admin,
      * seperti user management, mengelola akun admin, dll.
+     * Menggunakan Spatie Laravel Permission dengan fallback ke legacy system
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -27,8 +28,9 @@ class IsAdminBem
 
         $user = auth()->user();
 
-        // Hanya izinkan user dengan role 'adminbem'
-        if (!$user->isAdminBem()) {
+        // Cek menggunakan Spatie's hasRole() method
+        // Dengan fallback ke legacy system untuk backward compatibility
+        if (!$user->hasRole('adminbem') && !$user->isAdminBem()) {
             abort(403, 'Access denied - Super Admin (AdminBEM) access required');
         }
 

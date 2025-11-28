@@ -61,8 +61,6 @@
                             Tampilkan
                         </span>
                     </div>
-
-                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
                 <!-- Remember Me -->
