@@ -49,6 +49,13 @@ class OrmawaSeeder extends Seeder
                 'tipe' => 'ukm',
                 'deskripsi' => 'UKM Olahraga menaungi berbagai cabang olahraga seperti futsal, basket, voli, dan lainnya...',
             ],
+            [
+                'nama' => 'MPM',
+                'slug' => 'mpm',
+                'logo' => 'images/logompm.png',
+                'tipe' => 'ukm',
+                'deskripsi' => 'MPM ...',
+            ],
         ]);
     }
 }

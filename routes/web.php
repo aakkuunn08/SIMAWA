@@ -20,7 +20,8 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $ormawas = Ormawa::all();   
+        return view('dashboard', compact('ormawas'));
     })->name('dashboard');
 
     // Profile

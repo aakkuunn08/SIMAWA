@@ -1,4 +1,3 @@
-{{-- resources/views/ormawa.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -16,24 +15,66 @@
         <div class="h-16 flex items-center px-6 border-b border-gray-200">
             <span class="font-semibold text-sm tracking-wide">SIMAWA ITH</span>
         </div>
-        <nav class="flex-1 pt-4 text-sm">
-            <a href="{{ route('home') }}#kalender" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
-                Kalender Kegiatan
-            </a>
-            <a href="{{ route('home') }}#bem" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
-                Badan Eksekutif Mahasiswa
-            </a>
-            <a href="{{ route('home') }}#news" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
-                NEWS
-            </a>
-            <a href="{{ route('home') }}#ukm" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
-                Daftar UKM/SC
-            </a>
-            <a href="{{ route('home') }}#tes-minat" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
-                Tes Minat
-            </a>
-        </nav>
 
+        <nav class="flex-1 pt-4 text-sm">
+
+<!-- <nav class="flex-1 pt-4 text-sm"> -->
+
+    {{-- Kalender (home) --}}
+    <a href="{{ route('home') }}#kalender"
+       class="nav-link flex items-center px-6 py-2 hover:bg-gray-100
+       {{ request()->routeIs('home') ? 'bg-orange-50 border-l-4 border-orange-500 text-gray-900' : '' }}">
+        Kalender Kegiatan
+    </a>
+
+    {{-- BEM --}}
+    <a href="{{ route('ormawa.show', 'bem') }}"
+       class="nav-link flex items-center px-6 py-2 hover:bg-gray-100
+       {{ (isset($ormawa) && $ormawa->slug === 'bem') ? 'bg-orange-50 border-l-4 border-orange-500 text-gray-900' : '' }}">
+        Badan Eksekutif Mahasiswa
+    </a>
+
+    {{-- NEWS --}}
+    <a href="{{ route('home') }}#news"
+       class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+        NEWS
+    </a>
+
+        {{-- UKM/SC --}}
+    <a href="{{ route('home', 'ormawa') }}#ukm"
+    class="nav-link flex items-center px-6 py-2 hover:bg-gray-100
+    {{ (isset($ormawa) && $ormawa->tipe === 'ukm') ? 'bg-orange-50 border-l-4 border-orange-500 text-gray-900' : '' }}">
+        Daftar UKM/SC
+    </a>
+
+    <!-- {{-- UKM/SC --}}
+    <a href="{{ route('ormawa.show', 'ormawa') }}#ukm"
+       class="nav-link flex items-center px-6 py-2 hover:bg-gray-100
+       {{ (isset($ormawa) && $ormawa->tipe === 'ukm') ? 'bg-orange-50 border-l-4 border-orange-500 text-gray-900' : '' }}">
+        Daftar UKM/SC
+    </a> -->
+
+    {{-- Tes Minat --}}
+    <a href="{{ route('home') }}#tes-minat"
+       class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+        Tes Minat
+    </a>
+
+    </nav>
+
+        <!-- <div class="mt-auto pb-4 text-sm">
+            <a href="{{ url('/akun') }}" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+                Akun
+            </a>
+
+            <a href="{{ url('/panduan') }}" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+                Panduan
+            </a>
+
+            <a href="{{ route('logout') }}" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+                Log-Out
+            </a>
+        </div> -->
     </aside>
 
     {{-- KONTEN KANAN --}}
@@ -382,98 +423,8 @@
 
             </div>
 
-<<<<<<< HEAD
-            {{-- BAGIAN PUTIH --}}
             <div style="background:white; padding:38px 24px 90px;">
 
-                {{-- LOGO --}}
-                <div style="display:flex; justify-content:center; margin-bottom:28px;">
-                    <img src="{{ asset('images/logobem.png') }}" 
-                        alt="BEM ITH 2025" 
-                        style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));">
-                </div>
-
-                {{-- CARD STRUCTURE, VISION, MISSION --}}
-                <div style="
-                    display:grid; 
-                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-                    gap:24px; 
-                    max-width:1100px; 
-                    margin:0 auto;
-                ">
-
-                    {{-- STRUCTURE --}}
-                    <div style="
-                        background:white; padding:24px;
-                        border-radius:18px;
-                        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                    ">
-                        <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
-                            Organizational Structure
-                        </div>
-                        <div style="font-size:15px; color:#444; line-height:1.6;">
-                            The BEM consists of elected representatives...
-                        </div>
-                    </div>
-
-                    {{-- VISION --}}
-                    <div style="
-                        background:white; padding:24px;
-                        border-radius:18px;
-                        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                    ">
-                        <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
-                            Vision
-                        </div>
-                        <div style="font-size:15px; color:#444; line-height:1.6;">
-                            Membuat BEM ITH menjadi organisasi yang peduli...
-                        </div>
-                    </div>
-
-                    {{-- MISSION --}}
-                    <div style="
-                        background:white; padding:24px;
-                        border-radius:18px;
-                        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                    ">
-                        <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:14px;">
-                            Mission
-                        </div>
-
-                        <div style="font-size:15px; color:#444; line-height:1.65; display:flex; flex-direction:column; gap:14px;">
-
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mendengar dan Menanggapi Suara Mahasiswa</div>
-                                <div>Saya ingin memastikan setiap mahasiswa merasa didengarkan baik itu Aspirasi,keluhan,
-                                     dan saran yang ada, akan saya respon dan tindaklanjuti dengan cepat dan terbuka, sehingga
-                                     BEM bisa benar-benar menjadi tempat kita menyuarakan kebutuhan bersama.</div>
-                            </div>
-
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mendorong Pengembangan Diri</div>
-                                <div>Mahasiswa Saya akan menyediakan ruang bagi mahasiswa untuk belajar hal-hal baru, mengasah keterampilan,
-                                     dan menemukan bakat mereka. Program pelatihan, mentoring, dan kegiatan pengembangan diri
-                                     akan saya buat agar semua mahasiswa bisa tumbuh sesuai potensinya.</div>
-                            </div>
-
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Membangun Rasa Kebersamaan</div>
-                                <div>Saya ingin menciptakan suasana kampus yang penuh keakraban dan kekeluargaan. Melalui
-                                     kegiatan bersama antar-organisasi, saya akan memperkuat rasa saling mendukung dan kebersamaan 
-                                     di antara kita, sehingga kampus menjadi lingkungan yang nyaman bagi semua.</div>
-                            </div>
-
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Menggerakkan Aksi Sosial</div>
-                                <div>Bersama-sama, kita bisa memberi dampak positif bagi masyarakat sekitar dan lingkungan.
-                                     saya akan menginisiasi program-program yang menyentuh isu-isusosial dan lingkungan yang nyata,
-                                     agar kita bisa ikut terlibat dan berkontribusi bagi sekitar.</div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
 
                 <!-- {{-- TOMBOL EDIT --}}
                 <a href="#"
@@ -490,64 +441,81 @@
                 </a>
  -->
             </div>
-=======
->>>>>>> 16292ad1cb6dd6581b179f919f96cdd436642ca0
         </main>
 
     </div>
 
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const links = Array.from(document.querySelectorAll("aside .nav-link"));
-    let skipObserverUntil = 0; // disable observer briefly after clicking
-    const setActive = (link) => {
-        links.forEach(l => l.classList.remove("bg-gray-200"));
-        link.classList.add("bg-gray-200");
-    };
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = Array.from(document.querySelectorAll('aside .nav-link'));
+        if (!links.length) return;
 
-    // scroll to section smoothly on click
-    links.forEach(link => {
-        link.addEventListener("click", (e) => {
-            const target = document.querySelector(link.getAttribute("href"));
-            if (target) {
-                e.preventDefault();
-                skipObserverUntil = Date.now() + 800;
-                setActive(link);
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
+        const ACTIVE = ['bg-orange-50', 'border-l-4', 'border-orange-500', 'text-gray-900'];
+
+        function clearActive() {
+            links.forEach(l => {
+                l.classList.remove(...ACTIVE);
+                l.classList.add('hover:bg-gray-100');
+            });
+        }
+
+        function setActive(el) {
+            if (!el) return;
+            clearActive();
+            el.classList.add(...ACTIVE);
+            el.classList.remove('hover:bg-gray-100');
+        }
+
+        // initial highlight: prefer hash -> existing active -> default #kalender
+        const hashLink = location.hash ? document.querySelector('aside .nav-link[href="' + location.hash + '"]') : null;
+        const alreadyActive = links.find(l => ACTIVE.some(c => l.classList.contains(c)));
+        if (hashLink) {
+            setActive(hashLink);
+        } else if (alreadyActive) {
+            setActive(alreadyActive);
+        } else {
+            const def = document.querySelector('aside .nav-link[href="#kalender"]');
+            if (def) setActive(def);
+        }
+
+        // flag to ignore observer right after a click (prevents observer from immediately overriding)
+        let skipObserverUntil = 0;
+
+        // click: set active immediately (allow anchor default scroll)
+        links.forEach(l => {
+            l.addEventListener('click', (e) => {
+                setActive(l);
+                // ignore observer updates for a short time while browser scrolls
+                skipObserverUntil = Date.now() + 700;
+                // allow default anchor behavior (keeps native scroll) — if you use manual scroll, preventDefault here
+            });
         });
+
+        // observe sections and update active on scroll — pick most visible section
+        const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+        if (sections.length) {
+            const observer = new IntersectionObserver((entries) => {
+                // skip if recently clicked to avoid override during programmatic/anchor scroll
+                if (Date.now() < skipObserverUntil) return;
+
+                // choose entry with largest intersectionRatio
+                let best = entries[0];
+                for (const e of entries) {
+                    if (e.intersectionRatio > (best?.intersectionRatio ?? 0)) best = e;
+                }
+                if (!best) return;
+                // ensure it's meaningfully visible
+                if (best.intersectionRatio > 0.01) {
+                    const id = '#' + best.target.id;
+                    const link = document.querySelector('aside .nav-link[href="' + id + '"]');
+                    if (link) setActive(link);
+                }
+            }, { root: null, rootMargin: '-20% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+
+            sections.forEach(s => observer.observe(s));
+        }
     });
-
-    // observe section visibility to highlight active
-    const sections = links
-        .map(l => document.querySelector(l.getAttribute("href")))
-        .filter(Boolean);
-
-    if (sections.length) {
-        const observer = new IntersectionObserver((entries) => {
-            if (Date.now() < skipObserverUntil) return;
-
-            let best = entries[0];
-            for (const e of entries) {
-                if (e.intersectionRatio > (best?.intersectionRatio ?? 0)) best = e;
-            }
-            if (!best) return;
-
-            if (best.intersectionRatio > 0.01) {
-                const id = "#" + best.target.id;
-                const link = document.querySelector(`aside .nav-link[href="${id}"]`);
-                if (link) setActive(link);
-            }
-        }, {
-            root: null,
-            rootMargin: "-20% 0px -50% 0px",
-            threshold: [0, 0.25, 0.5, 0.75, 1]
-        });
-
-        sections.forEach(section => observer.observe(section));
-    }
-});
-</script>
+    </script>
 </body>
 </html>

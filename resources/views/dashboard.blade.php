@@ -33,6 +33,23 @@
                 Tes Minat
             </a>
         </nav>
+
+        <a href="{{ url('/akun') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100">Akun</a>
+        <a href="{{ url('/panduan') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100">Panduan</a>
+        <a href="{{ route('logout') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100">Log-Out</a>
+
+
+         <!-- <div class="mt-auto pb-4 text-sm">
+            <a href="{{ url('/akun') }}" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+                Akun
+            </a>
+            <a href="{{ url('/panduan') }}" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+                Panduan
+            </a>
+            <a href="#logout" class="nav-link flex items-center px-6 py-2 hover:bg-gray-100">
+                Log-Out
+            </a>
+        </div> -->
     </aside>
 
     {{-- KONTEN KANAN --}}
@@ -113,7 +130,7 @@
                             placeholder="Cari Kegiatan"
                             class="px-4 py-2 w-full bg-gray-100 rounded-md border focus:outline-none focus:ring-2 focus:ring-orange-400"
                         >
-                {{-- TOMBOL SEARCH (bisa diklik) --}}
+                {{-- TOMBOL SEARCH --}}
                 <button class="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke-width="1.8"
@@ -221,7 +238,6 @@
         });
         
     </script>
-        
             {{-- BEM --}}
             <section id="bem" class="bg-white mt-6 px-10 pt-10 pb-8">
                 <h2 class="text-center text-lg font-semibold mb-6">
@@ -230,7 +246,9 @@
 
                 <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <div class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        <a href="{{ url('/ormawa') }}" title="BEM" aria-label="Badan Eksekutif Mahasiswa" class="w-full h-full flex items-center justify-center block hover:opacity-90">
+                        <a href="{{ route('ormawa.show', 'bem') }}" 
+                        title="BEM" aria-label="Badan Eksekutif Mahasiswa"
+                        class="w-full h-full flex items-center justify-center block hover:opacity-90">
                             <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
                         </a>
                     </div>
@@ -292,33 +310,33 @@
                 </div>
             </section>
 
-            {{-- DAFTAR UKM --}}
+            <!-- {{-- DAFTAR UKM --}}
             <section id="ukm" class="bg-[#edb59fc2] px-6 pt-8 pb-10 mt-2">
                 <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM/SC</h2>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
-                    <!-- HERO -->
-                        <div class="flex flex-col items-center">
+                    HERO -->
+                        <!-- <div class="flex flex-col items-center">
                             <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
                                 <a href="{{ url('/ukm/hero') }}" class="w-full h-full flex items-center justify-center">
                                     <img src="/images/logohero.png" alt="HERO" class="max-h-full max-w-full object-contain">
                                 </a>
                             </div>
                             <span class="mt-3 text-center font-semibold text-xs">HERO</span>
-                        </div>
+                        </div> -->
 
                     <!-- HCC -->
-                        <div class="flex flex-col items-center">
+                        <!-- <div class="flex flex-col items-center">
                             <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
                                 <a href="{{ url('/ukm/hcc') }}" class="w-full h-full flex items-center justify-center">
                                     <img src="/images/logohcc.png" alt="HCC" class="max-h-full max-w-full object-contain">
                                 </a>
                             </div>
                             <span class="mt-3 text-center font-semibold text-xs">HCC</span>
-                        </div>
+                        </div> -->
 
                     <!-- SENI -->
-                        <div class="flex flex-col items-center">
+                        <!-- <div class="flex flex-col items-center">
                             <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
                                 <a href="{{ url('/ukm/seni') }}" class="w-full h-full flex items-center justify-center">
                                     <img src="/images/logoseni.png" alt="SENI" class="max-h-full max-w-full object-contain">
@@ -326,19 +344,53 @@
                             </div>
                             <span class="mt-3 text-center font-semibold text-xs">SENI</span>
                         </div>
-
+ -->
                     <!-- OLAHRAGA -->
-                        <div class="flex flex-col items-center">
+                        <!-- <div class="flex flex-col items-center">
                             <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
                                 <a href="{{ url('/ukm/olahraga') }}" class="w-full h-full flex items-center justify-center">
                                     <img src="/images/logo.png" alt="OLAHRAGA" class="max-h-full max-w-full object-contain">
                                 </a>
                             </div>
                             <span class="mt-3 text-center font-semibold text-xs">OLAHRAGA</span>
+                        </div> -->
+
+                    <!-- MPM -->
+                        <!-- <div class="flex flex-col items-center">
+                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                                <a href="{{ url('/ukm/mpm') }}" class="w-full h-full flex items-center justify-center">
+                                    <img src="/images/logompm.png" alt="Majelis Pencinta Musholla" class="max-h-full max-w-full object-contain">
+                                </a>
+                            </div>
+                            <span class="mt-3 text-center font-semibold text-xs">OLAHRAGA</span>
                         </div>
                     </div>
+                </div> -->
+            <!-- </section> -->
+
+            {{-- DAFTAR UKM --}}
+            <section id="ukm" class="bg-[#edb59fc2] px-6 pt-8 pb-10 mt-2">
+                <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM/SC</h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
+                    @foreach ($ormawas->where('tipe', 'ukm') as $item)
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                                <a href="{{ route('ormawa.show', $item->slug) }}"
+                                   class="w-full h-full flex items-center justify-center">
+                                    <img src="{{ asset($item->logo) }}" 
+                                         alt="{{ $item->nama }}" 
+                                         class="max-h-full max-w-full object-contain">
+                                </a>
+                            </div>
+                            <span class="mt-3 text-center font-semibold text-xs">
+                                {{ strtoupper($item->nama) }}
+                            </span>
+                        </div>
+                    @endforeach
                 </div>
             </section>
+
 
             {{-- TES MINAT --}}
             <section id="tes-minat" class="bg-white py-10 text-center">
@@ -355,9 +407,17 @@
         </main>
     </div>
 </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const links = Array.from(document.querySelectorAll('aside .nav-link'));
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ambil semua link di sidebar
+        const allLinks = Array.from(document.querySelectorAll('aside .nav-link:not(.no-highlight)'));
+
+        // HANYA link yang menuju section di halaman ini (href diawali '#')
+        const links = allLinks.filter(l => {
+            const href = l.getAttribute('href') || '';
+            return href.startsWith('#');
+        });
+
         if (!links.length) return;
 
         const ACTIVE = ['bg-orange-50', 'border-l-4', 'border-orange-500', 'text-gray-900'];
@@ -377,54 +437,57 @@
         }
 
         // initial highlight: prefer hash -> existing active -> default #kalender
-        const hashLink = location.hash ? document.querySelector('aside .nav-link[href="' + location.hash + '"]') : null;
-        const alreadyActive = links.find(l => ACTIVE.some(c => l.classList.contains(c)));
+        const hashLink = location.hash
+            ? links.find(l => l.getAttribute('href') === location.hash)
+            : null;
+
         if (hashLink) {
             setActive(hashLink);
-        } else if (alreadyActive) {
-            setActive(alreadyActive);
         } else {
-            const def = document.querySelector('aside .nav-link[href="#kalender"]');
+            const def = links.find(l => l.getAttribute('href') === '#kalender');
             if (def) setActive(def);
         }
 
-        // flag to ignore observer right after a click (prevents observer from immediately overriding)
+        // flag untuk skip observer sesaat setelah klik
         let skipObserverUntil = 0;
 
-        // click: set active immediately (allow anchor default scroll)
+        // klik menu: langsung aktifkan
         links.forEach(l => {
-            l.addEventListener('click', (e) => {
+            l.addEventListener('click', () => {
                 setActive(l);
-                // ignore observer updates for a short time while browser scrolls
                 skipObserverUntil = Date.now() + 700;
-                // allow default anchor behavior (keeps native scroll) — if you use manual scroll, preventDefault here
             });
         });
 
-        // observe sections and update active on scroll — pick most visible section
-        const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
-        if (sections.length) {
-            const observer = new IntersectionObserver((entries) => {
-                // skip if recently clicked to avoid override during programmatic/anchor scroll
-                if (Date.now() < skipObserverUntil) return;
+        // observe section supaya highlight ikut scroll
+        const sections = links
+            .map(l => document.querySelector(l.getAttribute('href')))
+            .filter(Boolean);
 
-                // choose entry with largest intersectionRatio
-                let best = entries[0];
-                for (const e of entries) {
-                    if (e.intersectionRatio > (best?.intersectionRatio ?? 0)) best = e;
-                }
-                if (!best) return;
-                // ensure it's meaningfully visible
-                if (best.intersectionRatio > 0.01) {
-                    const id = '#' + best.target.id;
-                    const link = document.querySelector('aside .nav-link[href="' + id + '"]');
-                    if (link) setActive(link);
-                }
-            }, { root: null, rootMargin: '-20% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+        if (!sections.length) return;
 
-            sections.forEach(s => observer.observe(s));
-        }
+        const observer = new IntersectionObserver((entries) => {
+            if (Date.now() < skipObserverUntil) return;
+
+            let best = entries[0];
+            for (const e of entries) {
+                if (e.intersectionRatio > (best?.intersectionRatio ?? 0)) best = e;
+            }
+            if (!best) return;
+
+            if (best.intersectionRatio > 0.01) {
+                const id = '#' + best.target.id;
+                const link = links.find(l => l.getAttribute('href') === id);
+                if (link) setActive(link);
+            }
+        }, {
+            root: null,
+            rootMargin: '-20% 0px -50% 0px',
+            threshold: [0, 0.25, 0.5, 0.75, 1]
+        });
+
+        sections.forEach(s => observer.observe(s));
     });
-    </script>
+</script>
 </body>
 </html>
