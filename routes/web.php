@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\OrmawaController;
+use App\Http\Controllers\TesMinatController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Ormawa; // <- pastikan baris ini ada di atas, bersama use lainnya
 
@@ -14,6 +15,12 @@ Route::get('/', function () {
 // ================= ORMAWA =================
 Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
 // ==========================================
+
+// ================= TES MINAT UKM =================
+// Route untuk halaman tes minat dan submit jawaban
+Route::get('/tesminat', [TesMinatController::class, 'index'])->name('tesminat.index');
+Route::post('/tesminat/submit', [TesMinatController::class, 'submit'])->name('tesminat.submit');
+// =================================================
 
 // Semua route yang butuh login
 Route::middleware('auth')->group(function () {

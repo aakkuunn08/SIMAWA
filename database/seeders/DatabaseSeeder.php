@@ -42,9 +42,10 @@ class DatabaseSeeder extends Seeder
         $this->command->info('  Password: adminbem123');
         $this->command->warn('  ⚠ IMPORTANT: Change this password in production!');
 
-        // Panggil OrmawaSeeder
+        // Panggil OrmawaSeeder dan SoalSeeder
         $this->call([
             OrmawaSeeder::class,
+            SoalSeeder::class,
         ]);
 
         $this->command->info('');
