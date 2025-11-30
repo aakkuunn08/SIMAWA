@@ -9,7 +9,8 @@ use App\Models\Ormawa; // <- pastikan baris ini ada di atas, bersama use lainnya
 
 Route::get('/', function () {
     $ormawas = Ormawa::all();   // ambil semua data ormawa dari database
-    return view('home', compact('ormawas')); // kirim ke view
+    $sevents = []; // Initialize empty events array - you can populate this later with actual events
+    return view('home', compact('ormawas', 'sevents')); // kirim ke view
 })->name('home');
 
 // ================= ORMAWA =================
@@ -27,8 +28,9 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', function () {
-        $ormawas = Ormawa::all();   
-        return view('dashboard', compact('ormawas'));
+        $ormawas = Ormawa::all();
+        $sevents = []; // Initialize empty events array
+        return view('dashboard', compact('ormawas', 'sevents'));
     })->name('dashboard');
 
     // Profile

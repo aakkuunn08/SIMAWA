@@ -61,9 +61,9 @@ class RolePermissionSeeder extends Seeder
         $adminBemRole = Role::create(['name' => 'adminbem']);
         $adminBemRole->givePermissionTo(Permission::all());
 
-        // 2. Admin Role - Has most permissions except user management
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo([
+        // 2. AdminUKM Role (Admin UKM/SC) - Has most permissions except user management
+        $adminUkmRole = Role::create(['name' => 'adminukm']);
+        $adminUkmRole->givePermissionTo([
             'view-users',
             'manage-content',
             'view-content',
@@ -83,18 +83,9 @@ class RolePermissionSeeder extends Seeder
             'view-settings',
         ]);
 
-        // 3. User Role (Regular User) - Limited permissions
-        $userRole = Role::create(['name' => 'user']);
-        $userRole->givePermissionTo([
-            'view-content',
-            'view-ormawa',
-            'view-tes-minat',
-            'create-tes-minat',
-        ]);
-
         $this->command->info('Roles and Permissions created successfully!');
         $this->command->info('- adminbem: Super Admin with all permissions');
-        $this->command->info('- admin: Admin with content management permissions');
-        $this->command->info('- user: Regular user with limited permissions');
+        $this->command->info('- adminukm: Admin UKM/SC with content management permissions');
+        $this->command->info('Note: No user role needed - guests can access public features without login');
     }
 }

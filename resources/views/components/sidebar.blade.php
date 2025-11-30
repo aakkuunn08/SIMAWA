@@ -1,0 +1,86 @@
+{{-- File: resources/views/components/sidebar.blade.php --}}
+<aside id="sidebar-menu"
+       class="hidden md:flex fixed top-0 left-0 w-64 h-screen bg-white border-r border-gray-200 flex flex-col z-40">
+
+    {{-- Header kecil di sidebar --}}
+    <div class="h-16 flex items-center px-6 border-b border-gray-200">
+        <span class="font-semibold text-sm tracking-wide">SIMAWA ITH</span>
+    </div>
+    
+{{-- LOGIC PHP UNTUK MENENTUKAN MENU AKTIF --}}
+    @php
+        // 1. Cek Halaman Utama
+        $isHome = Request::routeIs('home') || Request::is('/'); 
+        
+        // 2. Cek apakah sedang di halaman Ormawa (apapun slugnya)
+        $isOrmawaPage = Request::routeIs('ormawa*'); 
+
+        // 3. Ambil Slug dari URL untuk membedakan BEM vs UKM lain
+        // Jika URL: domain.com/ormawa/bem, maka segment(2) adalah 'bem'
+        $currentSlug = request()->segment(2); 
+
+        // 4. Style Class (Sesuai request warna oranye sebelumnya)
+        $activeClass = 'border-l-4 border-orange-500 bg-orange-50 text-gray-900 font-medium'; 
+        $inactiveClass = 'border-l-4 border-transparent hover:bg-gray-100 text-gray-600';
+
+        // 5. LOGIKA KUNCI:
+        // Menu BEM aktif JIKA halaman ormawa DAN slug-nya 'bem'
+        $isBemActive = $isOrmawaPage && $currentSlug == 'bem';
+
+        // Menu UKM aktif JIKA halaman ormawa TAPI slug-nya BUKAN 'bem'
+        $isUkmActive = $isOrmawaPage && $currentSlug != 'bem';
+    @endphp
+
+    <nav class="flex-1 pt-4 text-sm overflow-y-auto" id="nav-container">
+        
+        {{-- Kalender --}}
+        <a href="{{ $isHome ? '#kalender' : url('/#kalender') }}" 
+           class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
+            Kalender Kegiatan
+        </a>
+
+        {{-- MENU BEM (Hanya nyala jika slug == bem) --}}
+        <a href="{{ $isHome ? '#bem' : url('/ormawa/bem') }}" 
+           class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
+            Badan Eksekutif Mahasiswa
+        </a>
+
+        {{-- NEWS --}}
+        <a href="{{ $isHome ? '#news' : url('/#news') }}" 
+           class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
+            NEWS
+        </a>
+
+        {{-- MENU UKM (Nyala jika slug != bem, misal: hero, hcc, seni, olahraga) --}}
+        <a href="{{ $isHome ? '#ukm' : url('/#ukm') }}" 
+           class="nav-link flex items-center px-6 py-2 {{ $isUkmActive ? $activeClass : $inactiveClass }}">
+            Daftar UKM/SC
+        </a>
+
+        {{-- Tes Minat --}}
+        <a href="{{ $isHome ? '#tes-minat' : url('/#tes-minat') }}" 
+           class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
+            Tes Minat
+        </a>
+    </nav>
+
+    {{-- AREA KHUSUS LOGGED IN USER - DI BAWAH --}}
+    @auth
+        <div class="border-t border-gray-200 text-sm">
+            <a href="{{ url('/akun') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100 text-gray-700">
+                Akun
+            </a>
+            <a href="{{ url('/panduan') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100 text-gray-700">
+                Panduan
+            </a>
+
+            <form action="{{ route('logout') }}" method="POST" class="w-full">
+                @csrf
+                <button type="submit"
+                        class="nav-link no-highlight flex w-full items-center px-6 py-2 hover:bg-gray-100 text-gray-700">
+                    Logout
+                </button>
+            </form>
+        </div>
+    @endauth
+</aside>
