@@ -40,7 +40,7 @@
         </a>
 
         {{-- MENU BEM (Hanya nyala jika slug == bem) --}}
-        <a href="{{ $isHome ? '#bem' : url('/ormawa/bem') }}" 
+        <a href="{{ $isHome ? '#bem' : url('/#bem') }}" 
            class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
             Badan Eksekutif Mahasiswa
         </a>
