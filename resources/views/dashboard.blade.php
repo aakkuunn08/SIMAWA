@@ -67,7 +67,7 @@
         <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
             <div class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
                 <a href="{{ route('ormawa.show', 'bem') }}" title="BEM"
-                    class="w-full h-full flex items-center justify-center block hover:opacity-90">
+                    class="w-full h-full items-center justify-center block hover:opacity-90">
                     <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
                 </a>
             </div>
