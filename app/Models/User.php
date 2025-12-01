@@ -43,6 +43,17 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the name of the unique identifier for the user.
+     * Override default 'email' to use 'username' for authentication
+     *
+     * @return string
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'username';
+    }
+
+    /**
      * Relasi: 1 user punya banyak organisasi
      */
     public function dataOrganisasi()
@@ -83,7 +94,7 @@ class User extends Authenticatable
     public function isAdmin()
     {
         // Check using Spatie first, fallback to legacy column
-        return $this->hasRole('admin') || $this->role === 'admin';
+        return $this->hasRole('adminukm') || $this->role === 'adminukm';
     }
 
     /**
@@ -107,7 +118,7 @@ class User extends Authenticatable
     public function isAnyAdmin()
     {
         // Check using Spatie first, fallback to legacy column
-        return $this->hasAnyRole(['admin', 'adminbem']) || in_array($this->role, ['admin', 'adminbem']);
+        return $this->hasAnyRole(['adminukm', 'adminbem']) || in_array($this->role, ['adminukm', 'adminbem']);
     }
 
     /**
@@ -120,12 +131,53 @@ class User extends Authenticatable
      */
     public function hasRole($roles, string $guard = null): bool
     {
-        // Try Spatie's method first
-        if (parent::hasRole($roles, $guard)) {
-            return true;
+        // Check if roles table exists and user has roles assigned via Spatie
+        try {
+            if (method_exists(get_parent_class($this), 'hasRole')) {
+                $spatieResult = parent::hasRole($roles, $guard);
+                if ($spatieResult) {
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            // If Spatie method fails, continue to legacy check
         }
 
         // Fallback to legacy role column for backward compatibility
+        if (is_string($roles)) {
+            return $this->role === $roles;
+        }
+
+        if (is_array($roles)) {
+            return in_array($this->role, $roles);
+        }
+
+        return false;
+    }
+    
+    /**
+     * Check if user has any of the given roles
+     * Supports both Spatie and legacy role system
+     * 
+     * @param string|array $roles
+     * @param string|null $guard
+     * @return bool
+     */
+    public function hasAnyRole($roles, string $guard = null): bool
+    {
+        // Try Spatie's method first
+        try {
+            if (method_exists(get_parent_class($this), 'hasAnyRole')) {
+                $spatieResult = parent::hasAnyRole($roles, $guard);
+                if ($spatieResult) {
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            // If Spatie method fails, continue to legacy check
+        }
+
+        // Fallback to legacy role column
         if (is_string($roles)) {
             return $this->role === $roles;
         }

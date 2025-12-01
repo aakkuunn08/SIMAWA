@@ -48,14 +48,14 @@ class DatabaseSeeder extends Seeder
             SoalSeeder::class,
         ]);
 
-        $this->command->info('');
-        $this->command->info('===========================================');
-        $this->command->info('Database seeding completed successfully!');
-        $this->command->info('===========================================');
-        $this->command->info('Next steps:');
-        $this->command->info('1. Login as AdminBEM (adminbem/adminbem123)');
-        $this->command->info('2. Create other admin users via UI');
-        $this->command->info('3. All users will be stored in database');
-        $this->command->info('===========================================');
+        // $this->command->info('');
+        // $this->command->info('===========================================');
+        // $this->command->info('Database seeding completed successfully!');
+        // $this->command->info('===========================================');
+        // $this->command->info('Next steps:');
+        // $this->command->info('1. Login as AdminBEM (adminbem/adminbem123)');
+        // $this->command->info('2. Create other admin users via UI');
+        // $this->command->info('3. All users will be stored in database');
+        // $this->command->info('===========================================');
     }
 }

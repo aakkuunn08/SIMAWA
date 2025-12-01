@@ -33,8 +33,13 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
+            // WEB ROUTES
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+
+            // ROUTES AUTH DARI LARAVEL BREEZE
+            Route::middleware('web')
+                ->group(base_path('routes/auth.php'));
         });
     }
 }
