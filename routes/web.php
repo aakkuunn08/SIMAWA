@@ -18,7 +18,7 @@ Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.sh
 // ==========================================
 
 // ================= TES MINAT UKM =================
-// Route untuk halaman tes minat dan submit jawaban
+// Route untuk halaman tes minat - Bisa diakses tanpa login (untuk mahasiswa)
 Route::get('/tesminat', [TesMinatController::class, 'index'])->name('tesminat.index');
 Route::post('/tesminat/submit', [TesMinatController::class, 'submit'])->name('tesminat.submit');
 // =================================================
@@ -60,6 +60,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'adminbem'])->group(function () {
     // User Management - hanya AdminBEM yang bisa mengelola user
     // Route::resource('users', UserController::class);
+    
+    // Hasil Tes Minat - hanya AdminBEM yang bisa melihat
+    Route::get('/tesminatbem', [TesMinatController::class, 'showResults'])->name('tesminatbem.results');
     
     // Placeholder untuk fitur super admin
     Route::get('/adminbem/users', function () {

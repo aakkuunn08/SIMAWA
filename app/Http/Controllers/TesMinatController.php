@@ -27,6 +27,33 @@ class TesMinatController extends Controller
     }
 
     /**
+     * Menampilkan halaman hasil tes minat untuk admin BEM
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
+    public function showResults(Request $request)
+    {
+        // Ambil query search jika ada
+        $search = $request->get('search', '');
+        
+        // Query tes minat
+        $query = TesMinat::orderBy('created_at', 'desc');
+        
+        // Filter berdasarkan search (nama atau NIM)
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nama_lengkap', 'LIKE', "%{$search}%")
+                  ->orWhere('nim', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        $tesMinats = $query->get();
+        
+        return view('tesminatbem', compact('tesMinats', 'search'));
+    }
+
+    /**
      * Memproses submit form tes minat dan memberikan rekomendasi UKM
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -107,6 +134,10 @@ class TesMinatController extends Controller
         // Simpan hasil tes ke database (1 record untuk keseluruhan tes)
         TesMinat::create([
             'user_id' => auth()->id() ?? null, // Jika user login, simpan user_id
+            'nama_lengkap' => $validated['nama_lengkap'],
+            'nim' => $validated['nim'],
+            'program_studi' => $validated['program_studi'],
+            'angkatan' => $validated['angkatan'],
             'id_soal' => null, // Tidak perlu id_soal karena ini hasil keseluruhan
             'id_jawaban' => null,
             'hasil_rekomendasi' => $rekomendasi->nama . ' (Score: ' . round($topScore, 2) . ')',

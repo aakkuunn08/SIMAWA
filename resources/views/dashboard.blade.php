@@ -131,10 +131,27 @@
     {{-- TES MINAT --}}
     <section id="tes-minat" class="bg-white py-10 text-center">
         <h3 class="text-sm font-semibold mb-3 tracking-wide">TES MINAT</h3>
-        <a href="{{ url('tesminat') }}"
-            class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
-            Ayo Mulai Tes!
-        </a>
+        @auth
+            @if(auth()->user()->isAdminBem())
+                {{-- Untuk Admin BEM: Link ke halaman kelola tes minat --}}
+                <a href="{{ route('tesminatbem.results') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Kelola Tes Minat
+                </a>
+            @else
+                {{-- Untuk user biasa/mahasiswa: Link ke halaman isi tes minat --}}
+                <a href="{{ route('tesminat.index') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Ayo Mulai Tes!
+                </a>
+            @endif
+        @else
+            {{-- Untuk guest (belum login): Link ke halaman isi tes minat --}}
+            <a href="{{ route('tesminat.index') }}"
+                class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                Ayo Mulai Tes!
+            </a>
+        @endauth
     </section>
 @endsection
 

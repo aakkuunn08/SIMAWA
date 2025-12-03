@@ -45,7 +45,7 @@ class OrmawaSeeder extends Seeder
             [
                 'nama' => 'OLAHRAGA',
                 'slug' => 'olahraga',
-                'logo' => 'images/olahraga.png',
+                'logo' => 'images/logoolahraga.png',
                 'tipe' => 'ukm',
                 'deskripsi' => 'UKM Olahraga menaungi berbagai cabang olahraga seperti futsal, basket, voli, dan lainnya...',
             ],
