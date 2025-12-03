@@ -61,8 +61,9 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     // User Management - hanya AdminBEM yang bisa mengelola user
     // Route::resource('users', UserController::class);
     
-    // Hasil Tes Minat - hanya AdminBEM yang bisa melihat
+    // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
     Route::get('/tesminatbem', [TesMinatController::class, 'showResults'])->name('tesminatbem.results');
+    Route::delete('/tesminatbem/{id}', [TesMinatController::class, 'delete'])->name('tesminatbem.delete');
     
     // Placeholder untuk fitur super admin
     Route::get('/adminbem/users', function () {

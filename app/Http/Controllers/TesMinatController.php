@@ -37,20 +37,41 @@ class TesMinatController extends Controller
         // Ambil query search jika ada
         $search = $request->get('search', '');
         
-        // Query tes minat
-        $query = TesMinat::orderBy('created_at', 'desc');
+        // Query tes minat dengan relasi user (untuk fallback data lama)
+        $query = TesMinat::with('user')->orderBy('created_at', 'desc');
         
         // Filter berdasarkan search (nama atau NIM)
         if ($search) {
             $query->where(function($q) use ($search) {
+                // Search di kolom baru
                 $q->where('nama_lengkap', 'LIKE', "%{$search}%")
-                  ->orWhere('nim', 'LIKE', "%{$search}%");
+                  ->orWhere('nim', 'LIKE', "%{$search}%")
+                  // Search di relasi user (untuk data lama)
+                  ->orWhereHas('user', function($subQ) use ($search) {
+                      $subQ->where('name', 'LIKE', "%{$search}%")
+                           ->orWhere('username', 'LIKE', "%{$search}%");
+                  });
             });
         }
         
         $tesMinats = $query->get();
         
         return view('tesminatbem', compact('tesMinats', 'search'));
+    }
+
+    /**
+     * Menghapus hasil tes minat
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete($id)
+    {
+        $tesMinat = TesMinat::findOrFail($id);
+        $tesMinat->delete();
+        
+        return redirect()->route('tesminatbem.results')
+            ->with('success', 'Hasil tes minat berhasil dihapus');
     }
 
     /**
@@ -61,7 +82,7 @@ class TesMinatController extends Controller
      */
     public function submit(Request $request)
     {
-        // Validasi input biodata mahasiswa
+        // tomValidasi input biodata mahasiswa
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'nim' => 'required|numeric',
