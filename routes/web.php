@@ -4,13 +4,33 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\OrmawaController;
 use App\Http\Controllers\TesMinatController;
+use App\Http\Controllers\DaftarKegiatanController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Ormawa; // <- pastikan baris ini ada di atas, bersama use lainnya
+use App\Models\Ormawa;
+use App\Models\DaftarKegiatan;
 
 Route::get('/', function () {
-    $ormawas = Ormawa::all();   // ambil semua data ormawa dari database
-    $sevents = []; // Initialize empty events array - you can populate this later with actual events
-    return view('home', compact('ormawas', 'sevents')); // kirim ke view
+    $ormawas = Ormawa::all();
+    
+    // Get events from database
+    $kegiatan = DaftarKegiatan::all();
+    $sevents = [];
+    foreach ($kegiatan as $k) {
+        $date = $k->tanggal_kegiatan;
+        if (!isset($sevents[$date])) {
+            $sevents[$date] = [];
+        }
+        $sevents[$date][] = [
+            'id' => $k->id_kegiatan,
+            'nama' => $k->nama_kegiatan,
+            'tanggal_kegiatan' => $k->tanggal_kegiatan,
+            'tempat' => $k->tempat,
+            'waktu_mulai' => $k->waktu_mulai ? date('H.i', strtotime($k->waktu_mulai)) : null,
+            'waktu_selesai' => $k->waktu_selesai ? date('H.i', strtotime($k->waktu_selesai)) : null,
+        ];
+    }
+    
+    return view('home', compact('ormawas', 'sevents'));
 })->name('home');
 
 // ================= ORMAWA =================
@@ -29,7 +49,25 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         $ormawas = Ormawa::all();
-        $sevents = []; // Initialize empty events array
+        
+        // Get events from database
+        $kegiatan = DaftarKegiatan::all();
+        $sevents = [];
+        foreach ($kegiatan as $k) {
+            $date = $k->tanggal_kegiatan;
+            if (!isset($sevents[$date])) {
+                $sevents[$date] = [];
+            }
+            $sevents[$date][] = [
+                'id' => $k->id_kegiatan,
+                'nama' => $k->nama_kegiatan,
+                'tanggal_kegiatan' => $k->tanggal_kegiatan,
+                'tempat' => $k->tempat,
+                'waktu_mulai' => $k->waktu_mulai ? date('H.i', strtotime($k->waktu_mulai)) : null,
+                'waktu_selesai' => $k->waktu_selesai ? date('H.i', strtotime($k->waktu_selesai)) : null,
+            ];
+        }
+        
         return view('dashboard', compact('ormawas', 'sevents'));
     })->name('dashboard');
 
@@ -64,6 +102,13 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
     Route::get('/tesminatbem', [TesMinatController::class, 'showResults'])->name('tesminatbem.results');
     Route::delete('/tesminatbem/{id}', [TesMinatController::class, 'delete'])->name('tesminatbem.delete');
+    
+    // Kegiatan Management - hanya AdminBEM yang bisa mengelola
+    Route::get('/kegiatan/events', [DaftarKegiatanController::class, 'getEvents'])->name('kegiatan.events');
+    Route::post('/kegiatan', [DaftarKegiatanController::class, 'store'])->name('kegiatan.store');
+    Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
+    Route::put('/kegiatan/{id}', [DaftarKegiatanController::class, 'update'])->name('kegiatan.update');
+    Route::delete('/kegiatan/{id}', [DaftarKegiatanController::class, 'destroy'])->name('kegiatan.destroy');
     
     // Placeholder untuk fitur super admin
     Route::get('/adminbem/users', function () {

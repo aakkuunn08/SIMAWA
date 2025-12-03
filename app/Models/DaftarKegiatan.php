@@ -16,6 +16,9 @@ class DaftarKegiatan extends Model
         'user_id',
         'nama_kegiatan',
         'tanggal_kegiatan',
+        'tempat',
+        'waktu_mulai',
+        'waktu_selesai',
         'status_kegiatan',
     ];
 

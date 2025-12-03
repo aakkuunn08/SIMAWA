@@ -1,58 +1,42 @@
-# TODO - Tes Minat UKM Implementation
+# TODO: Calendar Activity Management Feature
 
-## ✅ Completed Tasks
+## Database Changes:
+- [x] Create migration to add 'tempat', 'waktu_mulai', 'waktu_selesai' columns to daftar_kegiatan table
+- [x] Update DaftarKegiatan model to include new fields in fillable array
 
-### 1. Controller Creation
-- [x] Created `app/Http/Controllers/TesMinatController.php`
-  - [x] `index()` method to show the form
-  - [x] `submit()` method to process answers and return recommendation
+## Controller Updates:
+- [x] Update DaftarKegiatanController with CRUD methods
+- [x] Add method to get events for calendar
 
-### 2. View Creation
-- [x] Created `resources/views/tesminat.blade.php`
-  - [x] Step 1: Form Biodata Mahasiswa (Nama, NIM, Program Studi, Angkatan)
-  - [x] Step 2: Questionnaire with 4 questions using Likert scale (1-5)
-  - [x] Step 3: Recommendation result page with UKM logo and description
-  - [x] JavaScript for step navigation and form submission
-  - [x] Responsive design with Tailwind CSS
+## Routes:
+- [x] Add routes for activity CRUD operations (adminbem only)
+- [x] Update dashboard route to fetch events from database
+- [x] Update home route to fetch events from database
 
-### 3. Routes Configuration
-- [x] Updated `routes/web.php`
-  - [x] GET `/tesminat` - Display form
-  - [x] POST `/tesminat/submit` - Process submission
+## View Updates:
+- [x] Add "Tambah Kegiatan" button below calendar in dashboard.blade.php
+- [x] Create input modal (Tailwind CSS) with fields: Jadwal, Waktu, Kegiatan, Tempat
+- [x] Create detail/view modal to show activity details
+- [x] Add JavaScript for modal functionality and AJAX operations
+- [x] Update calendar to display activities from database
+- [x] Make activities clickable to show details
+- [x] Add CSRF token to layout
 
-### 4. Database Seeder
-- [x] Created `database/seeders/SoalSeeder.php` with sample questions
-- [x] Updated `DatabaseSeeder.php` to call SoalSeeder
+## Testing:
+- [x] Run migration
+- [ ] Test add activity
+- [ ] Test view activity in calendar
+- [ ] Test edit activity
+- [ ] Test delete activity
+- [ ] Verify activities show in both admin and mahasiswa dashboard
 
-## 📋 Next Steps (Optional Enhancements)
-
-### Testing
-- [ ] Run `php artisan migrate:fresh --seed` to populate database
-- [ ] Test the form flow from biodata → questions → result
-- [ ] Verify recommendation algorithm works correctly
-
-### Enhancements (if needed)
-- [ ] Add more questions to the questionnaire
-- [ ] Implement smarter recommendation algorithm based on answer patterns
-- [ ] Save test results to database (tes_minat table)
-- [ ] Add validation messages in Indonesian
-- [ ] Add loading spinner during form submission
-- [ ] Add animation transitions between steps
-
-## 🚀 How to Use
-
-1. Run migrations and seeders:
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
-
-2. Access the form at: `http://localhost/tesminat`
-
-3. Fill in biodata → Answer questions → Get UKM recommendation
-
-## 📝 Notes
-
-- The form uses a simple random recommendation for now
-- All styling matches the provided design mockups
-- Form validation is implemented on both frontend and backend
-- CSRF protection is enabled for form submission
+## Summary:
+All implementation completed! Ready for testing.
+The feature includes:
+1. Database migration with tempat, waktu_mulai, waktu_selesai fields
+2. Full CRUD operations in controller
+3. Protected routes (adminbem only for management)
+4. Beautiful Tailwind CSS modals for input and detail view
+5. Interactive calendar with clickable events
+6. Events visible to all users (admin and mahasiswa)
+7. Only adminbem can add, edit, and delete activities
