@@ -29,7 +29,7 @@
             <!-- Session Status -->
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('login') }}" novalidate>
                 @csrf
 
                 <!-- Username -->
@@ -43,17 +43,18 @@
                            class="w-full border border-gray-400 rounded-md px-3 py-2 focus:ring-orange-400 focus:border-orange-400" />
                     <x-input-error :messages="$errors->get('username')" class="mt-2" />
                 </div>
-
+                
                 <!-- Password -->
                 <div class="mt-4">
                     <label class="block text-sm font-semibold mb-1">Password</label>
-
+                    
                     <div class="relative">
                         <input id="password"
-                               type="password"
-                               name="password"
-                               required
-                               class="w-full border border-gray-400 rounded-md px-3 py-2 focus:ring-orange-400 focus:border-orange-400" />
+                        type="password"
+                        name="password"
+                        required
+                        class="w-full border border-gray-400 rounded-md px-3 py-2 focus:ring-orange-400 focus:border-orange-400" />
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
 
                         <!-- Show/Hide Password -->
                         <span onclick="togglePassword()"
