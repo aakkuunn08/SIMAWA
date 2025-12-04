@@ -14,6 +14,10 @@ class TesMinat extends Model
 
     protected $fillable = [
         'user_id',
+        'nama_lengkap',
+        'nim',
+        'program_studi',
+        'angkatan',
         'id_jawaban',
         'id_soal',
         'hasil_rekomendasi',

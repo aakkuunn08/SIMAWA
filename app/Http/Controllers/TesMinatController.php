@@ -27,6 +27,54 @@ class TesMinatController extends Controller
     }
 
     /**
+     * Menampilkan halaman hasil tes minat untuk admin BEM
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
+    public function showResults(Request $request)
+    {
+        // Ambil query search jika ada
+        $search = $request->get('search', '');
+        
+        // Query tes minat dengan relasi user (untuk fallback data lama)
+        $query = TesMinat::with('user')->orderBy('created_at', 'desc');
+        
+        // Filter berdasarkan search (nama atau NIM)
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                // Search di kolom baru
+                $q->where('nama_lengkap', 'LIKE', "%{$search}%")
+                  ->orWhere('nim', 'LIKE', "%{$search}%")
+                  // Search di relasi user (untuk data lama)
+                  ->orWhereHas('user', function($subQ) use ($search) {
+                      $subQ->where('name', 'LIKE', "%{$search}%")
+                           ->orWhere('username', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
+        
+        $tesMinats = $query->get();
+        
+        return view('tesminatbem', compact('tesMinats', 'search'));
+    }
+
+    /**
+     * Menghapus hasil tes minat
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete($id)
+    {
+        $tesMinat = TesMinat::findOrFail($id);
+        $tesMinat->delete();
+        
+        return redirect()->route('tesminatbem.results')
+            ->with('success', 'Hasil tes minat berhasil dihapus');
+    }
+
+    /**
      * Memproses submit form tes minat dan memberikan rekomendasi UKM
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -34,7 +82,7 @@ class TesMinatController extends Controller
      */
     public function submit(Request $request)
     {
-        // Validasi input biodata mahasiswa
+        // tomValidasi input biodata mahasiswa
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'nim' => 'required|numeric',
@@ -107,6 +155,10 @@ class TesMinatController extends Controller
         // Simpan hasil tes ke database (1 record untuk keseluruhan tes)
         TesMinat::create([
             'user_id' => auth()->id() ?? null, // Jika user login, simpan user_id
+            'nama_lengkap' => $validated['nama_lengkap'],
+            'nim' => $validated['nim'],
+            'program_studi' => $validated['program_studi'],
+            'angkatan' => $validated['angkatan'],
             'id_soal' => null, // Tidak perlu id_soal karena ini hasil keseluruhan
             'id_jawaban' => null,
             'hasil_rekomendasi' => $rekomendasi->nama . ' (Score: ' . round($topScore, 2) . ')',

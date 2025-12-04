@@ -58,8 +58,185 @@
                 <div class="font-semibold">Sabtu</div>
             </div>
             <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
+            
+            {{-- TOMBOL EDIT KEGIATAN (HANYA UNTUK ADMIN BEM) --}}
+            @auth
+                @if(auth()->user()->hasRole('adminbem'))
+                <div class="flex justify-end mt-6">
+                    <button onclick="openAddModal()" class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold text-sm shadow-lg transition duration-200">
+                        + Tambah Kegiatan
+                    </button>
+                </div>
+                @endif
+            @endauth
         </div>
     </section>
+
+    {{-- MODAL INPUT KEGIATAN --}}
+    @auth
+        @if(auth()->user()->hasRole('adminbem'))
+        <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                {{-- Header --}}
+                <div class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                    <h3 class="text-lg font-bold">Input Kegiatan</h3>
+                    <button onclick="closeAddModal()" class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
+                </div>
+                
+                {{-- Form --}}
+                <form id="kegiatanForm" class="p-6 space-y-4">
+                    @csrf
+                    <input type="hidden" id="kegiatan_id" name="kegiatan_id">
+                    
+                    {{-- Jadwal (Tanggal) --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold mb-1">Jadwal</label>
+                            <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                    </div>
+
+                    {{-- Waktu --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Waktu Mulai</label>
+                                <input type="time" id="waktu_mulai" name="waktu_mulai" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Waktu Selesai</label>
+                                <input type="time" id="waktu_selesai" name="waktu_selesai" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Kegiatan --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold mb-1">Kegiatan</label>
+                            <input type="text" id="nama_kegiatan" name="nama_kegiatan" required
+                                placeholder="Nama kegiatan"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                    </div>
+
+                    {{-- Tempat --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold mb-1">Tempat</label>
+                            <input type="text" id="tempat" name="tempat" required
+                                placeholder="Lokasi kegiatan"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                    </div>
+
+                    {{-- Buttons --}}
+                    <div class="flex justify-end gap-2 pt-4">
+                        <button type="button" onclick="closeAddModal()" 
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 font-semibold">
+                            Batal
+                        </button>
+                        <button type="submit" 
+                            class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 font-semibold">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- MODAL DETAIL KEGIATAN --}}
+        <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                {{-- Header --}}
+                <div class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                    <h3 id="detailTitle" class="text-lg font-bold">Detail Kegiatan</h3>
+                    <button onclick="closeDetailModal()" class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
+                </div>
+                
+                {{-- Content --}}
+                <div class="p-6 space-y-4">
+                    {{-- Jadwal --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p id="detailJadwal" class="text-sm"></p>
+                        </div>
+                    </div>
+
+                    {{-- Kegiatan --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p id="detailKegiatan" class="text-sm"></p>
+                        </div>
+                    </div>
+
+                    {{-- Tempat --}}
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p id="detailTempat" class="text-sm"></p>
+                        </div>
+                    </div>
+
+                    {{-- Buttons (Only for Admin) --}}
+                    <div class="flex justify-end gap-2 pt-4">
+                        <button type="button" onclick="closeDetailModal()" 
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 font-semibold">
+                            Tutup
+                        </button>
+                        <button type="button" onclick="editKegiatan()" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-semibold">
+                            Edit
+                        </button>
+                        <button type="button" onclick="deleteKegiatan()" 
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-semibold">
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+    @endauth
 
     {{-- BEM --}}
     <section id="bem" class="bg-white mt-6 px-10 pt-10 pb-8">
@@ -131,10 +308,27 @@
     {{-- TES MINAT --}}
     <section id="tes-minat" class="bg-white py-10 text-center">
         <h3 class="text-sm font-semibold mb-3 tracking-wide">TES MINAT</h3>
-        <a href="{{ url('tesminat') }}"
-            class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
-            Ayo Mulai Tes!
-        </a>
+        @auth
+            @if(auth()->user()->isAdminBem())
+                {{-- Untuk Admin BEM: Link ke halaman kelola tes minat --}}
+                <a href="{{ route('tesminatbem.results') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Kelola Tes Minat
+                </a>
+            @else
+                {{-- Untuk user biasa/mahasiswa: Link ke halaman isi tes minat --}}
+                <a href="{{ route('tesminat.index') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Ayo Mulai Tes!
+                </a>
+            @endif
+        @else
+            {{-- Untuk guest (belum login): Link ke halaman isi tes minat --}}
+            <a href="{{ route('tesminat.index') }}"
+                class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                Ayo Mulai Tes!
+            </a>
+        @endauth
     </section>
 @endsection
 
@@ -142,8 +336,179 @@
 <script>
     // Data Events
     const events = JSON.parse(`{!! json_encode($sevents ?? []) !!}`);
+    let currentEventId = null;
+    let isEditMode = false;
+
+    // Modal Functions
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+        document.getElementById('kegiatanForm').reset();
+        document.getElementById('kegiatan_id').value = '';
+        isEditMode = false;
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+        document.getElementById('kegiatanForm').reset();
+        isEditMode = false;
+    }
+
+    function openDetailModal(eventId) {
+        currentEventId = eventId;
+        
+        // Fetch event details
+        fetch(`/kegiatan/${eventId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('detailTitle').textContent = data.nama_kegiatan;
+                
+                // Format date
+                const date = new Date(data.tanggal_kegiatan);
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const dayName = days[date.getDay()];
+                const dateStr = `${dayName}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+                
+                // Format time
+                const waktuMulai = data.waktu_mulai ? data.waktu_mulai.substring(0, 5).replace(':', '.') : '';
+                const waktuSelesai = data.waktu_selesai ? data.waktu_selesai.substring(0, 5).replace(':', '.') : '';
+                const timeStr = waktuMulai && waktuSelesai ? `, ${waktuMulai} >> ${waktuSelesai}` : '';
+                
+                document.getElementById('detailJadwal').textContent = dateStr + timeStr;
+                document.getElementById('detailKegiatan').textContent = data.nama_kegiatan;
+                document.getElementById('detailTempat').textContent = data.tempat;
+                
+                document.getElementById('detailModal').classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal memuat detail kegiatan');
+            });
+    }
+
+    function closeDetailModal() {
+        document.getElementById('detailModal').classList.add('hidden');
+        currentEventId = null;
+    }
+
+    function editKegiatan() {
+        if (!currentEventId) return;
+        
+        // Fetch event details and populate form
+        fetch(`/kegiatan/${currentEventId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('kegiatan_id').value = data.id_kegiatan;
+                document.getElementById('tanggal_kegiatan').value = data.tanggal_kegiatan;
+                document.getElementById('waktu_mulai').value = data.waktu_mulai;
+                document.getElementById('waktu_selesai').value = data.waktu_selesai;
+                document.getElementById('nama_kegiatan').value = data.nama_kegiatan;
+                document.getElementById('tempat').value = data.tempat;
+                
+                isEditMode = true;
+                closeDetailModal();
+                openAddModal();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal memuat data kegiatan');
+            });
+    }
+
+    function deleteKegiatan() {
+        if (!currentEventId) return;
+        
+        if (!confirm('Apakah Anda yakin ingin menghapus kegiatan ini?')) return;
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        
+        fetch(`/kegiatan/${currentEventId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Kegiatan berhasil dihapus');
+                closeDetailModal();
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal menghapus kegiatan');
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Form Submit Handler
+        const kegiatanForm = document.getElementById('kegiatanForm');
+        if (kegiatanForm) {
+            kegiatanForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values directly from inputs
+                const nama_kegiatan = document.getElementById('nama_kegiatan').value;
+                const tanggal_kegiatan = document.getElementById('tanggal_kegiatan').value;
+                const tempat = document.getElementById('tempat').value;
+                const waktu_mulai = document.getElementById('waktu_mulai').value;
+                const waktu_selesai = document.getElementById('waktu_selesai').value;
+                const kegiatan_id = document.getElementById('kegiatan_id').value;
+                
+                // Create data object
+                const data = {
+                    nama_kegiatan: nama_kegiatan,
+                    tanggal_kegiatan: tanggal_kegiatan,
+                    tempat: tempat,
+                    waktu_mulai: waktu_mulai,
+                    waktu_selesai: waktu_selesai
+                };
+                
+                console.log('Sending data:', data);
+                
+                // Determine URL and method
+                let url = kegiatan_id ? `/kegiatan/${kegiatan_id}` : '/kegiatan';
+                let method = kegiatan_id ? 'PUT' : 'POST';
+                
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            console.error('Error response:', text);
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success data:', data);
+                    if (data.success) {
+                        alert(data.message);
+                        closeAddModal();
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    alert('Gagal menyimpan kegiatan: ' + error.message);
+                });
+            });
+        }
+
         // --- 1. LOGIKA KALENDER ---
         const grid = document.getElementById('calendarGrid');
         const monthLabel = document.getElementById('monthLabel');
@@ -168,11 +533,11 @@
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const cell = document.createElement('div');
-                cell.className = 'flex flex-col items-center justify-center h-16';
+                cell.className = 'flex flex-col items-center justify-start h-auto min-h-16 py-2';
 
                 const dateEl = document.createElement('div');
                 dateEl.textContent = d;
-                dateEl.className = 'text-sm';
+                dateEl.className = 'text-sm mb-1';
 
                 if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
                     dateEl.className += ' w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white';
@@ -181,10 +546,20 @@
 
                 const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 if (events[key]) {
-                    const ev = document.createElement('div');
-                    ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center';
-                    ev.textContent = Array.isArray(events[key]) ? events[key][0] : events[key];
-                    cell.appendChild(ev);
+                    const eventList = Array.isArray(events[key]) ? events[key] : [events[key]];
+                    eventList.forEach(event => {
+                        const ev = document.createElement('div');
+                        ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center cursor-pointer hover:underline px-1';
+                        
+                        if (typeof event === 'object') {
+                            ev.textContent = event.nama;
+                            ev.onclick = () => openDetailModal(event.id);
+                        } else {
+                            ev.textContent = event;
+                        }
+                        
+                        cell.appendChild(ev);
+                    });
                 }
                 grid.appendChild(cell);
             }

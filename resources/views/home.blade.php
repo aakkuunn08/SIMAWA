@@ -130,6 +130,55 @@
             Ayo Mulai Tes!
         </a>
     </section>
+
+    {{-- Modal Detail Kegiatan --}}
+    <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            {{-- Header --}}
+            <div class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                <h3 id="detailTitle" class="text-lg font-bold"></h3>
+                <button onclick="closeDetailModal()" class="text-white hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            {{-- Body --}}
+            <div class="p-6 space-y-4">
+                {{-- Jadwal --}}
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <div>
+                        <p id="detailJadwal" class="text-gray-800 font-medium"></p>
+                    </div>
+                </div>
+
+                {{-- Kegiatan --}}
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <div>
+                        <p id="detailKegiatan" class="text-gray-800"></p>
+                    </div>
+                </div>
+
+                {{-- Tempat --}}
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <div>
+                        <p id="detailTempat" class="text-gray-800"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -174,11 +223,14 @@
                 cell.appendChild(dateEl);
 
                 const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                if (events[key]) {
-                    const ev = document.createElement('div');
-                    ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center';
-                    ev.textContent = Array.isArray(events[key]) ? events[key][0] : events[key];
-                    cell.appendChild(ev);
+                if (events[key] && Array.isArray(events[key])) {
+                    events[key].forEach(event => {
+                        const ev = document.createElement('div');
+                        ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center cursor-pointer hover:underline';
+                        ev.textContent = event.nama;
+                        ev.onclick = () => showEventDetail(event);
+                        cell.appendChild(ev);
+                    });
                 }
                 grid.appendChild(cell);
             }
@@ -195,6 +247,35 @@
             renderCalendar(currentYear, currentMonth);
         });
         renderCalendar(currentYear, currentMonth);
+
+        // Show Event Detail Function
+        window.showEventDetail = function(event) {
+            const date = new Date(event.tanggal_kegiatan);
+            const hari = date.toLocaleDateString('id-ID', { weekday: 'long' });
+            const tanggal = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const waktu = event.waktu_mulai && event.waktu_selesai ? `${event.waktu_mulai} >> ${event.waktu_selesai}` : '';
+            
+            // Set modal content
+            document.getElementById('detailTitle').textContent = event.nama;
+            document.getElementById('detailJadwal').textContent = `${hari}, ${tanggal}${waktu ? ', ' + waktu : ''}`;
+            document.getElementById('detailKegiatan').textContent = event.nama;
+            document.getElementById('detailTempat').textContent = event.tempat || '-';
+            
+            // Show modal
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        // Close Detail Modal Function
+        window.closeDetailModal = function() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('detailModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetailModal();
+            }
+        });
 
         // --- 2. LOGIKA SCROLLSPY ---
         const links = Array.from(document.querySelectorAll('aside .nav-link'));
