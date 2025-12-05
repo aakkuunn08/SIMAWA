@@ -59,9 +59,9 @@
             </div>
             <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
             
-            {{-- TOMBOL EDIT KEGIATAN (HANYA UNTUK ADMIN BEM) --}}
+            {{-- TOMBOL EDIT KEGIATAN --}}
             @auth
-                @if(auth()->user()->hasRole('adminbem'))
+                @if(auth()->user()->hasRole('adminbem','adminukm'))
                 <div class="flex justify-end mt-6">
                     <button onclick="openAddModal()" class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold text-sm shadow-lg transition duration-200">
                         + Tambah Kegiatan
@@ -74,7 +74,7 @@
 
     {{-- MODAL INPUT KEGIATAN --}}
     @auth
-        @if(auth()->user()->hasRole('adminbem'))
+        @if(auth()->user()->hasRole('adminbem','adminukm'))
         <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
                 {{-- Header --}}
@@ -315,6 +315,8 @@
                     class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
                     Kelola Tes Minat
                 </a>
+            @elseif(auth()->user()->isAdminUkm())
+                {{--Admin UKM: Tidak ada akses ke tes minat--}}
             @else
                 {{-- Untuk user biasa/mahasiswa: Link ke halaman isi tes minat --}}
                 <a href="{{ route('tesminat.index') }}"

@@ -19,11 +19,15 @@
         // Jika URL: domain.com/ormawa/bem, maka segment(2) adalah 'bem'
         $currentSlug = request()->segment(2); 
 
-        // 4. Style Class (Sesuai request warna oranye sebelumnya)
+        // 4. Cek halaman Akun dan Panduan
+        $isAccountPage = Request::routeIs('adminbem.accounts*') || Request::routeIs('profile*');
+        $isPanduanPage = Request::is('panduan') || Request::is('panduan/*');
+
+        // 5. Style Class (Sesuai request warna oranye sebelumnya)
         $activeClass = 'border-l-4 border-orange-500 bg-orange-50 text-gray-900 font-medium'; 
         $inactiveClass = 'border-l-4 border-transparent hover:bg-gray-100 text-gray-600';
 
-        // 5. LOGIKA KUNCI:
+        // 6. LOGIKA KUNCI:
         // Menu BEM aktif JIKA halaman ormawa DAN slug-nya 'bem'
         $isBemActive = $isOrmawaPage && $currentSlug == 'bem';
 
@@ -67,10 +71,22 @@
     {{-- AREA KHUSUS LOGGED IN USER - DI BAWAH --}}
     @auth
         <div class="border-t border-gray-200 text-sm">
-            <a href="{{ url('/akun') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100 text-gray-700">
-                Akun
-            </a>
-            <a href="{{ url('/panduan') }}" class="nav-link no-highlight flex items-center px-6 py-2 hover:bg-gray-100 text-gray-700">
+            @if(auth()->user()->hasRole('adminbem'))
+                {{-- AdminBEM sees Account Management --}}
+                <a href="{{ route('adminbem.accounts.index') }}" 
+                   class="nav-link no-highlight flex items-center px-6 py-2 {{ $isAccountPage ? $activeClass : $inactiveClass }}">
+                    Akun
+                </a>
+            @else
+                {{-- Other users see Profile --}}
+                <a href="{{ route('profile.edit') }}" 
+                   class="nav-link no-highlight flex items-center px-6 py-2 {{ $isAccountPage ? $activeClass : $inactiveClass }}">
+                    Akun
+                </a>
+            @endif
+            
+            <a href="{{ url('/panduan') }}" 
+               class="nav-link no-highlight flex items-center px-6 py-2 {{ $isPanduanPage ? $activeClass : $inactiveClass }}">
                 Panduan
             </a>
 

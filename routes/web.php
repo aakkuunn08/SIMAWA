@@ -96,8 +96,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 // Route yang HANYA bisa diakses oleh AdminBEM (Super Admin)
 Route::middleware(['auth', 'adminbem'])->group(function () {
-    // User Management - hanya AdminBEM yang bisa mengelola user
-    // Route::resource('users', UserController::class);
+    // Account Management - hanya AdminBEM yang bisa mengelola akun
+    Route::get('/adminbem/accounts', [App\Http\Controllers\Admin\AccountController::class, 'index'])->name('adminbem.accounts.index');
+    Route::get('/adminbem/accounts/create', [App\Http\Controllers\Admin\AccountController::class, 'create'])->name('adminbem.accounts.create');
+    Route::post('/adminbem/accounts', [App\Http\Controllers\Admin\AccountController::class, 'store'])->name('adminbem.accounts.store');
+    Route::get('/adminbem/accounts/{id}/edit', [App\Http\Controllers\Admin\AccountController::class, 'edit'])->name('adminbem.accounts.edit');
+    Route::put('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'update'])->name('adminbem.accounts.update');
+    Route::delete('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'destroy'])->name('adminbem.accounts.destroy');
     
     // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
     Route::get('/tesminatbem', [TesMinatController::class, 'showResults'])->name('tesminatbem.results');
@@ -110,11 +115,7 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     Route::put('/kegiatan/{id}', [DaftarKegiatanController::class, 'update'])->name('kegiatan.update');
     Route::delete('/kegiatan/{id}', [DaftarKegiatanController::class, 'destroy'])->name('kegiatan.destroy');
     
-    // Placeholder untuk fitur super admin
-    Route::get('/adminbem/users', function () {
-        return 'User Management - Only AdminBEM can access this';
-    })->name('adminbem.users');
-    
+    // Placeholder untuk fitur super admin lainnya
     Route::get('/adminbem/settings', function () {
         return 'System Settings - Only AdminBEM can access this';
     })->name('adminbem.settings');
