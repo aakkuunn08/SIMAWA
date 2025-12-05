@@ -91,7 +91,7 @@ class User extends Authenticatable
      * 
      * @return bool
      */
-    public function isAdmin()
+    public function isAdminUkm()
     {
         // Check using Spatie first, fallback to legacy column
         return $this->hasRole('adminukm') || $this->role === 'adminukm';
