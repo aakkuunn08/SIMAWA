@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- SECTION HERO --}}
-    <section class="relative w-full min-h-[calc(110vh-4rem)] md:min-h-[calc(100vh-4rem)]">
+    <section class="relative w-full min-h-[500px] md:min-h-[600px]">
         <img src="/images/ith.jpg" class="absolute inset-0 w-full h-full object-cover" alt="ITH">
         <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
@@ -19,14 +19,14 @@
     </section>
 
     {{-- SEARCH + BULAN + KALENDER --}}
-    <div class="mt-10 flex flex-col items-center">
-        <div class="w-full max-w-4xl px-4 flex flex-col items-center">
+    <div class="mt-10 flex flex-col items-center px-4">
+        <div class="w-full max-w-4xl flex flex-col items-center">
             {{-- SEARCH --}}
-            <div class="relative mx-auto w-full max-w-xs">
+            <div class="modern-search relative mx-auto w-full max-w-md">
                 <input type="text" placeholder="Cari Kegiatan"
-                    class="px-4 py-2 w-full bg-gray-100 rounded-md border focus:outline-none focus:ring-2 focus:ring-orange-400">
-                <button class="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                    class="px-5 py-3 w-full text-gray-700 placeholder-gray-400">
+                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="m21 21-5.2-5.2m0 0A7 7 0 1 0 5 5a7 7 0 0 0 10.8 10.8Z" />
@@ -35,145 +35,174 @@
             </div>
 
             {{-- NAVIGASI BULAN --}}
-            <div class="flex items-center gap-4 justify-center mt-4 mb-4">
-                <button id="prevBtn" class="px-3 py-1 rounded hover:bg-gray-200 text-lg">&lsaquo;</button>
-                <span id="monthLabel" class="font-semibold text-orange-500 text-lg md:text-xl lg:text-2xl">
+            <div class="modern-calendar-nav flex items-center gap-4 justify-center mt-6 mb-6">
+                <button id="prevBtn" class="modern-calendar-btn text-gray-700 font-bold text-xl">&lsaquo;</button>
+                <span id="monthLabel" class="font-bold text-orange-500 text-xl md:text-2xl px-4">
                     {{ date('F, Y') }}
                 </span>
-                <button id="nextBtn" class="px-3 py-1 rounded hover:bg-gray-200 text-lg">&rsaquo;</button>
+                <button id="nextBtn" class="modern-calendar-btn text-gray-700 font-bold text-xl">&rsaquo;</button>
             </div>
         </div>
     </div>
 
     {{-- AREA KALENDER --}}
-    <section id="kalender" class="bg-gray-300 px-8 py-6 scroll-mt-16">
-        <div class="w-full max-w-2xl mx-auto">
-            <div class="grid grid-cols-7 gap-4 mb-4 text-sm text-center">
-                <div class="font-semibold">Minggu</div>
-                <div class="font-semibold">Senin</div>
-                <div class="font-semibold">Selasa</div>
-                <div class="font-semibold">Rabu</div>
-                <div class="font-semibold">Kamis</div>
-                <div class="font-semibold">Jumat</div>
-                <div class="font-semibold">Sabtu</div>
+    <section id="kalender" class="bg-gradient-to-br from-gray-50 to-gray-100 px-4 md:px-8 py-12 scroll-mt-16 min-h-screen flex items-center">
+        <div class="w-full max-w-4xl mx-auto">
+            <div class="modern-calendar-container">
+                <div class="grid grid-cols-7 gap-4 mb-6 text-center">
+                    <div class="modern-calendar-day">Minggu</div>
+                    <div class="modern-calendar-day">Senin</div>
+                    <div class="modern-calendar-day">Selasa</div>
+                    <div class="modern-calendar-day">Rabu</div>
+                    <div class="modern-calendar-day">Kamis</div>
+                    <div class="modern-calendar-day">Jumat</div>
+                    <div class="modern-calendar-day">Sabtu</div>
+                </div>
+                <div id="calendarGrid" class="grid grid-cols-7 gap-3 text-center text-sm"></div>
             </div>
-            <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
         </div>
     </section>
 
     {{-- BEM --}}
-    <section id="bem" class="bg-white mt-6 px-10 pt-10 pb-8">
-        <h2 class="text-center text-lg font-semibold mb-6">Badan Eksekutif Mahasiswa</h2>
-        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                <a href="{{ route('ormawa.show', 'bem') }}" title="BEM" aria-label="Badan Eksekutif Mahasiswa"
-                    class="w-full h-full flex items-center justify-center block hover:opacity-90">
-                    <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
-                </a>
-            </div>
-            <div class="flex-1">
-                <p class="max-w-3xl text-sm text-gray-700 leading-relaxed text-left">
-                    Badan Eksekutif Mahasiswa hadir sebagai penggerak utama dinamika kampus. Melalui nilai-nilai
-                    kepemimpinan, integritas, dan pelayanan, BEM berupaya memberikan ruang bagi mahasiswa untuk tumbuh,
-                    memimpin, dan berkontribusi secara nyata.
-                </p>
+    <section id="bem" class="bg-white px-4 md:px-10 py-12 min-h-screen flex items-center">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="modern-section-title text-center">Badan Eksekutif Mahasiswa</h2>
+            <div class="modern-bem-container">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <div class="modern-bem-logo w-36 h-36 flex items-center justify-center flex-shrink-0 p-4">
+                        <a href="{{ route('ormawa.show', 'bem') }}" title="BEM" aria-label="Badan Eksekutif Mahasiswa"
+                            class="w-full h-full flex items-center justify-center">
+                            <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
+                        </a>
+                    </div>
+                    <div class="flex-1">
+                        <p class="modern-bem-description max-w-3xl text-center md:text-left">
+                            Badan Eksekutif Mahasiswa hadir sebagai penggerak utama dinamika kampus. Melalui nilai-nilai
+                            kepemimpinan, integritas, dan pelayanan, BEM berupaya memberikan ruang bagi mahasiswa untuk tumbuh,
+                            memimpin, dan berkontribusi secara nyata.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     {{-- NEWS --}}
-    <section id="news" class="bg-white px-10 pt-8 pb-10">
-        <h2 class="text-center text-lg font-semibold mb-6 uppercase">NEWS</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-            <article class="flex flex-col">
-                <img src="https://via.placeholder.com/350x180?text=News+1" class="rounded-lg mb-2 object-cover w-full h-40" alt="">
-                <p class="font-semibold mb-1">Mitraindonesia, Parepare – Habibie Robotic Competition (HRC) 2025...</p>
-                <p class="text-gray-700">Kegiatan tahunan Unit Kegiatan Mahasiswa yang mengasah kemampuan robotika mahasiswa.</p>
-            </article>
-            <article class="flex flex-col">
-                <img src="https://via.placeholder.com/350x180?text=News+2" class="rounded-lg mb-2 object-cover w-full h-40" alt="">
-                <p class="font-semibold mb-1">Parepare, 29/05/2025 – ITH Futsal Cup resmi bergulir...</p>
-                <p class="text-gray-700">Turnamen futsal antar program studi dengan upacara pembukaan yang meriah.</p>
-            </article>
-            <article class="flex flex-col">
-                <img src="https://via.placeholder.com/350x180?text=News+3" class="rounded-lg mb-2 object-cover w-full h-40" alt="">
-                <p class="font-semibold mb-1">ITH Sukses Laksanakan Festival Seni...</p>
-                <p class="text-gray-700">Festival seni yang menghadirkan berbagai penampilan mahasiswa dan kolaborasi dengan Pemkot.</p>
-            </article>
+    <section id="news" class="bg-gradient-to-br from-gray-50 to-white px-4 md:px-10 py-12 min-h-screen flex items-center">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="modern-section-title text-center uppercase">News</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <article class="modern-news-card">
+                    <img src="https://via.placeholder.com/350x180?text=News+1" class="modern-news-image" alt="News 1">
+                    <div class="modern-news-content">
+                        <p class="modern-news-title">Mitraindonesia, Parepare – Habibie Robotic Competition (HRC) 2025...</p>
+                        <p class="modern-news-description">Kegiatan tahunan Unit Kegiatan Mahasiswa yang mengasah kemampuan robotika mahasiswa.</p>
+                    </div>
+                </article>
+                <article class="modern-news-card">
+                    <img src="https://via.placeholder.com/350x180?text=News+2" class="modern-news-image" alt="News 2">
+                    <div class="modern-news-content">
+                        <p class="modern-news-title">Parepare, 29/05/2025 – ITH Futsal Cup resmi bergulir...</p>
+                        <p class="modern-news-description">Turnamen futsal antar program studi dengan upacara pembukaan yang meriah.</p>
+                    </div>
+                </article>
+                <article class="modern-news-card">
+                    <img src="https://via.placeholder.com/350x180?text=News+3" class="modern-news-image" alt="News 3">
+                    <div class="modern-news-content">
+                        <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
+                        <p class="modern-news-description">Festival seni yang menghadirkan berbagai penampilan mahasiswa dan kolaborasi dengan Pemkot.</p>
+                    </div>
+                </article>
+            </div>
         </div>
     </section>
 
     {{-- DAFTAR UKM --}}
-    <section id="ukm" class="bg-[#edb59fc2] px-6 pt-8 pb-10 mt-2">
-        <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM/SC</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
-            @foreach ($ormawas->where('tipe', 'ukm') as $item)
-                <div class="flex flex-col items-center">
-                    <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
-                        <a href="{{ route('ormawa.show', $item->slug) }}" class="w-full h-full flex items-center justify-center">
-                            <img src="{{ asset($item->logo) }}" alt="{{ $item->nama }}" class="max-h-full max-w-full object-contain">
-                        </a>
+    <section id="ukm" class="bg-gradient-to-br from-orange-50 to-orange-100 px-4 md:px-10 py-12 min-h-screen flex items-center">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="modern-section-title text-center uppercase">Daftar UKM/SC</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                @foreach ($ormawas->where('tipe', 'ukm') as $item)
+                    <div class="modern-ukm-card">
+                        <div class="modern-ukm-logo-container">
+                            <a href="{{ route('ormawa.show', $item->slug) }}" class="w-full h-full flex items-center justify-center">
+                                <img src="{{ asset($item->logo) }}" alt="{{ $item->nama }}" class="max-h-full max-w-full object-contain">
+                            </a>
+                        </div>
+                        <div class="modern-ukm-name">
+                            {{ strtoupper($item->nama) }}
+                        </div>
                     </div>
-                    <span class="mt-3 text-center font-semibold text-xs">
-                        {{ strtoupper($item->nama) }}
-                    </span>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </section>
 
     {{-- TES MINAT --}}
-    <section id="tes-minat" class="bg-white py-10 text-center">
-        <h3 class="text-sm font-semibold mb-3 tracking-wide">TES MINAT</h3>
-        <a href="{{ url('tesminat') }}"
-            class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
-            Ayo Mulai Tes!
-        </a>
+    <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-4xl mx-auto px-4">
+            <div class="modern-tes-minat text-center">
+                <h3 class="modern-tes-minat-title">TES MINAT</h3>
+                <a href="{{ url('tesminat') }}"
+                    class="modern-btn modern-btn-primary inline-block">
+                    Ayo Mulai Tes!
+                </a>
+            </div>
+        </div>
     </section>
 
     {{-- Modal Detail Kegiatan --}}
-    <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <div id="detailModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modern-modal bg-white max-w-md w-full">
             {{-- Header --}}
-            <div class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
-                <h3 id="detailTitle" class="text-lg font-bold"></h3>
-                <button onclick="closeDetailModal()" class="text-white hover:text-gray-200">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="modern-modal-header flex justify-between items-center">
+                <h3 id="detailTitle" class="modern-modal-title"></h3>
+                <button onclick="closeDetailModal()" class="modern-modal-close">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             
             {{-- Body --}}
-            <div class="p-6 space-y-4">
+            <div class="modern-modal-body space-y-5">
                 {{-- Jadwal --}}
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <div>
-                        <p id="detailJadwal" class="text-gray-800 font-medium"></p>
+                <div class="flex items-start gap-4">
+                    <div class="modern-form-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-semibold text-gray-500 mb-1">Jadwal</p>
+                        <p id="detailJadwal" class="text-sm text-gray-800 font-medium"></p>
                     </div>
                 </div>
 
                 {{-- Kegiatan --}}
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <div>
-                        <p id="detailKegiatan" class="text-gray-800"></p>
+                <div class="flex items-start gap-4">
+                    <div class="modern-form-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-semibold text-gray-500 mb-1">Kegiatan</p>
+                        <p id="detailKegiatan" class="text-sm text-gray-800"></p>
                     </div>
                 </div>
 
                 {{-- Tempat --}}
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <div>
-                        <p id="detailTempat" class="text-gray-800"></p>
+                <div class="flex items-start gap-4">
+                    <div class="modern-form-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-semibold text-gray-500 mb-1">Tempat</p>
+                        <p id="detailTempat" class="text-sm text-gray-800"></p>
                     </div>
                 </div>
             </div>
@@ -211,14 +240,14 @@
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const cell = document.createElement('div');
-                cell.className = 'flex flex-col items-center justify-center h-16';
+                cell.className = 'modern-calendar-cell flex flex-col items-center justify-start';
                 
                 const dateEl = document.createElement('div');
                 dateEl.textContent = d;
-                dateEl.className = 'text-sm';
+                dateEl.className = 'modern-calendar-date text-sm mb-2';
                 
                 if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
-                    dateEl.className += ' w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white';
+                    dateEl.className = 'modern-calendar-today mb-2';
                 }
                 cell.appendChild(dateEl);
 
@@ -226,7 +255,7 @@
                 if (events[key] && Array.isArray(events[key])) {
                     events[key].forEach(event => {
                         const ev = document.createElement('div');
-                        ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center cursor-pointer hover:underline';
+                        ev.className = 'modern-calendar-event w-full';
                         ev.textContent = event.nama;
                         ev.onclick = () => showEventDetail(event);
                         cell.appendChild(ev);
