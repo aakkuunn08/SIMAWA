@@ -16,7 +16,11 @@
         @guest
             Selamat Datang di SIMAWA
         @else
-            Dashboard
+            @if(auth()->user()->hasRole('adminbem'))
+                Dashboard Admin BEM
+            @else
+                Dashboard Admin UKM
+            @endif 
         @endguest
     </div>
 
