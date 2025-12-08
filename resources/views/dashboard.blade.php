@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- SECTION HERO --}}
-    <section class="relative w-full min-h-[calc(110vh-4rem)] md:min-h-[calc(100vh-4rem)]">
+    <section class="relative w-full min-h-[500px] md:min-h-[600px]">
         <img src="/images/ith.jpg" class="absolute inset-0 w-full h-full object-cover" alt="ITH">
         <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
@@ -46,7 +46,7 @@
     </div>
 
     {{-- AREA KALENDER --}}
-    <section id="kalender" class="bg-gradient-to-br from-gray-50 to-gray-100 px-4 md:px-8 py-12 scroll-mt-16">
+    <section id="kalender" class="bg-gradient-to-br from-gray-50 to-gray-100 px-4 md:px-8 py-12 scroll-mt-16 min-h-screen flex items-center">
         <div class="w-full max-w-4xl mx-auto">
             <div class="modern-calendar-container">
                 <div class="grid grid-cols-7 gap-4 mb-6 text-center">
@@ -252,7 +252,7 @@
     @endauth
 
     {{-- BEM --}}
-    <section id="bem" class="bg-white px-4 md:px-10 py-12">
+    <section id="bem" class="bg-white px-4 md:px-10 py-12 min-h-screen flex items-center">
         <div class="max-w-6xl mx-auto">
             <h2 class="modern-section-title text-center">Badan Eksekutif Mahasiswa</h2>
             <div class="modern-bem-container">
@@ -274,7 +274,7 @@
     </section>
 
     {{-- NEWS --}}
-    <section id="news" class="bg-gradient-to-br from-gray-50 to-white px-4 md:px-10 py-12">
+    <section id="news" class="bg-gradient-to-br from-gray-50 to-white px-4 md:px-10 py-12 min-h-screen flex items-center">
         <div class="max-w-6xl mx-auto">
             <h2 class="modern-section-title text-center uppercase">News</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -314,7 +314,7 @@
     </section>
 
     {{-- DAFTAR UKM --}}
-    <section id="ukm" class="bg-gradient-to-br from-orange-50 to-orange-100 px-4 md:px-10 py-12">
+    <section id="ukm" class="bg-gradient-to-br from-orange-50 to-orange-100 px-4 md:px-10 py-12 min-h-screen flex items-center">
         <div class="max-w-6xl mx-auto">
             <h2 class="modern-section-title text-center uppercase">Daftar UKM/SC</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -333,8 +333,8 @@
     </section>
 
     {{-- TES MINAT --}}
-    <section id="tes-minat" class="bg-white py-12">
-        <div class="max-w-4xl mx-auto px-4">
+    <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-4xl mx-auto px-4">
             <div class="modern-tes-minat text-center">
                 <h3 class="modern-tes-minat-title">TES MINAT</h3>
                 @auth
