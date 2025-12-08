@@ -19,14 +19,14 @@
     </section>
 
     {{-- SEARCH + BULAN + KALENDER --}}
-    <div class="mt-10 flex flex-col items-center px-4">
-        <div class="w-full max-w-4xl flex flex-col items-center">
+    <div class="mt-10 flex flex-col items-center">
+        <div class="w-full max-w-4xl px-4 flex flex-col items-center">
             {{-- SEARCH --}}
-            <div class="modern-search relative mx-auto w-full max-w-md">
+            <div class="relative mx-auto w-full max-w-xs">
                 <input type="text" placeholder="Cari Kegiatan"
-                    class="px-5 py-3 w-full text-gray-700 placeholder-gray-400">
-                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    class="px-4 py-2 w-full bg-gray-100 rounded-md border focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <button class="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="m21 21-5.2-5.2m0 0A7 7 0 1 0 5 5a7 7 0 0 0 10.8 10.8Z" />
@@ -35,139 +35,133 @@
             </div>
 
             {{-- NAVIGASI BULAN --}}
-            <div class="modern-calendar-nav flex items-center gap-4 justify-center mt-6 mb-6">
-                <button id="prevBtn" class="modern-calendar-btn text-gray-700 font-bold text-xl">&lsaquo;</button>
-                <span id="monthLabel" class="font-bold text-orange-500 text-xl md:text-2xl px-4">
+            <div class="flex items-center gap-4 justify-center mt-4 mb-4">
+                <button id="prevBtn" class="px-3 py-1 rounded hover:bg-gray-200 text-lg">&lsaquo;</button>
+                <span id="monthLabel" class="font-semibold text-orange-500 text-lg md:text-xl lg:text-2xl">
                     {{ date('F, Y') }}
                 </span>
-                <button id="nextBtn" class="modern-calendar-btn text-gray-700 font-bold text-xl">&rsaquo;</button>
+                <button id="nextBtn" class="px-3 py-1 rounded hover:bg-gray-200 text-lg">&rsaquo;</button>
             </div>
         </div>
     </div>
 
     {{-- AREA KALENDER --}}
-    <section id="kalender" class="bg-gradient-to-br from-gray-50 to-gray-100 px-4 md:px-8 py-12 scroll-mt-16">
-        <div class="w-full max-w-4xl mx-auto">
-            <div class="modern-calendar-container">
-                <div class="grid grid-cols-7 gap-4 mb-6 text-center">
-                    <div class="modern-calendar-day">Minggu</div>
-                    <div class="modern-calendar-day">Senin</div>
-                    <div class="modern-calendar-day">Selasa</div>
-                    <div class="modern-calendar-day">Rabu</div>
-                    <div class="modern-calendar-day">Kamis</div>
-                    <div class="modern-calendar-day">Jumat</div>
-                    <div class="modern-calendar-day">Sabtu</div>
-                </div>
-                <div id="calendarGrid" class="grid grid-cols-7 gap-3 text-center text-sm"></div>
-                
-                {{-- TOMBOL EDIT KEGIATAN --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem','adminukm'))
-                    <div class="flex justify-end mt-8">
-                        <button onclick="openAddModal()" class="modern-btn modern-btn-primary">
-                            + Tambah Kegiatan
-                        </button>
-                    </div>
-                    @endif
-                @endauth
+    <section id="kalender" class="bg-gray-300 px-8 py-6 scroll-mt-16">
+        <div class="w-full max-w-2xl mx-auto">
+            <div class="grid grid-cols-7 gap-4 mb-4 text-sm text-center">
+                <div class="font-semibold">Minggu</div>
+                <div class="font-semibold">Senin</div>
+                <div class="font-semibold">Selasa</div>
+                <div class="font-semibold">Rabu</div>
+                <div class="font-semibold">Kamis</div>
+                <div class="font-semibold">Jumat</div>
+                <div class="font-semibold">Sabtu</div>
             </div>
+            <div id="calendarGrid" class="grid grid-cols-7 gap-y-6 gap-x-4 text-center text-sm"></div>
+            
+            {{-- TOMBOL EDIT KEGIATAN --}}
+            @auth
+                @if(auth()->user()->hasRole('adminbem','adminukm'))
+                <div class="flex justify-end mt-6">
+                    <button onclick="openAddModal()" class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold text-sm shadow-lg transition duration-200">
+                        + Tambah Kegiatan
+                    </button>
+                </div>
+                @endif
+            @endauth
         </div>
     </section>
 
     {{-- MODAL INPUT KEGIATAN --}}
     @auth
         @if(auth()->user()->hasRole('adminbem','adminukm'))
-        <div id="addModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div class="modern-modal bg-white max-w-md w-full">
+        <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
                 {{-- Header --}}
-                <div class="modern-modal-header flex justify-between items-center">
-                    <h3 class="modern-modal-title">Input Kegiatan</h3>
-                    <button onclick="closeAddModal()" class="modern-modal-close">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                <div class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                    <h3 class="text-lg font-bold">Input Kegiatan</h3>
+                    <button onclick="closeAddModal()" class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
                 </div>
                 
                 {{-- Form --}}
-                <form id="kegiatanForm" class="modern-modal-body space-y-5">
+                <form id="kegiatanForm" class="p-6 space-y-4">
                     @csrf
                     <input type="hidden" id="kegiatan_id" name="kegiatan_id">
                     
                     {{-- Jadwal (Tanggal) --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <label class="modern-label">Jadwal</label>
+                            <label class="block text-sm font-semibold mb-1">Jadwal</label>
                             <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan" required
-                                class="modern-input">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
                     </div>
 
                     {{-- Waktu --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
-                        <div class="flex-1 grid grid-cols-2 gap-3">
+                        <div class="flex-1 grid grid-cols-2 gap-2">
                             <div>
-                                <label class="modern-label text-xs">Waktu Mulai</label>
+                                <label class="block text-xs font-semibold mb-1">Waktu Mulai</label>
                                 <input type="time" id="waktu_mulai" name="waktu_mulai" required
-                                    class="modern-input">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
                             </div>
                             <div>
-                                <label class="modern-label text-xs">Waktu Selesai</label>
+                                <label class="block text-xs font-semibold mb-1">Waktu Selesai</label>
                                 <input type="time" id="waktu_selesai" name="waktu_selesai" required
-                                    class="modern-input">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
                             </div>
                         </div>
                     </div>
 
                     {{-- Kegiatan --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <label class="modern-label">Kegiatan</label>
+                            <label class="block text-sm font-semibold mb-1">Kegiatan</label>
                             <input type="text" id="nama_kegiatan" name="nama_kegiatan" required
                                 placeholder="Nama kegiatan"
-                                class="modern-input">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
                     </div>
 
                     {{-- Tempat --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <label class="modern-label">Tempat</label>
+                            <label class="block text-sm font-semibold mb-1">Tempat</label>
                             <input type="text" id="tempat" name="tempat" required
                                 placeholder="Lokasi kegiatan"
-                                class="modern-input">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
                     </div>
 
                     {{-- Buttons --}}
-                    <div class="flex justify-end gap-3 pt-4">
+                    <div class="flex justify-end gap-2 pt-4">
                         <button type="button" onclick="closeAddModal()" 
-                            class="modern-btn modern-btn-secondary">
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 font-semibold">
                             Batal
                         </button>
                         <button type="submit" 
-                            class="modern-btn modern-btn-primary">
+                            class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 font-semibold">
                             Simpan
                         </button>
                     </div>
@@ -176,72 +170,65 @@
         </div>
 
         {{-- MODAL DETAIL KEGIATAN --}}
-        <div id="detailModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div class="modern-modal bg-white max-w-md w-full">
+        <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
                 {{-- Header --}}
-                <div class="modern-modal-header flex justify-between items-center">
-                    <h3 id="detailTitle" class="modern-modal-title">Detail Kegiatan</h3>
-                    <button onclick="closeDetailModal()" class="modern-modal-close">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                <div class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                    <h3 id="detailTitle" class="text-lg font-bold">Detail Kegiatan</h3>
+                    <button onclick="closeDetailModal()" class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
                 </div>
                 
                 {{-- Content --}}
-                <div class="modern-modal-body space-y-5">
+                <div class="p-6 space-y-4">
                     {{-- Jadwal --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <p class="text-xs font-semibold text-gray-500 mb-1">Jadwal</p>
-                            <p id="detailJadwal" class="text-sm text-gray-800 font-medium"></p>
+                            <p id="detailJadwal" class="text-sm"></p>
                         </div>
                     </div>
 
                     {{-- Kegiatan --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <p class="text-xs font-semibold text-gray-500 mb-1">Kegiatan</p>
-                            <p id="detailKegiatan" class="text-sm text-gray-800"></p>
+                            <p id="detailKegiatan" class="text-sm"></p>
                         </div>
                     </div>
 
                     {{-- Tempat --}}
-                    <div class="flex items-start gap-4">
-                        <div class="modern-form-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <p class="text-xs font-semibold text-gray-500 mb-1">Tempat</p>
-                            <p id="detailTempat" class="text-sm text-gray-800"></p>
+                            <p id="detailTempat" class="text-sm"></p>
                         </div>
                     </div>
 
                     {{-- Buttons (Only for Admin) --}}
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <div class="flex justify-end gap-2 pt-4">
                         <button type="button" onclick="closeDetailModal()" 
-                            class="modern-btn modern-btn-secondary">
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 font-semibold">
                             Tutup
                         </button>
                         <button type="button" onclick="editKegiatan()" 
-                            class="modern-btn modern-btn-success">
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-semibold">
                             Edit
                         </button>
                         <button type="button" onclick="deleteKegiatan()" 
-                            class="modern-btn modern-btn-danger">
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-semibold">
                             Hapus
                         </button>
                     </div>
@@ -252,116 +239,98 @@
     @endauth
 
     {{-- BEM --}}
-    <section id="bem" class="bg-white px-4 md:px-10 py-12">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="modern-section-title text-center">Badan Eksekutif Mahasiswa</h2>
-            <div class="modern-bem-container">
-                <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
-                    <div class="modern-bem-logo w-36 h-36 flex items-center justify-center flex-shrink-0 p-4">
-                        <a href="{{ route('ormawa.show', 'bem') }}" title="BEM"
-                            class="w-full h-full items-center justify-center block">
-                            <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
-                        </a>
-                    </div>
-                    <div class="flex-1">
-                        <p class="modern-bem-description max-w-3xl text-center md:text-left">
-                            Badan Eksekutif Mahasiswa hadir sebagai penggerak utama dinamika kampus...
-                        </p>
-                    </div>
-                </div>
+    <section id="bem" class="bg-white mt-6 px-10 pt-10 pb-8">
+        <h2 class="text-center text-lg font-semibold mb-6">Badan Eksekutif Mahasiswa</h2>
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <div class="w-32 h-32 rounded-xl border-4 border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+                <a href="{{ route('ormawa.show', 'bem') }}" title="BEM"
+                    class="w-full h-full items-center justify-center block hover:opacity-90">
+                    <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
+                </a>
+            </div>
+            <div class="flex-1">
+                <p class="max-w-3xl text-sm text-gray-700 leading-relaxed text-left">
+                    Badan Eksekutif Mahasiswa hadir sebagai penggerak utama dinamika kampus...
+                </p>
             </div>
         </div>
     </section>
 
     {{-- NEWS --}}
-    <section id="news" class="bg-gradient-to-br from-gray-50 to-white px-4 md:px-10 py-12">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="modern-section-title text-center uppercase">News</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {{-- Contoh Berita --}}
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+1" class="modern-news-image" alt="News 1">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">Mitraindonesia, Parepare – Habibie Robotic Competition (HRC) 2025...</p>
-                        <p class="modern-news-description">Kegiatan tahunan Unit Kegiatan Mahasiswa...</p>
-                    </div>
-                </article>
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+2" class="modern-news-image" alt="News 2">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">Parepare, 29/05/2025 – ITH Futsal Cup resmi bergulir...</p>
-                        <p class="modern-news-description">Turnamen futsal antar program studi...</p>
-                    </div>
-                </article>
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+3" class="modern-news-image" alt="News 3">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
-                        <p class="modern-news-description">Festival seni yang menghadirkan berbagai penampilan mahasiswa...</p>
-                    </div>
-                </article>
-            </div>
-
-            {{-- FITUR KHUSUS ADMIN: TOMBOL EDIT --}}
-            @role('adminbem|adminukm')
-            <div class="flex justify-end mt-6">
-                <button class="modern-btn modern-btn-primary">
-                    Edit Berita
-                </button>
-            </div>
-            @endrole
+    <section id="news" class="bg-white px-10 pt-8 pb-10">
+        <h2 class="text-center text-lg font-semibold mb-6 uppercase">NEWS</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+            {{-- Contoh Berita --}}
+            <article class="flex flex-col">
+                <img src="https://via.placeholder.com/350x180?text=News+1" class="rounded-lg mb-2 object-cover w-full h-40" alt="">
+                <p class="font-semibold mb-1">Mitraindonesia, Parepare – Habibie Robotic Competition (HRC) 2025...</p>
+                <p class="text-gray-700">Kegiatan tahunan Unit Kegiatan Mahasiswa...</p>
+            </article>
+            <article class="flex flex-col">
+                <img src="https://via.placeholder.com/350x180?text=News+2" class="rounded-lg mb-2 object-cover w-full h-40" alt="">
+                <p class="font-semibold mb-1">Parepare, 29/05/2025 – ITH Futsal Cup resmi bergulir...</p>
+                <p class="text-gray-700">Turnamen futsal antar program studi...</p>
+            </article>
+            <article class="flex flex-col">
+                <img src="https://via.placeholder.com/350x180?text=News+3" class="rounded-lg mb-2 object-cover w-full h-40" alt="">
+                <p class="font-semibold mb-1">ITH Sukses Laksanakan Festival Seni...</p>
+                <p class="text-gray-700">Festival seni yang menghadirkan berbagai penampilan mahasiswa...</p>
+            </article>
         </div>
+
+        {{-- FITUR KHUSUS ADMIN: TOMBOL EDIT --}}
+        @role('adminbem|adminukm')
+        <div class="flex justify-end mt-4">
+            <button class="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 text-sm font-semibold">
+                Edit Berita
+            </button>
+        </div>
+        @endrole
     </section>
 
     {{-- DAFTAR UKM --}}
-    <section id="ukm" class="bg-gradient-to-br from-orange-50 to-orange-100 px-4 md:px-10 py-12">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="modern-section-title text-center uppercase">Daftar UKM/SC</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                @foreach ($ormawas->where('tipe', 'ukm') as $item)
-                    <div class="modern-ukm-card">
-                        <div class="modern-ukm-logo-container">
-                            <a href="{{ route('ormawa.show', $item->slug) }}" class="w-full h-full flex items-center justify-center">
-                                <img src="{{ asset($item->logo) }}" alt="{{ $item->nama }}" class="max-h-full max-w-full object-contain">
-                            </a>
-                        </div>
-                        <div class="modern-ukm-name">{{ strtoupper($item->nama) }}</div>
+    <section id="ukm" class="bg-[#edb59fc2] px-6 pt-8 pb-10 mt-2">
+        <h2 class="text-center text-lg font-semibold mb-6 uppercase">DAFTAR UKM/SC</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start">
+            @foreach ($ormawas->where('tipe', 'ukm') as $item)
+                <div class="flex flex-col items-center">
+                    <div class="bg-white rounded-xl border border-gray-800 w-full h-40 flex items-center justify-center overflow-hidden">
+                        <a href="{{ route('ormawa.show', $item->slug) }}" class="w-full h-full flex items-center justify-center">
+                            <img src="{{ asset($item->logo) }}" alt="{{ $item->nama }}" class="max-h-full max-w-full object-contain">
+                        </a>
                     </div>
-                @endforeach
-            </div>
+                    <span class="mt-3 text-center font-semibold text-xs">{{ strtoupper($item->nama) }}</span>
+                </div>
+            @endforeach
         </div>
     </section>
 
     {{-- TES MINAT --}}
-    <section id="tes-minat" class="bg-white py-12">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="modern-tes-minat text-center">
-                <h3 class="modern-tes-minat-title">TES MINAT</h3>
-                @auth
-                    @if(auth()->user()->isAdminBem())
-                        {{-- Untuk Admin BEM: Link ke halaman kelola tes minat --}}
-                        <a href="{{ route('tesminatbem.results') }}"
-                            class="modern-btn modern-btn-primary inline-block">
-                            Kelola Tes Minat
-                        </a>
-                    @elseif(auth()->user()->isAdminUkm())
-                        {{--Admin UKM: Tidak ada akses ke tes minat--}}
-                    @else
-                        {{-- Untuk user biasa/mahasiswa: Link ke halaman isi tes minat --}}
-                        <a href="{{ route('tesminat.index') }}"
-                            class="modern-btn modern-btn-primary inline-block">
-                            Ayo Mulai Tes!
-                        </a>
-                    @endif
-                @else
-                    {{-- Untuk guest (belum login): Link ke halaman isi tes minat --}}
-                    <a href="{{ route('tesminat.index') }}"
-                        class="modern-btn modern-btn-primary inline-block">
-                        Ayo Mulai Tes!
-                    </a>
-                @endauth
-            </div>
-        </div>
+    <section id="tes-minat" class="bg-white py-10 text-center">
+        <h3 class="text-sm font-semibold mb-3 tracking-wide">TES MINAT</h3>
+        @auth
+            @if(auth()->user()->isAdminBem())
+                {{-- Untuk Admin BEM: Link ke halaman kelola tes minat --}}
+                <a href="{{ route('tesminatbem.results') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Kelola Tes Minat
+                </a>
+            @elseif(auth()->user()->isAdminUkm())
+                {{--Admin UKM: Tidak ada akses ke tes minat--}}
+            @else
+                {{-- Untuk user biasa/mahasiswa: Link ke halaman isi tes minat --}}
+                <a href="{{ route('tesminat.index') }}"
+                    class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                    Ayo Mulai Tes!
+                </a>
+            @endif
+        @else
+            {{-- Untuk guest (belum login): Link ke halaman isi tes minat --}}
+            <a href="{{ route('tesminat.index') }}"
+                class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
+                Ayo Mulai Tes!
+            </a>
+        @endauth
     </section>
 @endsection
 
@@ -566,14 +535,14 @@
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const cell = document.createElement('div');
-                cell.className = 'modern-calendar-cell flex flex-col items-center justify-start';
+                cell.className = 'flex flex-col items-center justify-start h-auto min-h-16 py-2';
 
                 const dateEl = document.createElement('div');
                 dateEl.textContent = d;
-                dateEl.className = 'modern-calendar-date text-sm mb-2';
+                dateEl.className = 'text-sm mb-1';
 
                 if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
-                    dateEl.className = 'modern-calendar-today mb-2';
+                    dateEl.className += ' w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white';
                 }
                 cell.appendChild(dateEl);
 
@@ -582,7 +551,7 @@
                     const eventList = Array.isArray(events[key]) ? events[key] : [events[key]];
                     eventList.forEach(event => {
                         const ev = document.createElement('div');
-                        ev.className = 'modern-calendar-event w-full';
+                        ev.className = 'mt-1 text-[10px] leading-3 text-red-700 text-center cursor-pointer hover:underline px-1';
                         
                         if (typeof event === 'object') {
                             ev.textContent = event.nama;
