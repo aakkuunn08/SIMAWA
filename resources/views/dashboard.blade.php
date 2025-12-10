@@ -175,7 +175,37 @@
             </div>
         </div>
 
-        {{-- MODAL DETAIL KEGIATAN --}}
+    {{-- CUSTOM ALERT MODAL FOR KATALON --}}
+        <div id="customAlertModal" class="modern-modal-overlay hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-md w-full transform transition-all">
+                <div class="p-6">
+                    {{-- Icon Container --}}
+                    <div class="flex justify-center mb-4">
+                        <div id="alertIcon" class="w-16 h-16 rounded-full flex items-center justify-center">
+                            {{-- Icon will be inserted by JavaScript --}}
+                        </div>
+                    </div>
+                    
+                    {{-- Title --}}
+                    <h3 id="alertTitle" class="text-xl font-bold text-center mb-2 text-gray-800"></h3>
+                    
+                    {{-- Message --}}
+                    <p id="alertMessage" class="text-center text-gray-600 mb-6"></p>
+                    
+                    {{-- Buttons --}}
+                    <div id="alertButtons" class="flex justify-center gap-3">
+                        <button id="alertCancelBtn" class="hidden px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                            Batal
+                        </button>
+                        <button id="alertOkBtn" class="px-6 py-2 rounded-lg font-semibold transition-colors">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {{-- MODAL DETAIL KEGIATAN --}}
         <div id="detailModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="modern-modal bg-white max-w-md w-full">
                 {{-- Header --}}
@@ -368,6 +398,64 @@
     let currentEventId = null;
     let isEditMode = false;
 
+    // Custom Alert Functions for Katalon
+    function showCustomAlert(message, type = 'success', callback = null) {
+        const modal = document.getElementById('customAlertModal');
+        const icon = document.getElementById('alertIcon');
+        const title = document.getElementById('alertTitle');
+        const messageEl = document.getElementById('alertMessage');
+        const okBtn = document.getElementById('alertOkBtn');
+        const cancelBtn = document.getElementById('alertCancelBtn');
+        
+        // Set message
+        messageEl.textContent = message;
+        
+        // Configure based on type
+        if (type === 'success') {
+            title.textContent = 'Berhasil';
+            icon.className = 'w-16 h-16 rounded-full flex items-center justify-center bg-green-100';
+            icon.innerHTML = '<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+            okBtn.className = 'px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors';
+            cancelBtn.classList.add('hidden');
+        } else if (type === 'error') {
+            title.textContent = 'Error';
+            icon.className = 'w-16 h-16 rounded-full flex items-center justify-center bg-red-100';
+            icon.innerHTML = '<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            okBtn.className = 'px-6 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors';
+            cancelBtn.classList.add('hidden');
+        } else if (type === 'confirm') {
+            title.textContent = 'Konfirmasi';
+            icon.className = 'w-16 h-16 rounded-full flex items-center justify-center bg-orange-100';
+            icon.innerHTML = '<svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+            okBtn.className = 'px-6 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-colors';
+            cancelBtn.classList.remove('hidden');
+        }
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        
+        // Handle OK button
+        okBtn.onclick = function() {
+            hideCustomAlert();
+            if (callback && type === 'confirm') {
+                callback(true);
+            }
+        };
+        
+        // Handle Cancel button
+        cancelBtn.onclick = function() {
+            hideCustomAlert();
+            if (callback && type === 'confirm') {
+                callback(false);
+            }
+        };
+    }
+    
+    function hideCustomAlert() {
+        const modal = document.getElementById('customAlertModal');
+        modal.classList.add('hidden');
+    }
+
     // Modal Functions
     function openAddModal() {
         document.getElementById('addModal').classList.remove('hidden');
@@ -411,7 +499,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Gagal memuat detail kegiatan');
+                showCustomAlert('Gagal memuat detail kegiatan', 'error');
             });
     }
 
@@ -440,36 +528,38 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Gagal memuat data kegiatan');
+                showCustomAlert('Gagal memuat data kegiatan', 'error');
             });
     }
 
     function deleteKegiatan() {
         if (!currentEventId) return;
         
-        if (!confirm('Apakah Anda yakin ingin menghapus kegiatan ini?')) return;
-        
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-        
-        fetch(`/kegiatan/${currentEventId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Kegiatan berhasil dihapus');
-                closeDetailModal();
-                location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Gagal menghapus kegiatan');
+        showCustomAlert('Apakah Anda yakin ingin menghapus kegiatan ini?', 'confirm', function(confirmed) {
+            if (!confirmed) return;
+            
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            
+            fetch(`/kegiatan/${currentEventId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showCustomAlert('Kegiatan berhasil dihapus', 'success');
+                    closeDetailModal();
+                    setTimeout(() => location.reload(), 1500);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showCustomAlert('Gagal menghapus kegiatan', 'error');
+            });
         });
     }
 
@@ -524,16 +614,16 @@
                 .then(data => {
                     console.log('Success data:', data);
                     if (data.success) {
-                        alert(data.message);
+                        showCustomAlert(data.message, 'success');
                         closeAddModal();
-                        location.reload();
+                        setTimeout(() => location.reload(), 1500);
                     } else {
-                        alert('Error: ' + (data.message || 'Unknown error'));
+                        showCustomAlert('Error: ' + (data.message || 'Unknown error'), 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Fetch error:', error);
-                    alert('Gagal menyimpan kegiatan: ' + error.message);
+                    showCustomAlert('Gagal menyimpan kegiatan: ' + error.message, 'error');
                 });
             });
         }
