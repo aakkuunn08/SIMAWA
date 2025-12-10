@@ -35,6 +35,11 @@ return [
 
     'expire_on_close' => false,
 
+    // Untuk keamanan multi device
+    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    'secure' => env('SESSION_SECURE_COOKIE', false),
+    'http_only' => true,
+
     /*
     |--------------------------------------------------------------------------
     | Session Encryption
