@@ -146,15 +146,11 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-4 text-center">
-                                    <form action="{{ route('tesminatbem.delete', $tes->id_tes) }}" method="POST" class="inline-block delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" onclick="openDeleteModal(this.form)" class="text-red-600 hover:text-red-800 transition" title="Hapus">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <button type="button" class="delete-btn text-red-600 hover:text-red-800 transition" title="Hapus" data-url="{{ route('tesminatbem.delete', $tes->id_tes) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
                                 </td>
                             </tr>
                             @empty
@@ -219,42 +215,62 @@
                     <button onclick="closeDeleteModal()" class="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium">
                         Batal
                     </button>
-                    <form id="deleteForm" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
-                            Hapus
-                        </button>
-                    </form>
+                    <button onclick="submitDelete()" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                        Hapus
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Hidden form for delete (outside modal) -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
     <script>
-        let deleteModal = document.getElementById('deleteModal');
-        let deleteFormModal = document.getElementById('deleteForm');
-        let currentForm = null;
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteForm = document.getElementById('deleteForm');
         
-        function openDeleteModal(form) {
-            currentForm = form;
-            // Copy action dari form asli ke form di modal
-            deleteFormModal.action = form.action;
-            deleteModal.classList.add('active');
+        // Get CSRF token from meta tag
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         }
+        
+        // Add click event to all delete buttons
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                
+                // Set form action
+                deleteForm.action = url;
+                
+                // Update CSRF token to ensure it's fresh
+                const csrfInput = deleteForm.querySelector('input[name="_token"]');
+                if (csrfInput) {
+                    csrfInput.value = getCsrfToken();
+                }
+                
+                // Show modal
+                deleteModal.classList.add('active');
+            });
+        });
         
         function closeDeleteModal() {
             deleteModal.classList.remove('active');
-            currentForm = null;
         }
         
-        // Submit form asli saat tombol Hapus di modal diklik
-        deleteFormModal.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (currentForm) {
-                currentForm.submit();
+        function submitDelete() {
+            // Double check CSRF token before submit
+            const csrfInput = deleteForm.querySelector('input[name="_token"]');
+            if (csrfInput) {
+                csrfInput.value = getCsrfToken();
             }
-        });
+            
+            // Submit form
+            deleteForm.submit();
+        }
         
         // Close modal when clicking outside
         deleteModal.addEventListener('click', function(e) {

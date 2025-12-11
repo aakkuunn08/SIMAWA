@@ -15,5 +15,7 @@ class VerifyCsrfToken extends Middleware
         'logout',
         'kegiatan',
         'kegiatan/*',
+        'tesminatbem/*',
+        'tesminat/submit',
     ];
 }

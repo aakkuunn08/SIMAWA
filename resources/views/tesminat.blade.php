@@ -106,9 +106,8 @@
                                    required
                                    pattern="[0-9]+"
                                    inputmode="numeric"
-                                   title="NIM harus berisi angka saja"
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                            <p id="nimError" class="text-red-500 text-xs mt-1 hidden"></p>
                         </div>
 
                         <div>
@@ -233,7 +232,108 @@
                 option.textContent = year;
                 angkatanSelect.appendChild(option);
             }
+
+            // Setup NIM validation
+            setupNIMValidation();
         });
+
+        /**
+         * Setup custom validation for NIM input field
+         * Ensures only numeric input and shows custom error messages in English
+         */
+        function setupNIMValidation() {
+            const nimInput = document.getElementById('nim');
+            const nimError = document.getElementById('nimError');
+
+            // Handle input event - only allow numbers
+            nimInput.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                const originalValue = this.value;
+                const numericValue = this.value.replace(/[^0-9]/g, '');
+                
+                // If non-numeric characters were entered, show error
+                if (originalValue !== numericValue) {
+                    this.value = numericValue;
+                    showNIMError('Please enter numbers only');
+                } else if (numericValue.length > 0) {
+                    // Valid numeric input
+                    clearNIMError();
+                    this.setCustomValidity('');
+                }
+            });
+
+            // Handle invalid event - show custom error message
+            nimInput.addEventListener('invalid', function(e) {
+                e.preventDefault();
+                
+                if (this.validity.valueMissing) {
+                    showNIMError('Please fill out this field');
+                    this.setCustomValidity('Please fill out this field');
+                } else if (this.validity.patternMismatch) {
+                    showNIMError('Please enter numbers only');
+                    this.setCustomValidity('Please enter numbers only');
+                } else {
+                    showNIMError('Please enter a valid NIM');
+                    this.setCustomValidity('Please enter a valid NIM');
+                }
+            });
+
+            // Clear error on focus
+            nimInput.addEventListener('focus', function() {
+                clearNIMError();
+            });
+
+            // Validate on blur
+            nimInput.addEventListener('blur', function() {
+                if (this.value.length > 0 && !this.value.match(/^[0-9]+$/)) {
+                    showNIMError('Please enter numbers only');
+                    this.setCustomValidity('Please enter numbers only');
+                } else if (this.value.length === 0) {
+                    clearNIMError();
+                    this.setCustomValidity('');
+                }
+            });
+
+            // Prevent paste of non-numeric content
+            nimInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                const numericText = pastedText.replace(/[^0-9]/g, '');
+                
+                if (numericText !== pastedText) {
+                    showNIMError('Please enter numbers only');
+                }
+                
+                this.value = numericText;
+                this.dispatchEvent(new Event('input'));
+            });
+        }
+
+        /**
+         * Show error message for NIM field
+         */
+        function showNIMError(message) {
+            const nimInput = document.getElementById('nim');
+            const nimError = document.getElementById('nimError');
+            
+            nimInput.classList.remove('border-gray-300', 'focus:ring-orange-500');
+            nimInput.classList.add('border-red-500', 'focus:ring-red-500');
+            nimError.textContent = message;
+            nimError.classList.remove('hidden');
+        }
+
+        /**
+         * Clear error message for NIM field
+         */
+        function clearNIMError() {
+            const nimInput = document.getElementById('nim');
+            const nimError = document.getElementById('nimError');
+            
+            nimInput.classList.remove('border-red-500', 'focus:ring-red-500');
+            nimInput.classList.add('border-gray-300', 'focus:ring-orange-500');
+            nimError.classList.add('hidden');
+            nimInput.setCustomValidity('');
+        }
 
         /**
          * Fungsi untuk pindah dari Step 1 (Biodata) ke Step 2 (Kuesioner)
@@ -241,6 +341,17 @@
          */
         function goToStep2() {
             const form = document.getElementById('biodataForm');
+            const nimInput = document.getElementById('nim');
+            
+            // Extra validation for NIM
+            if (nimInput.value && !nimInput.value.match(/^[0-9]+$/)) {
+                showNIMError('Please enter numbers only');
+                nimInput.setCustomValidity('Please enter numbers only');
+                nimInput.focus();
+                return;
+            } else {
+                clearNIMError();
+            }
             
             // Validasi form biodata
             if (!form.checkValidity()) {
