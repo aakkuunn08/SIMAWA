@@ -18,8 +18,8 @@ class AccountController extends Controller
      */
     public function index()
     {
-        // Get all users with their organizations (adminukm accounts)
-        $accounts = User::with('dataOrganisasi')
+        // Get all users with their ormawa information (adminukm accounts)
+        $accounts = User::with(['dataOrganisasi', 'ormawa'])
             ->where('role', 'adminukm')
             ->orWhereHas('roles', function($query) {
                 $query->where('name', 'adminukm');
@@ -69,8 +69,9 @@ class AccountController extends Controller
             $user->update(['profile_photo_path' => $path]);
         }
 
-        return redirect()->route('adminbem.accounts.index')
-            ->with('success', 'Akun berhasil dibuat!');
+        // Redirect to ormawa form to add organization information
+        return redirect()->route('adminbem.ormawa.create', $user->id)
+            ->with('success', 'Akun berhasil dibuat! Silakan tambahkan informasi organisasi.');
     }
 
     /**
@@ -132,6 +133,13 @@ class AccountController extends Controller
 
             $path = $request->file('profile_photo')->store('logos', 'public');
             $account->update(['profile_photo_path' => $path]);
+            
+            // Update logo in ormawa if exists
+            if ($account->ormawa) {
+                $account->ormawa->update([
+                    'logo' => 'storage/' . $path
+                ]);
+            }
         }
 
         return redirect()->route('adminbem.accounts.index')

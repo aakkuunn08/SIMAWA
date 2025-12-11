@@ -48,11 +48,15 @@
                 <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
                     {{-- Card Header with Logo --}}
                     <div class="p-6 flex flex-col items-center">
-                        <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-4 overflow-hidden">
+                        <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-4 overflow-hidden border-2 border-gray-200">
                             @if($account->profile_photo_path)
-                                <img src="{{ asset('storage/' . $account->profile_photo_path) }}" 
+                                <img src="{{ asset('storage/' . $account->profile_photo_path) }}"
                                      alt="{{ $account->name }}"
                                      class="w-full h-full object-cover">
+                            @elseif($account->ormawa && $account->ormawa->logo)
+                                <img src="{{ asset($account->ormawa->logo) }}"
+                                     alt="{{ $account->name }}"
+                                     class="w-full h-full object-contain p-2">
                             @else
                                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -63,27 +67,52 @@
                         <h3 class="text-lg font-semibold text-gray-900 text-center mb-1">{{ $account->name }}</h3>
                         <p class="text-sm text-gray-500 mb-4">{{ $account->username }}</p>
 
-                        {{-- Organization Info --}}
-                        @if($account->dataOrganisasi->count() > 0)
-                        <div class="w-full bg-gray-50 rounded-lg p-3 mb-4">
-                            <p class="text-xs text-gray-600 mb-1">Organisasi:</p>
-                            @foreach($account->dataOrganisasi as $org)
-                            <p class="text-sm font-medium text-gray-800">{{ $org->nama_organisasi }}</p>
-                            @endforeach
+                        {{-- Ormawa Info --}}
+                        @if($account->ormawa)
+                        <div class="w-full bg-green-50 rounded-lg p-3 mb-4 border border-green-200">
+                            <p class="text-xs text-green-600 mb-1">Informasi Ormawa:</p>
+                            <p class="text-sm font-medium text-gray-800">{{ $account->ormawa->nama }}</p>
+                            <p class="text-xs text-gray-500">{{ ucfirst($account->ormawa->tipe) }}</p>
+                        </div>
+                        @else
+                        <div class="w-full bg-yellow-50 rounded-lg p-3 mb-4 border border-yellow-200">
+                            <p class="text-xs text-yellow-700">⚠️ Belum ada informasi ormawa</p>
                         </div>
                         @endif
                     </div>
 
                     {{-- Card Actions --}}
-                    <div class="border-t border-gray-200 px-6 py-4 flex gap-2">
-                        <a href="{{ route('adminbem.accounts.edit', $account->id) }}" 
-                           class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded-lg font-medium transition-colors duration-200">
-                            Edit
+                    <div class="border-t border-gray-200 px-6 py-4">
+                        {{-- Ormawa Action Button --}}
+                        @if($account->ormawa)
+                        <a href="{{ route('adminbem.ormawa.edit', $account->ormawa->id) }}" 
+                           class="w-full bg-green-500 hover:bg-green-600 text-white text-center py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 mb-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit Informasi Ormawa
                         </a>
-                        <button onclick="confirmDelete({{ $account->id }}, '{{ $account->name }}')"
-                                class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition-colors duration-200">
-                            Hapus
-                        </button>
+                        @else
+                        <a href="{{ route('adminbem.ormawa.create', $account->id) }}" 
+                           class="w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 mb-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Tambah Informasi Ormawa
+                        </a>
+                        @endif
+                        
+                        {{-- Account Actions --}}
+                        <div class="flex gap-2">
+                            <a href="{{ route('adminbem.accounts.edit', $account->id) }}" 
+                               class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded-lg font-medium transition-colors duration-200">
+                                Edit Akun
+                            </a>
+                            <button onclick="confirmDelete({{ $account->id }}, '{{ $account->name }}')"
+                                    class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition-colors duration-200">
+                                Hapus
+                            </button>
+                        </div>
                     </div>
                 </div>
                 @endforeach

@@ -86,6 +86,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Relasi: 1 user punya 1 ormawa (untuk adminukm)
+     */
+    public function ormawa()
+    {
+        return $this->hasOne(Ormawa::class, 'user_id', 'id');
+    }
+
+    /**
      * Helper method: Cek apakah user adalah admin
      * Uses Spatie's hasRole() method with fallback to legacy role column
      * 

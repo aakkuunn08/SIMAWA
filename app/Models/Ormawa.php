@@ -14,10 +14,19 @@ class Ormawa extends Model
 
     // Field yang boleh diisi (fillable)
     protected $fillable = [
+        'user_id',
         'nama',
         'slug',
         'logo',
         'tipe',
         'deskripsi',
     ];
+
+    /**
+     * Relasi: 1 ormawa dimiliki oleh 1 user (adminukm)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

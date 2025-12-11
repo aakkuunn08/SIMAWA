@@ -104,6 +104,12 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     Route::put('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'update'])->name('adminbem.accounts.update');
     Route::delete('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'destroy'])->name('adminbem.accounts.destroy');
     
+    // Ormawa Management - hanya AdminBEM yang bisa mengelola informasi ormawa
+    Route::get('/adminbem/accounts/{userId}/ormawa/create', [OrmawaController::class, 'create'])->name('adminbem.ormawa.create');
+    Route::post('/adminbem/accounts/{userId}/ormawa', [OrmawaController::class, 'store'])->name('adminbem.ormawa.store');
+    Route::get('/adminbem/ormawa/{id}/edit', [OrmawaController::class, 'edit'])->name('adminbem.ormawa.edit');
+    Route::put('/adminbem/ormawa/{id}', [OrmawaController::class, 'update'])->name('adminbem.ormawa.update');
+    
     // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
     Route::get('/tesminatbem', [TesMinatController::class, 'showResults'])->name('tesminatbem.results');
     Route::delete('/tesminatbem/{id}', [TesMinatController::class, 'delete'])->name('tesminatbem.delete');
