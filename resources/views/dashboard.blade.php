@@ -262,15 +262,15 @@
 
                     {{-- Buttons (Only for Admin) --}}
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                        <button type="button" onclick="closeDetailModal()" 
+                        <button type="button" id="btnTutupDetail" onclick="closeDetailModal()" 
                             class="modern-btn modern-btn-secondary">
                             Tutup
                         </button>
-                        <button type="button" onclick="editKegiatan()" 
+                        <button type="button" id="btnEditKegiatan" onclick="editKegiatan()" 
                             class="modern-btn modern-btn-success">
                             Edit
                         </button>
-                        <button type="button" onclick="deleteKegiatan()" 
+                        <button type="button" id="btnHapusKegiatan" onclick="deleteKegiatan()" 
                             class="modern-btn modern-btn-danger">
                             Hapus
                         </button>

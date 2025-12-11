@@ -129,35 +129,54 @@ WebUI.verifyMatch(okBtnClass, '.*bg-orange-500.*', true)
 
 ## Test Object Definitions untuk Katalon
 
-### customAlertModal
+### Custom Alert Popup Elements
+
+#### customAlertModal
 - **Selector Type**: CSS
 - **Selector Value**: `#customAlertModal`
 - **Description**: Main popup modal container
 
-### alertTitle
+#### alertTitle
 - **Selector Type**: CSS
 - **Selector Value**: `#alertTitle`
 - **Description**: Popup title text
 
-### alertMessage
+#### alertMessage
 - **Selector Type**: CSS
 - **Selector Value**: `#alertMessage`
 - **Description**: Popup message text
 
-### alertOkBtn
+#### alertOkBtn
 - **Selector Type**: CSS
 - **Selector Value**: `#alertOkBtn`
 - **Description**: OK button
 
-### alertCancelBtn
+#### alertCancelBtn
 - **Selector Type**: CSS
 - **Selector Value**: `#alertCancelBtn`
 - **Description**: Cancel button (only visible in confirmation popup)
 
-### alertIcon
+#### alertIcon
 - **Selector Type**: CSS
 - **Selector Value**: `#alertIcon`
 - **Description**: Icon container
+
+### Modal Detail Kegiatan Elements
+
+#### btnTutupDetail
+- **Selector Type**: CSS
+- **Selector Value**: `#btnTutupDetail`
+- **Description**: Tombol Tutup di modal detail kegiatan
+
+#### btnEditKegiatan
+- **Selector Type**: CSS
+- **Selector Value**: `#btnEditKegiatan`
+- **Description**: Tombol Edit di modal detail kegiatan
+
+#### btnHapusKegiatan
+- **Selector Type**: CSS
+- **Selector Value**: `#btnHapusKegiatan`
+- **Description**: Tombol Hapus di modal detail kegiatan
 
 ## Contoh Test Case Lengkap
 
@@ -212,34 +231,104 @@ WebUI.click(findTestObject('Calendar/eventItem'))
 // 2. Wait for detail modal
 WebUI.waitForElementVisible(findTestObject('Modal/detailModal'), 5)
 
-// 3. Click tombol Hapus
-WebUI.click(findTestObject('Modal/btnHapus'))
+// 3. Verify tombol-tombol di modal detail terlihat
+WebUI.verifyElementVisible(findTestObject('Modal/btnTutupDetail'))
+WebUI.verifyElementVisible(findTestObject('Modal/btnEditKegiatan'))
+WebUI.verifyElementVisible(findTestObject('Modal/btnHapusKegiatan'))
 
-// 4. Verify confirmation popup appears
+// 4. Click tombol Hapus menggunakan ID
+WebUI.click(findTestObject('Modal/btnHapusKegiatan'))
+
+// 5. Verify confirmation popup appears
 WebUI.waitForElementVisible(findTestObject('Popup/customAlertModal'), 5)
 WebUI.verifyElementVisible(findTestObject('Popup/alertCancelBtn'))
 
-// 5. Verify popup type is confirmation (orange)
+// 6. Verify popup type is confirmation (orange)
 String okBtnClass = WebUI.getAttribute(findTestObject('Popup/alertOkBtn'), 'class')
 WebUI.verifyMatch(okBtnClass, '.*bg-orange-500.*', true)
 
-// 6. Read confirmation message
+// 7. Read confirmation message
 String message = WebUI.getText(findTestObject('Popup/alertMessage'))
 WebUI.verifyMatch(message, '.*yakin.*hapus.*', true)
 
-// 7. Click OK to confirm
+// 8. Click OK to confirm
 WebUI.click(findTestObject('Popup/alertOkBtn'))
 
-// 8. Verify success popup appears
+// 9. Verify success popup appears
 WebUI.waitForElementVisible(findTestObject('Popup/customAlertModal'), 5)
 String successMessage = WebUI.getText(findTestObject('Popup/alertMessage'))
 WebUI.verifyMatch(successMessage, '.*berhasil dihapus.*', true)
 
-// 9. Click OK
+// 10. Click OK
 WebUI.click(findTestObject('Popup/alertOkBtn'))
 
-// 10. Wait for page reload
+// 11. Wait for page reload
 WebUI.delay(2)
+```
+
+### Test Case: Edit Kegiatan dari Modal Detail
+
+```groovy
+// 1. Click kegiatan di kalender
+WebUI.click(findTestObject('Calendar/eventItem'))
+
+// 2. Wait for detail modal
+WebUI.waitForElementVisible(findTestObject('Modal/detailModal'), 5)
+
+// 3. Verify detail kegiatan ditampilkan
+WebUI.verifyElementVisible(findTestObject('Modal/detailTitle'))
+WebUI.verifyElementVisible(findTestObject('Modal/detailJadwal'))
+WebUI.verifyElementVisible(findTestObject('Modal/detailKegiatan'))
+WebUI.verifyElementVisible(findTestObject('Modal/detailTempat'))
+
+// 4. Click tombol Edit menggunakan ID
+WebUI.click(findTestObject('Modal/btnEditKegiatan'))
+
+// 5. Verify form edit muncul (modal add/edit)
+WebUI.waitForElementVisible(findTestObject('Modal/addModal'), 5)
+
+// 6. Verify form sudah terisi dengan data kegiatan
+WebUI.verifyElementPresent(findTestObject('Form/kegiatan_id'), 5)
+String kegiatanId = WebUI.getAttribute(findTestObject('Form/kegiatan_id'), 'value')
+WebUI.verifyNotEqual(kegiatanId, '')
+
+// 7. Edit data kegiatan
+WebUI.clearText(findTestObject('Form/nama_kegiatan'))
+WebUI.setText(findTestObject('Form/nama_kegiatan'), 'Kegiatan Updated')
+
+// 8. Submit form
+WebUI.click(findTestObject('Form/btnSimpan'))
+
+// 9. Verify success popup
+WebUI.waitForElementVisible(findTestObject('Popup/customAlertModal'), 10)
+String message = WebUI.getText(findTestObject('Popup/alertMessage'))
+WebUI.verifyMatch(message, '.*berhasil.*', true)
+
+// 10. Click OK
+WebUI.click(findTestObject('Popup/alertOkBtn'))
+
+// 11. Wait for page reload
+WebUI.delay(2)
+```
+
+### Test Case: Tutup Modal Detail Kegiatan
+
+```groovy
+// 1. Click kegiatan di kalender
+WebUI.click(findTestObject('Calendar/eventItem'))
+
+// 2. Wait for detail modal
+WebUI.waitForElementVisible(findTestObject('Modal/detailModal'), 5)
+
+// 3. Verify modal detail terlihat
+WebUI.verifyElementVisible(findTestObject('Modal/detailTitle'))
+
+// 4. Click tombol Tutup menggunakan ID
+WebUI.click(findTestObject('Modal/btnTutupDetail'))
+
+// 5. Verify modal detail tertutup
+WebUI.waitForElementNotVisible(findTestObject('Modal/detailModal'), 5)
+WebUI.verifyElementNotVisible(findTestObject('Modal/detailModal'))
 ```
 
 ## Keuntungan Custom Popup
