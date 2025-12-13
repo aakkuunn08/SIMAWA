@@ -62,10 +62,27 @@
         </a>
 
         {{-- Tes Minat --}}
-        <a href="{{ $isHome ? '#tes-minat' : url('/#tes-minat') }}" 
-           class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
-            Tes Minat
-        </a>
+        @auth
+            @if(auth()->user()->hasRole('adminbem'))
+                {{-- Admin BEM langsung ke menu kelola --}}
+                <a href="{{ route('tesminatbem.menu') }}" 
+                   class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminatbem*') ? $activeClass : $inactiveClass }}">
+                    Tes Minat
+                </a>
+            @else
+                {{-- User biasa ke halaman tes minat mahasiswa --}}
+                <a href="{{ route('tesminat.index') }}" 
+                   class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminat*') ? $activeClass : $inactiveClass }}">
+                    Tes Minat
+                </a>
+            @endif
+        @else
+            {{-- Guest ke halaman tes minat mahasiswa --}}
+            <a href="{{ route('tesminat.index') }}" 
+               class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminat*') ? $activeClass : $inactiveClass }}">
+                Tes Minat
+            </a>
+        @endauth
     </nav>
 
     {{-- AREA KHUSUS LOGGED IN USER - DI BAWAH --}}

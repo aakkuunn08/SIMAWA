@@ -75,6 +75,111 @@ class TesMinatController extends Controller
     }
 
     /**
+     * Menampilkan halaman menu kelola tes minat
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function showMenu()
+    {
+        return view('tesminat-menu');
+    }
+
+    /**
+     * Menampilkan halaman kelola pertanyaan
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function manageQuestions()
+    {
+        return view('kelola-pertanyaan');
+    }
+
+    /**
+     * Get questions data (API endpoint)
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getQuestionsData()
+    {
+        $questions = Soal::orderBy('id_soal', 'asc')->get();
+        
+        return response()->json([
+            'success' => true,
+            'questions' => $questions
+        ]);
+    }
+
+    /**
+     * Menyimpan pertanyaan baru
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function storeQuestion(Request $request)
+    {
+        $validated = $request->validate([
+            'pertanyaan' => 'required|string',
+            'skala_likert' => 'nullable|integer|min:1|max:10'
+        ]);
+
+        $soal = Soal::create([
+            'pertanyaan' => $validated['pertanyaan'],
+            'skala_likert' => $validated['skala_likert'] ?? 5
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pertanyaan berhasil ditambahkan',
+            'question' => $soal
+        ]);
+    }
+
+    /**
+     * Update pertanyaan
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateQuestion(Request $request, $id)
+    {
+        $soal = Soal::findOrFail($id);
+
+        $validated = $request->validate([
+            'pertanyaan' => 'required|string',
+            'skala_likert' => 'nullable|integer|min:1|max:10'
+        ]);
+
+        $soal->update([
+            'pertanyaan' => $validated['pertanyaan'],
+            'skala_likert' => $validated['skala_likert'] ?? $soal->skala_likert
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pertanyaan berhasil diperbarui',
+            'question' => $soal
+        ]);
+    }
+
+    /**
+     * Hapus pertanyaan
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteQuestion($id)
+    {
+        $soal = Soal::findOrFail($id);
+        $soal->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pertanyaan berhasil dihapus'
+        ]);
+    }
+
+    /**
      * Memproses submit form tes minat dan memberikan rekomendasi UKM
      * 
      * @param  \Illuminate\Http\Request  $request

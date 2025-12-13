@@ -138,18 +138,35 @@
         </div>
     </section>
 
-    {{-- TES MINAT --}}
-    <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-4xl mx-auto px-4">
-            <div class="modern-tes-minat text-center">
-                <h3 class="modern-tes-minat-title">TES MINAT</h3>
-                <a href="{{ url('tesminat') }}"
-                    class="modern-btn modern-btn-primary inline-block">
-                    Ayo Mulai Tes!
-                </a>
+    {{-- TES MINAT - Hanya tampil untuk non-admin BEM --}}
+    @auth
+        @if(!auth()->user()->hasRole('adminbem'))
+        <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center">
+            <div class="w-full max-w-4xl mx-auto px-4">
+                <div class="modern-tes-minat text-center">
+                    <h3 class="modern-tes-minat-title">TES MINAT</h3>
+                    <a href="{{ url('tesminat') }}"
+                        class="modern-btn modern-btn-primary inline-block">
+                        Ayo Mulai Tes!
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+        @endif
+    @else
+        {{-- Guest bisa lihat tes minat --}}
+        <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center">
+            <div class="w-full max-w-4xl mx-auto px-4">
+                <div class="modern-tes-minat text-center">
+                    <h3 class="modern-tes-minat-title">TES MINAT</h3>
+                    <a href="{{ url('tesminat') }}"
+                        class="modern-btn modern-btn-primary inline-block">
+                        Ayo Mulai Tes!
+                    </a>
+                </div>
+            </div>
+        </section>
+    @endauth
 
     {{-- Modal Detail Kegiatan --}}
     <div id="detailModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">

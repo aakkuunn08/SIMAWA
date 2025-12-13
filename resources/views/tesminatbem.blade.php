@@ -53,12 +53,12 @@
             
             <!-- Header dengan tombol kembali -->
             <div class="mb-6 flex items-center justify-between">
-                <a href="{{ route('dashboard') }}" 
+                <a href="{{ route('tesminatbem.menu') }}" 
                    class="flex items-center gap-2 text-gray-600 hover:text-orange-500 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                     </svg>
-                    <span class="text-sm font-medium">Kembali ke Dashboard</span>
+                    <span class="text-sm font-medium">Kembali ke Menu</span>
                 </a>
             </div>
 

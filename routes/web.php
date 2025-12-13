@@ -111,8 +111,16 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     Route::put('/adminbem/ormawa/{id}', [OrmawaController::class, 'update'])->name('adminbem.ormawa.update');
     
     // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
+    Route::get('/tesminatbem/menu', [TesMinatController::class, 'showMenu'])->name('tesminatbem.menu');
     Route::get('/tesminatbem', [TesMinatController::class, 'showResults'])->name('tesminatbem.results');
     Route::delete('/tesminatbem/{id}', [TesMinatController::class, 'delete'])->name('tesminatbem.delete');
+    
+    // Kelola Pertanyaan Tes Minat - hanya AdminBEM yang bisa mengelola
+    Route::get('/tesminatbem/pertanyaan', [TesMinatController::class, 'manageQuestions'])->name('tesminatbem.pertanyaan');
+    Route::get('/tesminatbem/pertanyaan/data', [TesMinatController::class, 'getQuestionsData'])->name('tesminatbem.pertanyaan.data');
+    Route::post('/tesminatbem/pertanyaan', [TesMinatController::class, 'storeQuestion'])->name('tesminatbem.pertanyaan.store');
+    Route::put('/tesminatbem/pertanyaan/{id}', [TesMinatController::class, 'updateQuestion'])->name('tesminatbem.pertanyaan.update');
+    Route::delete('/tesminatbem/pertanyaan/{id}', [TesMinatController::class, 'deleteQuestion'])->name('tesminatbem.pertanyaan.delete');
     
     // Kegiatan Management - hanya AdminBEM yang bisa mengelola
     Route::get('/kegiatan/events', [DaftarKegiatanController::class, 'getEvents'])->name('kegiatan.events');
