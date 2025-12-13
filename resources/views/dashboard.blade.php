@@ -62,7 +62,7 @@
                 
                 {{-- TOMBOL EDIT KEGIATAN --}}
                 @auth
-                    @if(auth()->user()->hasRole('adminbem','adminukm'))
+                    @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
                     <div class="flex justify-end mt-8">
                         <button onclick="openAddModal()" class="modern-btn modern-btn-primary">
                             + Tambah Kegiatan
@@ -76,7 +76,7 @@
 
     {{-- MODAL INPUT KEGIATAN --}}
     @auth
-        @if(auth()->user()->hasRole('adminbem','adminukm'))
+        @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
         <div id="addModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="modern-modal bg-white max-w-md w-full">
                 {{-- Header --}}
@@ -333,13 +333,15 @@
             </div>
 
             {{-- FITUR KHUSUS ADMIN: TOMBOL EDIT --}}
-            @role('adminbem|adminukm')
-            <div class="flex justify-end mt-6">
-                <button class="modern-btn modern-btn-primary">
-                    Edit Berita
-                </button>
-            </div>
-            @endrole
+            @auth
+                @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
+                <div class="flex justify-end mt-6">
+                    <button class="modern-btn modern-btn-primary">
+                        Edit Berita
+                    </button>
+                </div>
+                @endif
+            @endauth
         </div>
     </section>
 

@@ -135,4 +135,44 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     })->name('adminbem.settings');
 });
 
-require __DIR__.'/auth.php';
+// Debug route - Check all users and their roles
+Route::get('/check-users-roles', function () {
+    $users = \App\Models\User::all();
+    $roles = \Spatie\Permission\Models\Role::all();
+    
+    $output = "<h1>Users and Roles Check</h1>";
+    $output .= "<h2>Total Users: " . $users->count() . "</h2>";
+    
+    foreach ($users as $user) {
+        $output .= "<div style='border: 1px solid #ccc; padding: 10px; margin: 10px 0;'>";
+        $output .= "<strong>ID:</strong> " . $user->id . "<br>";
+        $output .= "<strong>Name:</strong> " . $user->name . "<br>";
+        $output .= "<strong>Username:</strong> " . $user->username . "<br>";
+        $output .= "<strong>Legacy Role Column:</strong> " . ($user->role ?? 'NULL') . "<br>";
+        $output .= "<strong>is_admin:</strong> " . ($user->is_admin ?? 'NULL') . "<br>";
+        
+        $spatieRoles = $user->roles->pluck('name')->toArray();
+        $output .= "<strong>Spatie Roles:</strong> " . (empty($spatieRoles) ? 'NONE' : implode(', ', $spatieRoles)) . "<br>";
+        
+        $output .= "<br><strong>Testing hasRole() method:</strong><br>";
+        $output .= "- hasRole('adminbem'): " . ($user->hasRole('adminbem') ? 'YES' : 'NO') . "<br>";
+        $output .= "- hasRole('adminukm'): " . ($user->hasRole('adminukm') ? 'YES' : 'NO') . "<br>";
+        $output .= "- hasRole('adminbem','adminukm'): " . ($user->hasRole('adminbem','adminukm') ? 'YES' : 'NO') . "<br>";
+        
+        $output .= "<br><strong>Testing hasAnyRole() method:</strong><br>";
+        $output .= "- hasAnyRole(['adminbem','adminukm']): " . ($user->hasAnyRole(['adminbem','adminukm']) ? 'YES' : 'NO') . "<br>";
+        
+        $output .= "</div>";
+    }
+    
+    $output .= "<h2>Available Roles in Database</h2>";
+    if ($roles->isEmpty()) {
+        $output .= "<p style='color: red;'>No roles found! Run: php artisan db:seed --class=RolePermissionSeeder</p>";
+    } else {
+        foreach ($roles as $role) {
+            $output .= "- " . $role->name . " (ID: " . $role->id . ")<br>";
+        }
+    }
+    
+    return $output;
+})->name('check.users.roles');
