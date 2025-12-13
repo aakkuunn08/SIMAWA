@@ -64,21 +64,21 @@
         {{-- Tes Minat --}}
         @auth
             @if(auth()->user()->hasRole('adminbem'))
-                {{-- Admin BEM langsung ke menu kelola --}}
-                <a href="{{ route('tesminatbem.menu') }}" 
+                {{-- Admin BEM: Jika di dashboard/home gunakan anchor, jika tidak langsung ke menu --}}
+                <a href="{{ $isHome ? '#tes-minat' : route('tesminatbem.menu') }}" 
                    class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminatbem*') ? $activeClass : $inactiveClass }}">
                     Tes Minat
                 </a>
             @else
-                {{-- User biasa ke halaman tes minat mahasiswa --}}
-                <a href="{{ route('tesminat.index') }}" 
+                {{-- User biasa: Jika di home gunakan anchor, jika tidak ke halaman tes minat --}}
+                <a href="{{ $isHome ? '#tes-minat' : route('tesminat.index') }}" 
                    class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminat*') ? $activeClass : $inactiveClass }}">
                     Tes Minat
                 </a>
             @endif
         @else
-            {{-- Guest ke halaman tes minat mahasiswa --}}
-            <a href="{{ route('tesminat.index') }}" 
+            {{-- Guest: Jika di home gunakan anchor, jika tidak ke halaman tes minat --}}
+            <a href="{{ $isHome ? '#tes-minat' : route('tesminat.index') }}" 
                class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminat*') ? $activeClass : $inactiveClass }}">
                 Tes Minat
             </a>
