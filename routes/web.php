@@ -94,6 +94,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('admin.dashboard');
 });
 
+// Route yang bisa diakses oleh AdminBEM dan AdminUKM
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Kegiatan Management - AdminBEM dan AdminUKM bisa mengelola kegiatan mereka
+    Route::get('/kegiatan/events', [DaftarKegiatanController::class, 'getEvents'])->name('kegiatan.events');
+    Route::post('/kegiatan', [DaftarKegiatanController::class, 'store'])->name('kegiatan.store');
+    Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
+    Route::put('/kegiatan/{id}', [DaftarKegiatanController::class, 'update'])->name('kegiatan.update');
+    Route::delete('/kegiatan/{id}', [DaftarKegiatanController::class, 'destroy'])->name('kegiatan.destroy');
+});
+
 // Route yang HANYA bisa diakses oleh AdminBEM (Super Admin)
 Route::middleware(['auth', 'adminbem'])->group(function () {
     // Account Management - hanya AdminBEM yang bisa mengelola akun
@@ -121,13 +131,6 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     Route::post('/tesminatbem/pertanyaan', [TesMinatController::class, 'storeQuestion'])->name('tesminatbem.pertanyaan.store');
     Route::put('/tesminatbem/pertanyaan/{id}', [TesMinatController::class, 'updateQuestion'])->name('tesminatbem.pertanyaan.update');
     Route::delete('/tesminatbem/pertanyaan/{id}', [TesMinatController::class, 'deleteQuestion'])->name('tesminatbem.pertanyaan.delete');
-    
-    // Kegiatan Management - hanya AdminBEM yang bisa mengelola
-    Route::get('/kegiatan/events', [DaftarKegiatanController::class, 'getEvents'])->name('kegiatan.events');
-    Route::post('/kegiatan', [DaftarKegiatanController::class, 'store'])->name('kegiatan.store');
-    Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
-    Route::put('/kegiatan/{id}', [DaftarKegiatanController::class, 'update'])->name('kegiatan.update');
-    Route::delete('/kegiatan/{id}', [DaftarKegiatanController::class, 'destroy'])->name('kegiatan.destroy');
     
     // Placeholder untuk fitur super admin lainnya
     Route::get('/adminbem/settings', function () {
