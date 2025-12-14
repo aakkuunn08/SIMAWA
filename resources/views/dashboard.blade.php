@@ -74,19 +74,32 @@
         </div>
     </section>
 
-    {{-- MODAL INPUT KEGIATAN --}}
+    {{-- MODAL INPUT/EDIT KEGIATAN --}}
     @auth
         @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
         <div id="addModal" class="modern-modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="modern-modal bg-white max-w-md w-full">
                 {{-- Header --}}
                 <div class="modern-modal-header flex justify-between items-center">
-                    <h3 class="modern-modal-title">Input Kegiatan</h3>
+                    <h3 id="modalTitle" class="modern-modal-title">Input Kegiatan</h3>
                     <button onclick="closeAddModal()" class="modern-modal-close">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
+                </div>
+                
+                {{-- Edit Mode Indicator --}}
+                <div id="editModeIndicator" class="hidden px-6 py-3 bg-blue-50 border-l-4 border-blue-500">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <div>
+                            <p class="text-sm font-semibold text-blue-800">Mode Edit</p>
+                            <p class="text-xs text-blue-600">Ubah data yang ingin Anda edit, field lainnya akan tetap sama</p>
+                        </div>
+                    </div>
                 </div>
                 
                 {{-- Form --}}
@@ -448,16 +461,25 @@
 
     // Modal Functions
     function openAddModal() {
-        document.getElementById('addModal').classList.remove('hidden');
+        // Reset form
         document.getElementById('kegiatanForm').reset();
         document.getElementById('kegiatan_id').value = '';
+        
+        // Set mode to Add
         isEditMode = false;
+        document.getElementById('modalTitle').textContent = 'Input Kegiatan';
+        document.getElementById('editModeIndicator').classList.add('hidden');
+        
+        // Show modal
+        document.getElementById('addModal').classList.remove('hidden');
     }
 
     function closeAddModal() {
         document.getElementById('addModal').classList.add('hidden');
         document.getElementById('kegiatanForm').reset();
+        document.getElementById('kegiatan_id').value = '';
         isEditMode = false;
+        document.getElementById('editModeIndicator').classList.add('hidden');
     }
 
     function openDetailModal(eventId) {
@@ -505,6 +527,7 @@
         fetch(`/kegiatan/${currentEventId}`)
             .then(response => response.json())
             .then(data => {
+                // Populate form with existing data
                 document.getElementById('kegiatan_id').value = data.id_kegiatan;
                 document.getElementById('tanggal_kegiatan').value = data.tanggal_kegiatan;
                 document.getElementById('waktu_mulai').value = data.waktu_mulai;
@@ -512,9 +535,14 @@
                 document.getElementById('nama_kegiatan').value = data.nama_kegiatan;
                 document.getElementById('tempat').value = data.tempat;
                 
+                // Set mode to Edit
                 isEditMode = true;
+                document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
+                document.getElementById('editModeIndicator').classList.remove('hidden');
+                
+                // Close detail modal and open edit modal
                 closeDetailModal();
-                openAddModal();
+                document.getElementById('addModal').classList.remove('hidden');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -580,8 +608,10 @@
                 console.log('Sending data:', data);
                 
                 // Determine URL and method
+                // Determine if this is an update or create
                 let url = kegiatan_id ? `/kegiatan/${kegiatan_id}` : '/kegiatan';
                 let method = kegiatan_id ? 'PUT' : 'POST';
+                let successMessage = kegiatan_id ? 'Kegiatan berhasil diupdate' : 'Kegiatan berhasil ditambahkan';
                 
                 fetch(url, {
                     method: method,
@@ -604,7 +634,7 @@
                 .then(data => {
                     console.log('Success data:', data);
                     if (data.success) {
-                        showCustomAlert(data.message, 'success');
+                        showCustomAlert(successMessage, 'success');
                         closeAddModal();
                         setTimeout(() => location.reload(), 1500);
                     } else {
