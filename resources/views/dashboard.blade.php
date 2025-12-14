@@ -377,20 +377,35 @@
         </div>
     </section>
 
-    {{-- TES MINAT - Khusus Admin BEM --}}
-    @if(auth()->user()->isAdminBem())
-        <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center">
-            <div class="w-full max-w-4xl mx-auto px-4">
-                <div class="modern-tes-minat text-center">
-                    <h3 class="modern-tes-minat-title">TES MINAT</h3>
-                    <a href="{{ route('tesminatbem.menu') }}"
+    {{-- TES MINAT --}}
+    <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center scroll-mt-16">
+        <div class="w-full max-w-4xl mx-auto px-4">
+            <div class="modern-tes-minat text-center">
+                <h3 class="modern-tes-minat-title">TES MINAT</h3>
+                @auth
+                    @if(auth()->user()->hasRole('adminbem'))
+                        {{-- Admin BEM: Tombol Kelola Tes Minat --}}
+                        <a href="{{ route('tesminatbem.menu') }}"
+                            class="modern-btn modern-btn-primary inline-block">
+                            Kelola Tes Minat
+                        </a>
+                    @else
+                        {{-- User biasa: Tombol Ayo Mulai Tes --}}
+                        <a href="{{ route('tesminat.index') }}"
+                            class="modern-btn modern-btn-primary inline-block">
+                            Ayo Mulai Tes!
+                        </a>
+                    @endif
+                @else
+                    {{-- Guest: Tombol Ayo Mulai Tes --}}
+                    <a href="{{ route('tesminat.index') }}"
                         class="modern-btn modern-btn-primary inline-block">
-                        Kelola Tes Minat
+                        Ayo Mulai Tes!
                     </a>
-                </div>
+                @endauth
             </div>
-        </section>
-    @endif
+        </div>
+    </section>
 
     @endsection
 

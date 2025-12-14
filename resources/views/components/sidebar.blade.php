@@ -9,8 +9,9 @@
     
 {{-- LOGIC PHP UNTUK MENENTUKAN MENU AKTIF --}}
     @php
-        // 1. Cek Halaman Utama
+        // 1. Cek Halaman Utama dan Dashboard
         $isHome = Request::routeIs('home') || Request::is('/'); 
+        $isDashboard = Request::routeIs('dashboard');
         
         // 2. Cek apakah sedang di halaman Ormawa (apapun slugnya)
         $isOrmawaPage = Request::routeIs('ormawa*'); 
@@ -23,11 +24,14 @@
         $isAccountPage = Request::routeIs('adminbem.accounts*') || Request::routeIs('profile*');
         $isPanduanPage = Request::is('panduan') || Request::is('panduan/*');
 
-        // 5. Style Class (Sesuai request warna oranye sebelumnya)
+        // 5. Cek halaman Tes Minat (untuk highlighting)
+        $isTesMinatPage = Request::routeIs('tesminatbem*') || Request::routeIs('tesminat*');
+
+        // 6. Style Class (Sesuai request warna oranye sebelumnya)
         $activeClass = 'border-l-4 border-orange-500 bg-orange-50 text-gray-900 font-medium'; 
         $inactiveClass = 'border-l-4 border-transparent hover:bg-gray-100 text-gray-600';
 
-        // 6. LOGIKA KUNCI:
+        // 7. LOGIKA KUNCI:
         // Menu BEM aktif JIKA halaman ormawa DAN slug-nya 'bem'
         $isBemActive = $isOrmawaPage && $currentSlug == 'bem';
 
@@ -64,9 +68,9 @@
         {{-- Tes Minat --}}
         @auth
             @if(auth()->user()->hasRole('adminbem'))
-                {{-- Admin BEM: Jika di dashboard/home gunakan anchor, jika tidak langsung ke menu --}}
-                <a href="{{ $isHome ? '#tes-minat' : route('tesminatbem.menu') }}" 
-                   class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminatbem*') ? $activeClass : $inactiveClass }}">
+                {{-- Admin BEM: Selalu gunakan anchor untuk scroll ke section --}}
+                <a href="{{ ($isHome || $isDashboard) ? '#tes-minat' : url('/dashboard#tes-minat') }}" 
+                   class="nav-link flex items-center px-6 py-2 {{ $isTesMinatPage ? $activeClass : $inactiveClass }}">
                     Tes Minat
                 </a>
             @else
