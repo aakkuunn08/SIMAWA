@@ -378,7 +378,28 @@
     </section>
 
     {{-- TES MINAT --}}
-    <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center scroll-mt-16">
+        <section 
+        id="tes-minat" 
+        class="min-h-screen flex items-center justify-center 
+            bg-gradient-to-br from-orange-50 to-orange-100 px-4">
+        <div class="text-center max-w-xl">
+            <h2 class="text-2xl md:text-3xl font-extrabold uppercase tracking-widest text-gray-800 mb-4">
+                Tes Minat
+            </h2>
+            <p class="text-gray-600 mb-10">
+                Kelola Pertanyaan dan Hasil Tes Minat Mahasiswa
+            </p>
+            <a href="{{ route('tesminatbem.menu') }}"
+            class="inline-block bg-orange-500 text-white 
+                    px-6 py-2.5 rounded-full text-lg font-semibold
+                    shadow-lg hover:bg-orange-600 hover:scale-105 
+                    transition">
+                Kelola Tes Minat
+            </a>
+            </div>
+        </section>
+
+    <!-- <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center scroll-mt-16">
         <div class="w-full max-w-4xl mx-auto px-4">
             <div class="modern-tes-minat text-center">
                 <h3 class="modern-tes-minat-title">TES MINAT</h3>
@@ -405,7 +426,7 @@
                 @endauth
             </div>
         </div>
-    </section>
+    </section> -->
 
     @endsection
 
