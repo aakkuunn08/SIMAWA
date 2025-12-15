@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Lpj;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateLpjTable extends Migration
 {
@@ -32,5 +33,11 @@ class CreateLpjTable extends Migration
     public function down(): void
     {
         Schema::dropIfExists('lpj');
+    }
+    
+    public function lpj()
+    {
+        // Asumsi: satu kegiatan hanya punya satu file LPJ
+        return $this->hasOne(Lpj::class, 'kegiatan_id', 'id_kegiatan');
     }
 }

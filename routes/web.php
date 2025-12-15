@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\OrmawaController;
-use App\Http\Controllers\TesMinatController;
-use App\Http\Controllers\DaftarKegiatanController;
-use Illuminate\Support\Facades\Route;
 use App\Models\Ormawa;
 use App\Models\DaftarKegiatan;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrmawaController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TesMinatController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\DaftarKegiatanController;
+use App\Http\Controllers\DaftarKegiatanControllerKegiatanController;
 
 Route::get('/', function () {
     $ormawas = Ormawa::all();
@@ -102,6 +103,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
     Route::put('/kegiatan/{id}', [DaftarKegiatanController::class, 'update'])->name('kegiatan.update');
     Route::delete('/kegiatan/{id}', [DaftarKegiatanController::class, 'destroy'])->name('kegiatan.destroy');
+
+    // Route untuk Upload LPJ
+    Route::post('/kegiatan/{id}/upload-lpj', [DaftarKegiatanController::class, 'uploadLpj'])->name('kegiatan.uploadLpj');
 });
 
 // Route yang HANYA bisa diakses oleh AdminBEM (Super Admin)

@@ -29,6 +29,7 @@ class DaftarKegiatan extends Model
 
     public function lpj()
     {
+        // Parameter: (ModelTujuan, FK_di_tabel_tujuan, PK_di_tabel_asal)
         return $this->hasOne(Lpj::class, 'id_kegiatan', 'id_kegiatan');
     }
 }
