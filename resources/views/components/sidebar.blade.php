@@ -66,27 +66,13 @@
         </a>
 
         {{-- Tes Minat --}}
-        @auth
-            @if(auth()->user()->hasRole('adminbem'))
-                {{-- Admin BEM: Selalu gunakan anchor untuk scroll ke section --}}
-                <a href="{{ ($isHome || $isDashboard) ? '#tes-minat' : url('/dashboard#tes-minat') }}" 
-                   class="nav-link flex items-center px-6 py-2 {{ $isTesMinatPage ? $activeClass : $inactiveClass }}">
-                    Tes Minat
-                </a>
-            @else
-                {{-- User biasa: Jika di home gunakan anchor, jika tidak ke halaman tes minat --}}
-                <a href="{{ $isHome ? '#tes-minat' : route('tesminat.index') }}" 
-                   class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminat*') ? $activeClass : $inactiveClass }}">
-                    Tes Minat
-                </a>
-            @endif
-        @else
-            {{-- Guest: Jika di home gunakan anchor, jika tidak ke halaman tes minat --}}
-            <a href="{{ $isHome ? '#tes-minat' : route('tesminat.index') }}" 
-               class="nav-link flex items-center px-6 py-2 {{ Request::routeIs('tesminat*') ? $activeClass : $inactiveClass }}">
-                Tes Minat
-            </a>
-        @endauth
+
+        @if(auth()->guest() || !auth()->user()->hasRole('adminukm'))
+             <a href="{{ $isHome ? '#tes-minat' : url('/#tes-minat') }}" 
+                class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
+                 Tes Minat
+             </a>
+        @endif
     </nav>
 
     {{-- AREA KHUSUS LOGGED IN USER - DI BAWAH --}}
