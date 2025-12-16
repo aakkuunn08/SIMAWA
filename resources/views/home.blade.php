@@ -303,7 +303,7 @@
             const date = new Date(event.tanggal_kegiatan);
             const hari = date.toLocaleDateString('id-ID', { weekday: 'long' });
             const tanggal = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            const waktu = event.waktu_mulai && event.waktu_selesai ? `${event.waktu_mulai} >> ${event.waktu_selesai}` : '';
+            const waktu = event.waktu_mulai && event.waktu_selesai ? `${event.waktu_mulai} - ${event.waktu_selesai}` : '';
             
             // Set modal content
             document.getElementById('detailTitle').textContent = event.nama;

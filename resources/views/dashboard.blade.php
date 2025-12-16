@@ -516,7 +516,7 @@
                 const date = new Date(data.tanggal_kegiatan);
                 const hari = date.toLocaleDateString('id-ID', { weekday: 'long' });
                 const tanggal = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                const waktu = data.waktu_mulai && data.waktu_selesai ? `${data.waktu_mulai} >> ${data.waktu_selesai}` : '';
+                const waktu = data.waktu_mulai && data.waktu_selesai ? `${data.waktu_mulai} - ${data.waktu_selesai}` : '';
                 
                 document.getElementById('detailJadwal').textContent = `${hari}, ${tanggal}, ${waktu}`;
                 document.getElementById('detailKegiatan').textContent = data.nama_kegiatan;
