@@ -42,36 +42,36 @@
     <nav class="flex-1 pt-4 text-sm overflow-y-auto" id="nav-container">
         
         {{-- Kalender --}}
-        <a href="{{ $isHome ? '#kalender' : url('/#kalender') }}" 
-           class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
+        {{-- LOGIKA BARU: Cek apakah URL adalah '/' (Home) ATAU 'dashboard' --}}
+        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#kalender' : url('/#kalender') }}" 
+        class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             Kalender Kegiatan
         </a>
 
-        {{-- MENU BEM (Hanya nyala jika slug == bem) --}}
-        <a href="{{ $isHome ? '#bem' : url('/#bem') }}" 
-           class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
+        {{-- MENU BEM --}}
+        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#bem' : url('/#bem') }}" 
+        class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
             Badan Eksekutif Mahasiswa
         </a>
 
         {{-- NEWS --}}
-        <a href="{{ $isHome ? '#news' : url('/#news') }}" 
-           class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
+        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#news' : url('/#news') }}" 
+        class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             NEWS
         </a>
 
-        {{-- MENU UKM (Nyala jika slug != bem, misal: hero, hcc, seni, olahraga) --}}
-        <a href="{{ $isHome ? '#ukm' : url('/#ukm') }}" 
-           class="nav-link flex items-center px-6 py-2 {{ $isUkmActive ? $activeClass : $inactiveClass }}">
+        {{-- MENU UKM --}}
+        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#ukm' : url('/#ukm') }}" 
+        class="nav-link flex items-center px-6 py-2 {{ $isUkmActive ? $activeClass : $inactiveClass }}">
             Daftar UKM/SC
         </a>
 
         {{-- Tes Minat --}}
-
         @if(auth()->guest() || !auth()->user()->hasRole('adminukm'))
-             <a href="{{ $isHome ? '#tes-minat' : url('/#tes-minat') }}" 
+            <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#tes-minat' : url('/#tes-minat') }}" 
                 class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
-                 Tes Minat
-             </a>
+                Tes Minat
+            </a>
         @endif
     </nav>
 
