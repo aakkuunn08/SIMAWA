@@ -38,9 +38,9 @@ class User extends Authenticatable
     /**
      * Cast nilai kolom (tipe data)
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
 
     /**
      * Get the name of the unique identifier for the user.
