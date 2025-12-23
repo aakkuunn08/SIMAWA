@@ -15,14 +15,17 @@ class TesMinatController extends Controller
 {
     /**
      * Menampilkan halaman tes minat
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function index()
     {
         // Ambil semua soal dari database untuk ditampilkan di kuesioner
         $soals = Soal::all();
-        
+
+        // Acak urutan pertanyaan agar tidak berurutan berdasarkan UKM
+        $soals = $soals->shuffle();
+
         return view('tesminat', compact('soals'));
     }
 
@@ -181,13 +184,13 @@ class TesMinatController extends Controller
 
     /**
      * Memproses submit form tes minat dan memberikan rekomendasi UKM
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function submit(Request $request)
     {
-        // tomValidasi input biodata mahasiswa
+        // Validasi input biodata mahasiswa
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'nim' => 'required|numeric',
@@ -195,15 +198,8 @@ class TesMinatController extends Controller
             'angkatan' => 'required|numeric',
         ]);
 
-        // Ambil jawaban dari request
-        $jawaban = [
-            'q1' => (int) $request->input('q1', 0),
-            'q2' => (int) $request->input('q2', 0),
-            'q3' => (int) $request->input('q3', 0),
-            'q4' => (int) $request->input('q4', 0),
-            'q5' => (int) $request->input('q5', 0),
-            'q6' => (int) $request->input('q6', 0),
-        ];
+        // Ambil semua soal dari database untuk mendapatkan kategori
+        $soals = Soal::all();
 
         // Inisialisasi score untuk setiap UKM
         $scores = [
@@ -214,30 +210,23 @@ class TesMinatController extends Controller
             'Olahraga' => 0,  // Olahraga
         ];
 
-        // Perhitungan score berdasarkan jawaban
-        // Q1: Sains & Teknologi (umum) → HERO & HCC (bobot kecil karena umum)
-        $scores['HERO'] += $jawaban['q1'] * 1;
-        $scores['HCC'] += $jawaban['q1'] * 1;
+        // Looping data jawaban user, kelompokkan dan jumlahkan skor berdasarkan kategori UKM
+        foreach ($soals as $soal) {
+            $jawabanKey = 'q' . $soal->id_soal;
+            $jawaban = (int) $request->input($jawabanKey, 0);
 
-        // Q2: Olahraga & Adrenalin → Olahraga (bobot penuh)
-        $scores['Olahraga'] += $jawaban['q2'] * 2;
+            // Tambahkan jawaban ke kategori yang sesuai
+            if (isset($scores[$soal->kategori])) {
+                $scores[$soal->kategori] += $jawaban;
+            }
+        }
 
-        // Q3: Seni & Ekspresi → Seni (bobot penuh)
-        $scores['Seni'] += $jawaban['q3'] * 2;
+        // Urutkan hasil dari yang terbesar ke terkecil
+        arsort($scores);
 
-        // Q4: Berkumpul & Kelompok → MPM (bobot penuh)
-        $scores['MPM'] += $jawaban['q4'] * 2;
-
-        // Q5: Robot & Hardware → HERO (bobot tinggi karena spesifik)
-        $scores['HERO'] += $jawaban['q5'] * 3;
-
-        // Q6: Coding & Aplikasi → HCC (bobot tinggi karena spesifik)
-        $scores['HCC'] += $jawaban['q6'] * 3;
-
-        // Cari UKM dengan score tertinggi
-        arsort($scores); // Sort descending berdasarkan nilai
+        // Hitung persentase murni: (Total Skor / 25) * 100
         $topUkmName = array_key_first($scores);
-        $topScore = $scores[$topUkmName];
+        $topScore = ($scores[$topUkmName] / 25) * 100;
 
         // Ambil data UKM dari database berdasarkan nama
         $rekomendasi = Ormawa::where('tipe', 'ukm')
@@ -258,16 +247,28 @@ class TesMinatController extends Controller
         }
 
         // Simpan hasil tes ke database (1 record untuk keseluruhan tes)
+        // Pastikan user_id adalah integer atau null
+        $userId = null;
+        if (auth()->check() && is_numeric(auth()->id())) {
+            $userId = (int) auth()->id();
+        }
+
         TesMinat::create([
-            'user_id' => auth()->id() ?? null, // Jika user login, simpan user_id
+            'user_id' => $userId,
             'nama_lengkap' => $validated['nama_lengkap'],
             'nim' => $validated['nim'],
             'program_studi' => $validated['program_studi'],
             'angkatan' => $validated['angkatan'],
             'id_soal' => null, // Tidak perlu id_soal karena ini hasil keseluruhan
             'id_jawaban' => null,
-            'hasil_rekomendasi' => $rekomendasi->nama . ' (Score: ' . round($topScore, 2) . ')',
+            'hasil_rekomendasi' => $rekomendasi->nama . ' (Score: ' . round($topScore, 2) . '%)',
         ]);
+
+        // Hitung persentase untuk semua skor
+        $allScoresPercent = [];
+        foreach ($scores as $kategori => $score) {
+            $allScoresPercent[$kategori] = round(($score / 25) * 100, 2);
+        }
 
         // Return response JSON dengan data rekomendasi
         return response()->json([
@@ -276,8 +277,8 @@ class TesMinatController extends Controller
                 'nama' => $rekomendasi->nama,
                 'logo' => asset($rekomendasi->logo),
                 'deskripsi' => $rekomendasi->deskripsi ?? 'Unit Kegiatan Mahasiswa yang sesuai dengan minat dan bakat Anda.',
-                'score' => $topScore,
-                'all_scores' => $scores, // Untuk debugging - lihat semua score
+                'score' => round($topScore, 2),
+                'all_scores' => $allScoresPercent,
             ]
         ]);
     }

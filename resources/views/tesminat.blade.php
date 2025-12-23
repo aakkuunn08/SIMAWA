@@ -155,7 +155,7 @@
                             <div class="flex justify-center gap-8">
                                 @for($i = 1; $i <= $soal->skala_likert; $i++)
                                 <label class="radio-wrapper">
-                                    <input type="radio" name="q{{ $index + 1 }}" value="{{ $i }}" {{ $i == 1 ? 'required' : '' }}>
+                                    <input type="radio" name="q{{ $soal->id_soal }}" value="{{ $i }}" {{ $i == 1 ? 'required' : '' }}>
                                     <div class="radio-circle">
                                         <span class="radio-number">{{ $i }}</span>
                                     </div>
@@ -398,14 +398,22 @@
             }
 
             // Kumpulkan semua jawaban dari kuesioner
-            const answers = {
-                q1: document.querySelector('input[name="q1"]:checked').value,
-                q2: document.querySelector('input[name="q2"]:checked').value,
-                q3: document.querySelector('input[name="q3"]:checked').value,
-                q4: document.querySelector('input[name="q4"]:checked').value,
-                q5: document.querySelector('input[name="q5"]:checked').value,
-                q6: document.querySelector('input[name="q6"]:checked').value
-            };
+            const answers = {};
+            const allQuestions = document.querySelectorAll('input[type="radio"]');
+            const questionNames = new Set();
+            
+            // Dapatkan semua nama pertanyaan yang unik
+            allQuestions.forEach(input => {
+                questionNames.add(input.name);
+            });
+            
+            // Kumpulkan jawaban untuk setiap pertanyaan
+            questionNames.forEach(questionName => {
+                const selectedAnswer = document.querySelector(`input[name="${questionName}"]:checked`);
+                if (selectedAnswer) {
+                    answers[questionName] = selectedAnswer.value;
+                }
+            });
 
             // Gabungkan biodata dengan jawaban
             const formData = {
