@@ -86,42 +86,6 @@ class OrmawaController extends Controller
             ->with('success', 'Informasi ormawa berhasil ditambahkan!');
     }
 
-    /**
-     * Show form to edit ormawa information
-     */
-    public function edit($id)
-    {
-        $ormawa = Ormawa::with('user')->findOrFail($id);
-
-        return view('admin.ormawa.form', [
-            'user' => $ormawa->user,
-            'ormawa' => $ormawa,
-            'isEdit' => true
-        ]);
-    }
-
-    /**
-     * Update ormawa information
-     */
-    public function update(Request $request, $id)
-    {
-        $ormawa = Ormawa::findOrFail($id);
-
-        $validated = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:ormawa,slug,' . $id],
-            'tipe' => ['required', 'in:ukm,bem,komunitas'],
-            'deskripsi' => ['nullable', 'string'],
-        ]);
-
-        // Update logo if user's profile photo changed
-        if ($ormawa->user && $ormawa->user->profile_photo_path) {
-            $validated['logo'] = 'storage/' . $ormawa->user->profile_photo_path;
-        }
-
-        $ormawa->update($validated);
-
-        return redirect()->route('adminbem.accounts.index')
-            ->with('success', 'Informasi ormawa berhasil diperbarui!');
-    }
+    // Note: edit() and update() methods have been removed
+    // Ormawa information can only be created, not edited after creation
 }
