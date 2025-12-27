@@ -124,10 +124,11 @@ Route::middleware(['auth', 'adminbem'])->group(function () {
     Route::delete('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'destroy'])->name('adminbem.accounts.destroy');
     
     // Ormawa Management - hanya AdminBEM yang bisa mengelola informasi ormawa
+    // Note: Edit functionality has been removed - ormawa info can only be created, not edited
     Route::get('/adminbem/accounts/{userId}/ormawa/create', [OrmawaController::class, 'create'])->name('adminbem.ormawa.create');
     Route::post('/adminbem/accounts/{userId}/ormawa', [OrmawaController::class, 'store'])->name('adminbem.ormawa.store');
-    Route::get('/adminbem/ormawa/{id}/edit', [OrmawaController::class, 'edit'])->name('adminbem.ormawa.edit');
-    Route::put('/adminbem/ormawa/{id}', [OrmawaController::class, 'update'])->name('adminbem.ormawa.update');
+    // Route::get('/adminbem/ormawa/{id}/edit', [OrmawaController::class, 'edit'])->name('adminbem.ormawa.edit'); // REMOVED
+    // Route::put('/adminbem/ormawa/{id}', [OrmawaController::class, 'update'])->name('adminbem.ormawa.update'); // REMOVED
     
     // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
     Route::get('/tesminatbem/menu', [TesMinatController::class, 'showMenu'])->name('tesminatbem.menu');

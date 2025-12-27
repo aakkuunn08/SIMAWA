@@ -86,6 +86,7 @@ class OrmawaController extends Controller
             ->with('success', 'Informasi ormawa berhasil ditambahkan!');
     }
 
+<<<<<<< HEAD
     /**
      * Show form to edit ormawa information
      */
@@ -152,4 +153,8 @@ class OrmawaController extends Controller
             'message' => 'Content updated successfully'
         ]);
     }
+=======
+    // Note: edit() and update() methods have been removed
+    // Ormawa information can only be created, not edited after creation
+>>>>>>> c93fb56b2ec080adc226afce1b9df08077a64778
 }

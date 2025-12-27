@@ -369,8 +369,7 @@
                 </article>
                 <article class="modern-news-card">
                     <img src="https://via.placeholder.com/350x180?text=News+3" class="modern-news-image" alt="News 3">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
+                    <div class="modern-news-content">                    <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
                         <p class="modern-news-description">Festival seni yang menghadirkan berbagai penampilan mahasiswa...</p>
                     </div>
                 </article>
