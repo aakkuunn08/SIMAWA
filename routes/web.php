@@ -36,6 +36,11 @@ Route::get('/', function () {
 
 // ================= ORMAWA =================
 Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
+
+// Update content in-place (only for AdminBEM)
+Route::post('/ormawa/{slug}/update-content', [OrmawaController::class, 'updateContent'])
+    ->middleware(['auth', 'adminbem'])
+    ->name('ormawa.updateContent');
 // ==========================================
 
 // ================= TES MINAT UKM =================

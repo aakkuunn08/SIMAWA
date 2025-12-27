@@ -124,4 +124,32 @@ class OrmawaController extends Controller
         return redirect()->route('adminbem.accounts.index')
             ->with('success', 'Informasi ormawa berhasil diperbarui!');
     }
+
+    /**
+     * Update content in-place (AJAX)
+     * Only accessible by adminbem
+     */
+    public function updateContent(Request $request, $slug)
+    {
+        $ormawa = Ormawa::where('slug', $slug)->firstOrFail();
+
+        $validated = $request->validate([
+            'field' => ['required', 'in:vision,mission,structure'],
+            'content' => ['required', 'string'],
+        ]);
+
+        // For now, we'll store in deskripsi field as JSON
+        // You might want to add separate columns for vision, mission, structure
+        $currentData = json_decode($ormawa->deskripsi, true) ?? [];
+        $currentData[$validated['field']] = $validated['content'];
+        
+        $ormawa->update([
+            'deskripsi' => json_encode($currentData)
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Content updated successfully'
+        ]);
+    }
 }
