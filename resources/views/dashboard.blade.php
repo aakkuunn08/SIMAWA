@@ -406,8 +406,7 @@
                 </article>
                 <article class="modern-news-card">
                     <img src="https://via.placeholder.com/350x180?text=News+3" class="modern-news-image" alt="News 3">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
+                    <div class="modern-news-content">                    <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
                         <p class="modern-news-description">Festival seni yang menghadirkan berbagai penampilan mahasiswa...</p>
                     </div>
                 </article>
@@ -417,9 +416,9 @@
             @auth
                 @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
                 <div class="flex justify-end mt-6">
-                    <button class="modern-btn modern-btn-primary">
-                        Edit Berita
-                    </button>
+                   <button onclick="openModalBerita()" class="modern-btn modern-btn-primary">
+                     + Tambah Berita
+                  </button>
                 </div>
                 @endif
             @endauth
@@ -468,6 +467,44 @@
             </div>
         </section>
     @endif
+
+    {{-- MODAL POPUP EDIT/TAMBAH BERITA --}}
+    <div id="modalBerita" class="modern-modal-overlay hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50">
+        <div class="modern-modal bg-white max-w-2xl w-full rounded-xl shadow-2xl overflow-hidden">
+            <div class="modern-modal-header bg-orange-500 p-4 flex justify-between items-center text-white">
+                <h3 id="modalBeritaTitle" class="font-bold text-lg">Tambah Berita</h3>
+                <button onclick="closeModalBerita()" class="hover:rotate-90 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="formBerita" action="{{ route('berita.index') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+                @csrf
+                <div id="beritaMethod"></div> {{-- Untuk @method('PUT') --}}
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Judul Berita</label>
+                    <input type="text" name="judul" id="berita_judul" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring-orange-500" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Konten Berita</label>
+                    <textarea name="konten" id="berita_konten" rows="5" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring-orange-500" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Gambar</label>
+                    <input type="file" name="gambar" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModalBerita()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 shadow-md">Simpan Berita</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
 @endsection
 
 @push('scripts')
@@ -809,5 +846,32 @@
 
         renderCalendar(currentYear, currentMonth);
     });
+    // --- FUNGSI MODAL BERITA ---
+    window.openModalBerita = function(id = null, judul = '', konten = '') {
+        const modal = document.getElementById('modalBerita');
+        const form = document.getElementById('formBerita');
+        const title = document.getElementById('modalBeritaTitle');
+        const methodDiv = document.getElementById('beritaMethod');
+
+        if (id) {
+            // Jika Mode Edit
+            title.textContent = 'Edit Berita';
+            form.action = `/berita/${id}`;
+            methodDiv.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+            document.getElementById('berita_judul').value = judul;
+            document.getElementById('berita_konten').value = konten;
+        } else {
+            // Jika Mode Tambah
+            title.textContent = 'Tambah Berita';
+            form.action = "{{ route('berita.store') }}";
+            methodDiv.innerHTML = '';
+            form.reset();
+        }
+        modal.classList.remove('hidden');
+    }
+
+    window.closeModalBerita = function() {
+        document.getElementById('modalBerita').classList.add('hidden');
+    }
 </script>
 @endpush

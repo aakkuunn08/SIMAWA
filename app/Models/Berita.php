@@ -14,11 +14,11 @@ class Berita extends Model
 
     protected $fillable = [
         'user_id',
-        'judul_berita',
-        'url_sumber',
+        'judul',
+        'konten',
         'tanggal_publikasi',
         'gambar',
-        'sumber',
+        'published'
     ];
 
     public function user()

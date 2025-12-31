@@ -36,6 +36,11 @@ Route::get('/', function () {
 
 // ================= ORMAWA =================
 Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
+
+// Update content in-place (only for AdminBEM)
+Route::post('/ormawa/{slug}/update-content', [OrmawaController::class, 'updateContent'])
+    ->middleware(['auth', 'adminbem'])
+    ->name('ormawa.updateContent');
 // ==========================================
 
 // ================= TES MINAT UKM =================
@@ -88,8 +93,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     // Contoh: Kelola Kegiatan, Berita, dll
     // Route::resource('kegiatan', DaftarKegiatanController::class);
-    // Route::resource('berita', BeritaController::class);
-    
+    Route::resource('berita', BeritaController::class);
     // Placeholder untuk fitur admin
     Route::get('/admin/dashboard', function () {
         return view('dashboard'); // Ganti dengan view admin dashboard
