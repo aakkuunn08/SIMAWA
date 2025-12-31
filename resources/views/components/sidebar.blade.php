@@ -55,10 +55,13 @@
         </a>
 
         {{-- NEWS --}}
-        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#news' : url('/#news') }}" 
+        <a href="{{ url('/dashboard#news') }}" 
         class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             NEWS
         </a>
+
+        
+
 
         {{-- MENU UKM --}}
         <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#ukm' : url('/#ukm') }}" 
