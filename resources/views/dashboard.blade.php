@@ -649,7 +649,7 @@
         const url = id ? `/kegiatan/${id}` : '/kegiatan';
         const method = id ? 'PUT' : 'POST';
         
-        // Ambil Data Form Manual (Biar aman)
+        // Ambil Data Form Manual
         const data = {
             nama_kegiatan: document.getElementById('nama_kegiatan').value,
             tanggal_kegiatan: document.getElementById('tanggal_kegiatan').value,
@@ -658,24 +658,39 @@
             waktu_selesai: document.getElementById('waktu_selesai').value
         };
 
+        const btnSubmit = this.querySelector('button[type="submit"]');
+        const oldText = btnSubmit.textContent;
+        btnSubmit.textContent = 'Menyimpan...';
+        btnSubmit.disabled = true;
+
         fetch(url, {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json' // <--- PENTING: Supaya error-nya jadi JSON
             },
             body: JSON.stringify(data)
         })
-        .then(res => res.json())
-        .then(res => {
-            if(res.success) {
-                alert('Berhasil menyimpan kegiatan!');
-                location.reload();
-            } else {
-                alert('Gagal: ' + (res.message || 'Error validasi'));
+        .then(async res => {
+            const result = await res.json();
+            // Cek apakah request sukses (Status 200-299)
+            if (!res.ok) {
+                // Jika error 403 (Ditolak Policy) atau 422 (Validasi), lempar error
+                throw new Error(result.message || 'Gagal menyimpan data');
             }
+            return result;
         })
-        .catch(err => alert('Terjadi kesalahan sistem'));
+        .then(res => {
+            alert('Berhasil menyimpan kegiatan!');
+            location.reload();
+        })
+        .catch(err => {
+            btnSubmit.textContent = oldText;
+            btnSubmit.disabled = false;
+            // Munculkan pesan error asli dari Policy (misal: "Akses Ditolak...")
+            alert(err.message);
+        });
     });
 
     // ==========================================
@@ -753,7 +768,9 @@
 
         fetch(`/kegiatan/${activeKegiatanId}/upload-lpj`, {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content ,
+                'Accept': 'application/json'
+            },
             body: formData
         })
         .then(async res => {
@@ -827,17 +844,25 @@
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json' // <--- PENTING: Supaya tidak error token '<'
                 }
             })
-            .then(res => res.json())
-            .then(res => {
-                if(res.success) {
-                    alert('Terhapus!');
-                    location.reload();
-                } else {
-                    alert('Gagal menghapus');
+            .then(async res => {
+                const result = await res.json();
+                if (!res.ok) {
+                    // Tangkap pesan error dari Policy
+                    throw new Error(result.message || 'Gagal menghapus');
                 }
+                return result;
+            })
+            .then(res => {
+                alert('Terhapus!');
+                location.reload();
+            })
+            .catch(err => {
+                // Tampilkan pesan error yang jelas
+                alert(err.message);
             });
         }
     }
