@@ -43,13 +43,13 @@
         
         {{-- Kalender --}}
         {{-- LOGIKA BARU: Cek apakah URL adalah '/' (Home) ATAU 'dashboard' --}}
-        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#kalender' : url('/#kalender') }}" 
+        <a href="{{ url('/dashboard#kalender') }}" 
         class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             Kalender Kegiatan
         </a>
 
         {{-- MENU BEM --}}
-        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#bem' : url('/#bem') }}" 
+        <a href="{{ url('/dashboard#bem') }}" 
         class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
             Badan Eksekutif Mahasiswa
         </a>
@@ -58,20 +58,17 @@
         <a href="{{ url('/dashboard#news') }}" 
         class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             NEWS
-        </a>
-
-        
-
+        </a>      
 
         {{-- MENU UKM --}}
-        <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#ukm' : url('/#ukm') }}" 
+        <a href="{{ url('/dashboard#ukm') }}" 
         class="nav-link flex items-center px-6 py-2 {{ $isUkmActive ? $activeClass : $inactiveClass }}">
             Daftar UKM/SC
         </a>
 
         {{-- Tes Minat --}}
         @if(auth()->guest() || !auth()->user()->hasRole('adminukm'))
-            <a href="{{ (request()->is('/') || request()->is('dashboard')) ? '#tes-minat' : url('/#tes-minat') }}" 
+            <a href="{{ url('/dashboard#tes-minat') }}" 
                 class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
                 Tes Minat
             </a>
@@ -84,12 +81,6 @@
             @if(auth()->user()->hasRole('adminbem'))
                 {{-- AdminBEM sees Account Management --}}
                 <a href="{{ route('adminbem.accounts.index') }}" 
-                   class="nav-link no-highlight flex items-center px-6 py-2 {{ $isAccountPage ? $activeClass : $inactiveClass }}">
-                    Akun
-                </a>
-            @else
-                {{-- Other users see Profile --}}
-                <a href="{{ route('profile.edit') }}" 
                    class="nav-link no-highlight flex items-center px-6 py-2 {{ $isAccountPage ? $activeClass : $inactiveClass }}">
                     Akun
                 </a>
