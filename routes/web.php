@@ -8,7 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TesMinatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DaftarKegiatanController;
-use App\Http\Controllers\DaftarKegiatanControllerKegiatanController;
+
 
 Route::get('/', function () {
     $ormawas = Ormawa::all();
@@ -48,6 +48,7 @@ Route::post('/ormawa/{slug}/update-content', [OrmawaController::class, 'updateCo
 Route::get('/tesminat', [TesMinatController::class, 'index'])->name('tesminat.index');
 Route::post('/tesminat/submit', [TesMinatController::class, 'submit'])->name('tesminat.submit');
 // =================================================
+Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
 
 // Semua route yang butuh login
 Route::middleware('auth')->group(function () {
@@ -92,8 +93,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     // Contoh: Kelola Kegiatan, Berita, dll
     // Route::resource('kegiatan', DaftarKegiatanController::class);
-    // Route::resource('berita', BeritaController::class);
-    
+    Route::resource('berita', BeritaController::class);
     // Placeholder untuk fitur admin
     Route::get('/admin/dashboard', function () {
         return view('dashboard'); // Ganti dengan view admin dashboard
@@ -105,13 +105,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Kegiatan Management - AdminBEM dan AdminUKM bisa mengelola kegiatan mereka
     Route::get('/kegiatan/events', [DaftarKegiatanController::class, 'getEvents'])->name('kegiatan.events');
     Route::post('/kegiatan', [DaftarKegiatanController::class, 'store'])->name('kegiatan.store');
-    Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
     Route::put('/kegiatan/{id}', [DaftarKegiatanController::class, 'update'])->name('kegiatan.update');
     Route::delete('/kegiatan/{id}', [DaftarKegiatanController::class, 'destroy'])->name('kegiatan.destroy');
 
     // Route untuk Upload LPJ
-    Route::post('/kegiatan/{id}/upload-lpj', [DaftarKegiatanController::class, 'uploadLpj'])->name('kegiatan.uploadLpj');
-});
+    Route::post('/kegiatan/{id}/upload-lpj', [DaftarKegiatanController::class, 'uploadLpj'])->name('kegiatan.uploadLpj')->middleware(['auth', 'role:adminbem|adminukm']);
+    // Rute Download (Hanya untuk User Login)
+    Route::get('/kegiatan/{id}/download-lpj', [DaftarKegiatanController::class, 'downloadLpj'])
+        ->middleware('auth');
+    });
 
 // Route yang HANYA bisa diakses oleh AdminBEM (Super Admin)
 Route::middleware(['auth', 'adminbem'])->group(function () {

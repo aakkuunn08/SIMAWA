@@ -128,12 +128,9 @@
                                 <option value="">Pilih Tipe</option>
                                 <option value="ukm" {{ old('tipe', $isEdit ? $ormawa->tipe : '') == 'ukm' ? 'selected' : '' }}>
                                     UKM (Unit Kegiatan Mahasiswa)
-                                </option>
-                                <option value="bem" {{ old('tipe', $isEdit ? $ormawa->tipe : '') == 'bem' ? 'selected' : '' }}>
-                                    BEM (Badan Eksekutif Mahasiswa)
-                                </option>
-                                <option value="komunitas" {{ old('tipe', $isEdit ? $ormawa->tipe : '') == 'komunitas' ? 'selected' : '' }}>
-                                    Komunitas
+                                </option>    
+                                <option value="sc" {{ old('tipe', $isEdit ? $ormawa->tipe : '') == 'sc' ? 'selected' : '' }}>
+                                    SC (Study Club)
                                 </option>
                             </select>
                             @error('tipe')

@@ -15,6 +15,7 @@ class Lpj extends Model
     protected $fillable = [
         'id_kegiatan',
         'file_lpj',
+        'nama_lpj',
         'tanggal_upload',
         'status_lpj',
     ];

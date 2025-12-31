@@ -33,7 +33,7 @@ return [
 
     'lifetime' => env('SESSION_LIFETIME', 120),
 
-    'expire_on_close' => false,
+    'expire_on_close' => true,
 
     // Untuk keamanan multi device
     'same_site' => env('SESSION_SAME_SITE', 'lax'),
