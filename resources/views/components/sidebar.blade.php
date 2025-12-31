@@ -92,10 +92,10 @@
                 </a>
             @endif
             
-            <a href="{{ url('/panduan') }}" 
+            <!-- <a href="{{ url('/panduan') }}" 
                class="nav-link no-highlight flex items-center px-6 py-2 {{ $isPanduanPage ? $activeClass : $inactiveClass }}">
                 Panduan
-            </a>
+            </a> -->
 
             <form action="{{ route('logout') }}" method="POST" class="w-full">
                 @csrf

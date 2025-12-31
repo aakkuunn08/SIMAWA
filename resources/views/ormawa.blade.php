@@ -51,17 +51,7 @@
         <div style="display:flex; justify-content:center; margin-bottom:28px; position:relative;">
             <img src="{{ asset('images/logobem.png') }}"
                  alt="BEM ITH 2025"
-                 style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));">
-            
-            {{-- Edit Logo Button (Hidden by default) --}}
-            @auth
-                @if(auth()->user()->hasRole('adminbem'))
-                    <button class="edit-control hidden absolute -bottom-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm" 
-                            onclick="alert('Fitur upload logo akan segera ditambahkan')">
-                        Ganti Logo
-                    </button>
-                @endif
-            @endauth
+                 style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));"> 
         </div>
 
         {{-- VISI DAN MISI BERSAMPINGAN --}}
@@ -156,7 +146,7 @@
             </div>
         </div>
 
-        {{-- ORGANIZATIONAL STRUCTURE (TERPISAH DI BAWAH) --}}
+        <!-- {{-- ORGANIZATIONAL STRUCTURE (TERPISAH DI BAWAH) --}}
         <div style="max-width:1100px; margin:0 auto;">
             <div style="
                 background:white; padding:24px;
@@ -167,11 +157,12 @@
                 <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
                     Organizational Structure
                 </div>
-                <div class="editable-content" data-field="structure" style="font-size:15px; color:#444; line-height:1.6;">
-                    The BEM consists of elected representatives...
-                </div>
                 
-                {{-- Edit Button (Hidden by default) --}}
+                 <div class="editable-content" data-field="structure" style="font-size:15px; color:#444; line-height:1.6;">
+                    The BEM consists of elected representatives...
+                </div> -->
+                
+                <!-- {{-- Edit Button (Hidden by default) --}}
                 @auth
                     @if(auth()->user()->hasRole('adminbem'))
                         <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
@@ -183,7 +174,7 @@
                     @endif
                 @endauth
             </div>
-        </div>
+        </div> --> 
 
     </div>
 
@@ -196,16 +187,6 @@
             <img src="{{ asset($ormawa->logo) }}"
                  alt="{{ $ormawa->nama }}"
                  style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));">
-            
-            {{-- Edit Logo Button (Hidden by default) --}}
-            @auth
-                @if(auth()->user()->hasRole('adminbem'))
-                    <button class="edit-control hidden absolute -bottom-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm" 
-                            onclick="alert('Fitur upload logo akan segera ditambahkan')">
-                        Ganti Logo
-                    </button>
-                @endif
-            @endauth
         </div>
 
         {{-- VISI DAN MISI BERSAMPINGAN --}}
@@ -366,19 +347,89 @@
             </div>
         </div>
 
-        {{-- ORGANIZATIONAL STRUCTURE (TERPISAH DI BAWAH) --}}
-        <div style="max-width:1100px; margin:0 auto;">
-            <div style="
-                background:white; padding:24px;
-                border-radius:18px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                position:relative;
-            ">
-                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
-                    Organizational Structure
+{{-- ORGANIZATIONAL STRUCTURE --}}
+<div style="max-width:1100px; margin:0 auto;">
+    <div style="
+        background:white;
+        padding:24px;
+        border-radius:18px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    ">
+
+        <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:16px;">
+            Organizational Structure
+        </div>
+@php
+    $structure = json_decode($ormawa->structure ?? '{}', true);
+@endphp
+
+{{-- VIEW MODE --}}
+<div class="structure-view">
+
+    <div style="display:flex; justify-content:space-between; font-weight:700; border-bottom:1px solid #eee; padding:8px 0;">
+        <div>Ketua</div>
+        <div>{{ $structure['ketua'] ?? '' }}</div>
+    </div>
+
+    @foreach ($structure['jabatan'] ?? [] as $jabatan)
+        <div style="display:flex; justify-content:space-between; font-weight:700; padding:8px 0;">
+            <div>{{ $jabatan['jabatan'] }}</div>
+            <div style="font-weight:500">{{ $jabatan['nama'] }}</div>
+        </div>
+
+        @foreach ($jabatan['anggota'] ?? [] as $anggota)
+            <div style="margin-left:32px; font-size:14px; color:#555;">
+                {{ $anggota }}
+            </div>
+        @endforeach
+    @endforeach
+
+</div>
+
+{{-- EDIT MODE --}}
+<div class="structure-edit hidden">
+
+    <div style="display:flex; justify-content:space-between; font-weight:700;">
+        <div>Ketua</div>
+        <input id="ketuaInput" class="form-control" style="width:250px"
+               value="{{ $structure['ketua'] ?? '' }}" placeholder="Nama Ketua">
+    </div>
+
+    <div id="jabatanWrapper" class="mt-3">
+        @foreach ($structure['jabatan'] ?? [] as $jabatan)
+            <div class="jabatan-item mt-3">
+                <div style="display:flex; justify-content:space-between;">
+                    <input class="form-control jabatan-nama" style="width:45%; font-weight:700"
+                           value="{{ $jabatan['jabatan'] }}" placeholder="Nama Jabatan">
+                    <input class="form-control jabatan-orang" style="width:45%"
+                           value="{{ $jabatan['nama'] }}" placeholder="Nama">
                 </div>
-                <div class="editable-content" data-field="structure" style="font-size:15px; color:#444; line-height:1.6;">
-                    @switch($ormawa->slug)
+
+                <div class="anggota-wrapper ml-8 mt-2">
+                    @foreach ($jabatan['anggota'] ?? [] as $anggota)
+                        <input class="form-control anggota-input mt-2" value="{{ $anggota }}">
+                    @endforeach
+                </div>
+
+                <button type="button" onclick="addAnggota(this)"
+                        class="ml-8 mt-2 btn btn-sm btn-outline-secondary">
+                    + Add Anggota
+                </button>
+            </div>
+        @endforeach
+    </div>
+
+    <button type="button" onclick="addJabatan()"
+            class="btn btn-sm btn-outline-warning mt-4">
+        + Add Position
+    </button>
+
+</div>
+
+
+    </div>
+</div>
+                     <!-- @switch($ormawa->slug)
                         @case('hero')
                             Struktur organisasi UKM HERO terdiri dari ketua, wakil, sekretaris,
                             bendahara, divisi riset & pengembangan, serta divisi lomba dan pelatihan.
@@ -398,8 +449,8 @@
                         @default
                             Struktur organisasi {{ $ormawa->nama }} terdiri dari pengurus inti
                             dan beberapa divisi sesuai kebutuhan kegiatan.
-                    @endswitch
-                </div>
+                    @endswitch -->
+                <!-- </div> --> 
                 
                 {{-- Edit Button (Hidden by default) --}}
                 @auth
@@ -432,6 +483,13 @@
             toggleBtn.addEventListener('click', function() {
                 editMode = !editMode;
                 
+                //tambahan
+                document.querySelector('.structure-view')?.classList.toggle('hidden', editMode);
+                document.querySelector('.structure-edit')?.classList.toggle('hidden', !editMode);
+                const saveBtn = document.getElementById('saveStructureBtn');
+                saveBtn?.classList.toggle('hidden', !editMode);
+
+
                 if (editMode) {
                     // Show all edit controls
                     editControls.forEach(control => control.classList.remove('hidden'));
@@ -465,7 +523,7 @@
                 
                 const saveBtn = document.createElement('button');
                 saveBtn.textContent = 'Simpan';
-                saveBtn.className = 'px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded';
+                saveBtn.className = 'px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded';
                 saveBtn.onclick = function() {
                     saveContent(field, textarea.value, contentDiv, button);
                 };
