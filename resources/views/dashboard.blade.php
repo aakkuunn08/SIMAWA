@@ -756,22 +756,39 @@
             headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
             body: formData
         })
-        .then(res => res.json())
+        .then(async res => {
+            // --- BAGIAN INI YANG PENTING ---
+            // Kita cek status HTTP-nya dulu
+            const data = await res.json();
+
+            // Jika statusnya BUKAN sukses (misal 403 Forbidden atau 500 Error)
+            if (!res.ok) {
+                // Kita lempar error manual biar ditangkap sama .catch di bawah
+                // data.message itu isinya pesan dari Policy tadi ("Akses Ditolak: ...")
+                throw new Error(data.message || 'Terjadi kesalahan pada server');
+            }
+
+            return data;
+        })
         .then(res => {
+            // Ini jalan kalau statusnya 200 (OK)
             btn.textContent = oldText;
             btn.disabled = false;
+
             if(res.success) {
-                alert('LPJ Berhasil Diupload!');
-                // Refresh modal detail untuk lihat perubahan
+                alert(res.message); // "LPJ Berhasil Diupload!"
                 showSideDetail(activeKegiatanId);
             } else {
                 alert('Gagal: ' + res.message);
             }
         })
         .catch(err => {
+            // --- ERROR DITANGKAP DISINI ---
             btn.textContent = oldText;
             btn.disabled = false;
-            alert('Error Upload');
+            
+            // Tampilkan pesan error asli dari Laravel (Policy)
+            alert(err.message); 
         });
     }
 
