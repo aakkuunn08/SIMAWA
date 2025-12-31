@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrmawaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TesMinatController;
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DaftarKegiatanController;
 
@@ -13,6 +14,59 @@ use App\Http\Controllers\DaftarKegiatanController;
 Route::get('/', function () {
     $ormawas = Ormawa::all();
     
+    // Get events from database
+    $kegiatan = DaftarKegiatan::all();
+
+    // Ambil berita yang sudah dipublish, urutkan dari yang terbaru
+    $beritas = \App\Models\Berita::with('user')
+                ->where('published', true)
+                ->orderBy('created_at', 'desc')
+                ->take(3) // Opsional: ambil 3 berita terbaru saja untuk home
+                ->get();
+    
+    $sevents = [];
+    foreach ($kegiatan as $k) {
+        $date = $k->tanggal_kegiatan;
+        if (!isset($sevents[$date])) {
+            $sevents[$date] = [];
+        }
+        $sevents[$date][] = [
+            'id' => $k->id_kegiatan,
+            'nama' => $k->nama_kegiatan,
+            'tanggal_kegiatan' => $k->tanggal_kegiatan,
+            'tempat' => $k->tempat,
+            'waktu_mulai' => $k->waktu_mulai ? date('H.i', strtotime($k->waktu_mulai)) : null,
+            'waktu_selesai' => $k->waktu_selesai ? date('H.i', strtotime($k->waktu_selesai)) : null,
+        ];
+    }
+    
+    return view('home', compact('ormawas', 'sevents', 'beritas'));
+})->name('home');
+
+// ================= ORMAWA =================
+Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
+
+// Update content in-place (only for AdminBEM)
+Route::post('/ormawa/{slug}/update-content', [OrmawaController::class, 'updateContent'])
+    ->middleware(['auth', 'adminbem'])
+    ->name('ormawa.updateContent');
+// ==========================================
+
+// ================= TES MINAT UKM =================
+// Route untuk halaman tes minat - Bisa diakses tanpa login (untuk mahasiswa)
+Route::get('/tesminat', [TesMinatController::class, 'index'])->name('tesminat.index');
+Route::post('/tesminat/submit', [TesMinatController::class, 'submit'])->name('tesminat.submit');
+// =================================================
+
+Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
+Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
+// Semua route yang butuh login
+Route::middleware('auth')->group(function () {
+
+// Dashboard
+Route::get('/dashboard', function () {
+    $ormawas = Ormawa::all();
+    $beritas = \App\Models\Berita::with('user')->where('published', true)->orderBy('tanggal_publikasi', 'desc')->get();
     // Get events from database
     $kegiatan = DaftarKegiatan::all();
     $sevents = [];
@@ -31,52 +85,8 @@ Route::get('/', function () {
         ];
     }
     
-    return view('home', compact('ormawas', 'sevents'));
-})->name('home');
-
-// ================= ORMAWA =================
-Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.show');
-
-// Update content in-place (only for AdminBEM)
-Route::post('/ormawa/{slug}/update-content', [OrmawaController::class, 'updateContent'])
-    ->middleware(['auth', 'adminbem'])
-    ->name('ormawa.updateContent');
-// ==========================================
-
-// ================= TES MINAT UKM =================
-// Route untuk halaman tes minat - Bisa diakses tanpa login (untuk mahasiswa)
-Route::get('/tesminat', [TesMinatController::class, 'index'])->name('tesminat.index');
-Route::post('/tesminat/submit', [TesMinatController::class, 'submit'])->name('tesminat.submit');
-// =================================================
-Route::get('/kegiatan/{id}', [DaftarKegiatanController::class, 'show'])->name('kegiatan.show');
-
-// Semua route yang butuh login
-Route::middleware('auth')->group(function () {
-
-    // Dashboard
-    Route::get('/dashboard', function () {
-        $ormawas = Ormawa::all();
-        
-        // Get events from database
-        $kegiatan = DaftarKegiatan::all();
-        $sevents = [];
-        foreach ($kegiatan as $k) {
-            $date = $k->tanggal_kegiatan;
-            if (!isset($sevents[$date])) {
-                $sevents[$date] = [];
-            }
-            $sevents[$date][] = [
-                'id' => $k->id_kegiatan,
-                'nama' => $k->nama_kegiatan,
-                'tanggal_kegiatan' => $k->tanggal_kegiatan,
-                'tempat' => $k->tempat,
-                'waktu_mulai' => $k->waktu_mulai ? date('H.i', strtotime($k->waktu_mulai)) : null,
-                'waktu_selesai' => $k->waktu_selesai ? date('H.i', strtotime($k->waktu_selesai)) : null,
-            ];
-        }
-        
-        return view('dashboard', compact('ormawas', 'sevents'));
-    })->name('dashboard');
+    return view('dashboard', compact('ormawas', 'sevents', 'beritas'));
+})->name('dashboard');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])
@@ -91,9 +101,11 @@ Route::middleware('auth')->group(function () {
 
 // Route yang hanya bisa diakses oleh Admin dan AdminBEM
 Route::middleware(['auth', 'admin'])->group(function () {
-    // Contoh: Kelola Kegiatan, Berita, dll
-    // Route::resource('kegiatan', DaftarKegiatanController::class);
-    Route::resource('berita', BeritaController::class);
+    
+    // Berita Management - AdminBEM dan AdminUKM bisa mengelola berita
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::resource('berita', BeritaController::class)->except(['show']);
+    });
     // Placeholder untuk fitur admin
     Route::get('/admin/dashboard', function () {
         return view('dashboard'); // Ganti dengan view admin dashboard

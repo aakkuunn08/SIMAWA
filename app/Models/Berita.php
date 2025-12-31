@@ -14,8 +14,8 @@ class Berita extends Model
 
     protected $fillable = [
         'user_id',
-        'judul',
-        'konten',
+        'judul_berita', // Pastikan pakai 'judul_berita' sesuai migrasi terakhir
+        'konten',       // Kolom ini harus ada di database
         'tanggal_publikasi',
         'gambar',
         'published'

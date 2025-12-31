@@ -112,31 +112,23 @@
     </section>
 
     {{-- NEWS --}}
-    <section id="news" class="bg-gradient-to-br from-gray-50 to-white px-4 md:px-10 py-12 min-h-screen flex items-center">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="modern-section-title text-center uppercase">News</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+1" class="modern-news-image" alt="News 1">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">Mitraindonesia, Parepare – Habibie Robotic Competition (HRC) 2025...</p>
-                        <p class="modern-news-description">Kegiatan tahunan Unit Kegiatan Mahasiswa yang mengasah kemampuan robotika mahasiswa.</p>
+    <section id="news" class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Berita Terbaru</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach($beritas as $item)
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border">
+                    <img src="{{ asset('storage/' . $item->gambar) }}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">{{ $item->judul_berita }}</h3>
+                        <p class="text-gray-600 text-sm mt-2">
+                            {{-- Memotong teks jadi 20 kata --}}
+                            {{ \Illuminate\Support\Str::words(strip_tags($item->konten), 20, '...') }}
+                        </p>
+                        <a href="{{ route('berita.show', $item->id_berita) }}" class="text-orange-500 text-sm font-bold mt-4 inline-block">Baca Selengkapnya →</a>
                     </div>
-                </article>
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+2" class="modern-news-image" alt="News 2">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">Parepare, 29/05/2025 – ITH Futsal Cup resmi bergulir...</p>
-                        <p class="modern-news-description">Turnamen futsal antar program studi dengan upacara pembukaan yang meriah.</p>
-                    </div>
-                </article>
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+3" class="modern-news-image" alt="News 3">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
-                        <p class="modern-news-description">Festival seni yang menghadirkan berbagai penampilan mahasiswa dan kolaborasi dengan Pemkot.</p>
-                    </div>
-                </article>
+                </div>
+                @endforeach
             </div>
         </div>
     </section>

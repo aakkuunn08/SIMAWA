@@ -34,21 +34,28 @@ class BeritaController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $data = $request->only(['judul', 'konten']);
-        $data['user_id'] = Auth::id();
-        $data['tanggal_publikasi'] = now();
-        $data['published'] = true; // Default published
+        // AMBIL ATTRIBUT 'id' LANGSUNG DARI OBJECT USER
+        // Ini cara paling ampuh jika auth()->id() bermasalah
+        $userId = auth()->user()->id; 
+
+        $data = [
+            'user_id' => $userId, 
+            'judul_berita' => $request->judul,
+            'konten' => $request->konten,
+            'tanggal_publikasi' => now(),
+            'published' => true,
+        ];
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
         }
 
-        Berita::create($data);
+        \App\Models\Berita::create($data);
 
-        return response()->json(['success' => true, 'message' => 'Berita berhasil ditambahkan!']);
+        return redirect()->route('dashboard')->with('success', 'Berita berhasil diterbitkan!');
     }
 
     /**
@@ -57,11 +64,12 @@ class BeritaController extends Controller
     public function edit($id)
     {
         $berita = Berita::findOrFail($id);
-        // Pastikan file view ini ada di: resources/views/admin/berita/form.blade.php
-        return view('admin.berita.form', [
-            'berita' => $berita,
-            'isEdit' => true
-        ]);
+        
+        // Proteksi Policy
+        $this->authorize('update', $berita);
+
+        // Mengembalikan data JSON agar bisa ditangkap oleh Modal di Dashboard
+        return response()->json($berita);
     }
 
     /**
@@ -70,35 +78,38 @@ class BeritaController extends Controller
     public function update(Request $request, $id)
     {
         $berita = Berita::findOrFail($id);
+        $this->authorize('update', $berita);
 
         $request->validate([
             'judul' => 'required|string|max:255',
             'konten' => 'required',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'url_sumber' => 'nullable|url',
         ]);
 
-        $data = $request->all();
-        $data['published'] = $request->has('published');
+        // Sinkronkan nama input form dengan kolom database
+        $data = [
+            'judul_berita' => $request->judul, 
+            'konten' => $request->konten,
+            'published' => $request->has('published') ? true : $berita->published,
+        ];
 
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
             if ($berita->gambar) {
                 Storage::disk('public')->delete($berita->gambar);
             }
-            // Simpan gambar baru
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
         }
 
         $berita->update($data);
 
+        // Redirect ke dashboard agar tidak muncul layar putih JSON
         return redirect()->route('dashboard')->with('success', 'Berita berhasil diperbarui!');
     }
 
     public function show($id)
     {
-        $berita = Berita::findOrFail($id);
-        return view('berita.show', compact('berita'));
+        $berita = Berita::with('user')->findOrFail($id);
+        return view('berita.show', compact('berita')); // Mengarah ke resources/views/berita/show.blade.php
     }
 
     public function destroy($id)

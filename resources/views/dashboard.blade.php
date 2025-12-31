@@ -384,42 +384,53 @@
         </div>
     </section>
 
-    {{-- NEWS --}}
+    {{-- NEWS SECTION --}}
     <section id="news" class="bg-gradient-to-br from-gray-50 to-white px-4 md:px-10 py-12 min-h-screen flex items-center">
         <div class="max-w-6xl mx-auto">
             <h2 class="modern-section-title text-center uppercase">News</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {{-- Contoh Berita --}}
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+1" class="modern-news-image" alt="News 1">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">Mitraindonesia, Parepare – Habibie Robotic Competition (HRC) 2025...</p>
-                        <p class="modern-news-description">Kegiatan tahunan Unit Kegiatan Mahasiswa...</p>
-                    </div>
-                </article>
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+2" class="modern-news-image" alt="News 2">
-                    <div class="modern-news-content">
-                        <p class="modern-news-title">Parepare, 29/05/2025 – ITH Futsal Cup resmi bergulir...</p>
-                        <p class="modern-news-description">Turnamen futsal antar program studi...</p>
-                    </div>
-                </article>
-                <article class="modern-news-card">
-                    <img src="https://via.placeholder.com/350x180?text=News+3" class="modern-news-image" alt="News 3">
-                    <div class="modern-news-content">                    <p class="modern-news-title">ITH Sukses Laksanakan Festival Seni...</p>
-                        <p class="modern-news-description">Festival seni yang menghadirkan berbagai penampilan mahasiswa...</p>
-                    </div>
-                </article>
+                {{-- Loop Berita dari Database --}}
+                @foreach($beritas as $item)
+                    <article class="modern-news-card relative group">
+                        {{-- Link Detail (Tetap Ada) --}}
+                        <a href="{{ route('berita.show', $item->id_berita) }}">
+                            <img src="{{ $item->gambar ? asset('storage/' . $item->gambar) : 'https://via.placeholder.com/350' }}" class="modern-news-image">
+                            <div class="modern-news-content">
+                                <p class="modern-news-title font-bold text-gray-800 line-clamp-2">
+                                    {{ $item->judul_berita }}
+                                </p>
+                                <p class="modern-news-description text-sm text-gray-600 mt-2 line-clamp-3">
+                                    {{-- Ini rahasianya biar terpotong rapi 20 kata --}}
+                                    {{ \Illuminate\Support\Str::words(strip_tags($item->konten), 20, '...') }}
+                                </p>
+                                <p class="text-[10px] text-gray-400 mt-3 italic">Oleh: {{ $item->user->name ?? 'Admin' }}</p>
+                            </div>
+                        </a>
+
+                        {{-- TOMBOL EDIT KHUSUS ADMIN (Hanya tampil jika di-hover) --}}
+                        @auth
+                            @can('update', $item)
+                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="editBerita({{ $item->id_berita }})" 
+                                        class="bg-orange-500 text-white p-2 rounded-full shadow-lg hover:bg-orange-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            @endcan
+                        @endauth
+                    </article>
+                @endforeach
             </div>
 
-            {{-- FITUR KHUSUS ADMIN: TOMBOL EDIT --}}
             @auth
                 @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
-                <div class="flex justify-end mt-6">
-                   <button onclick="openModalBerita()" class="modern-btn modern-btn-primary">
-                     + Tambah Berita
-                  </button>
-                </div>
+                    <div class="flex justify-end mt-6">
+                    <button onclick="openModalBerita()" class="modern-btn modern-btn-primary">
+                        + Tambah Berita
+                    </button>
+                    </div>
                 @endif
             @endauth
         </div>
@@ -888,6 +899,7 @@
 
         renderCalendar(currentYear, currentMonth);
     });
+
     // --- FUNGSI MODAL BERITA ---
     window.openModalBerita = function(id = null, judul = '', konten = '') {
         const modal = document.getElementById('modalBerita');
@@ -914,6 +926,24 @@
 
     window.closeModalBerita = function() {
         document.getElementById('modalBerita').classList.add('hidden');
+    }
+
+    window.editBerita = function(id) {
+        fetch(`/berita/${id}/edit`)
+            .then(res => res.json())
+            .then(data => {
+                // Isi data ke dalam form modal berita
+                document.getElementById('berita_judul').value = data.judul_berita;
+                document.getElementById('berita_konten').value = data.konten;
+                
+                // Ubah Judul Modal & Action Form
+                document.getElementById('modalBeritaTitle').textContent = 'Edit Berita';
+                document.getElementById('formBerita').action = `/berita/${id}`;
+                document.getElementById('beritaMethod').innerHTML = '<input type="hidden" name="_method" value="PUT">';
+                
+                // Tampilkan Modal
+                document.getElementById('modalBerita').classList.remove('hidden');
+            });
     }
 </script>
 @endpush

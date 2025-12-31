@@ -10,19 +10,15 @@ return new class extends Migration
     {
         Schema::create('berita', function (Blueprint $table) {
             $table->id('id_berita');
+            $table->unsignedBigInteger('user_id'); 
             $table->string('judul_berita', 255);
-            $table->string('url_sumber', 255)->nullable();
+            $table->text('konten'); 
             $table->date('tanggal_publikasi')->nullable();
             $table->string('gambar', 255)->nullable();
-            $table->string('sumber', 150)->nullable();
-
-            $table->unsignedBigInteger('user_id'); // user yang input berita
-
-            $table->foreign('user_id')
-                  ->references('id')->on('users')
-                  ->onDelete('cascade');
-
+            $table->boolean('published')->default(true); // CUKUP SATU SAJA DI SINI
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
