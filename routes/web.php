@@ -92,8 +92,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     // Contoh: Kelola Kegiatan, Berita, dll
     // Route::resource('kegiatan', DaftarKegiatanController::class);
-    // Route::resource('berita', BeritaController::class);
-    
+    Route::resource('berita', BeritaController::class);
     // Placeholder untuk fitur admin
     Route::get('/admin/dashboard', function () {
         return view('dashboard'); // Ganti dengan view admin dashboard
