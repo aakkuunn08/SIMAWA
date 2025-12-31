@@ -46,8 +46,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             OrmawaSeeder::class,
             SoalSeeder::class,
+            DaftarKegiatanSeeder::class, // <--- TAMBAHKAN INI
         ]);
-
+        
         // $this->command->info('');
         // $this->command->info('===========================================');
         // $this->command->info('Database seeding completed successfully!');

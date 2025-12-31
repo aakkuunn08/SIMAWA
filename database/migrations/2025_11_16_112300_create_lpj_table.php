@@ -19,6 +19,9 @@ class CreateLpjTable extends Migration
             $table->date('tanggal_upload');
             $table->string('status_lpj', 50);
 
+            $table->enum('status', ['pending', 'revisi', 'diterima'])->default('pending');
+            $table->text('catatan_revisi')->nullable(); // Untuk pesan dari BEM kenapa direvisi
+
             $table->foreign('id_kegiatan')
                   ->references('id_kegiatan')->on('daftar_kegiatan')
                   ->onDelete('cascade');

@@ -18,58 +18,84 @@
         </div>
     </section>
 
-    {{-- SEARCH + BULAN + KALENDER --}}
-    <div class="mt-10 flex flex-col items-center px-4">
-        <div class="w-full max-w-4xl flex flex-col items-center">
-            {{-- SEARCH --}}
-            <div class="modern-search relative mx-auto w-full max-w-md">
-                <input type="text" placeholder="Cari Kegiatan"
-                    class="px-5 py-3 w-full text-gray-700 placeholder-gray-400">
-                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m21 21-5.2-5.2m0 0A7 7 0 1 0 5 5a7 7 0 0 0 10.8 10.8Z" />
-                    </svg>
-                </button>
-            </div>
-
-            {{-- NAVIGASI BULAN --}}
-            <div class="modern-calendar-nav flex items-center gap-4 justify-center mt-6 mb-6">
-                <button id="prevBtn" class="modern-calendar-btn text-gray-700 font-bold text-xl">&lsaquo;</button>
-                <span id="monthLabel" class="font-bold text-orange-500 text-xl md:text-2xl px-4">
-                    {{ date('F, Y') }}
-                </span>
-                <button id="nextBtn" class="modern-calendar-btn text-gray-700 font-bold text-xl">&rsaquo;</button>
-            </div>
-        </div>
-    </div>
-
-    {{-- AREA KALENDER --}}
-    <section id="kalender" class="bg-gradient-to-br from-gray-50 to-gray-100 px-4 md:px-8 py-12 scroll-mt-16 min-h-screen flex items-center">
-        <div class="w-full max-w-4xl mx-auto">
-            <div class="modern-calendar-container">
-                <div class="grid grid-cols-7 gap-4 mb-6 text-center">
-                    <div class="modern-calendar-day">Minggu</div>
-                    <div class="modern-calendar-day">Senin</div>
-                    <div class="modern-calendar-day">Selasa</div>
-                    <div class="modern-calendar-day">Rabu</div>
-                    <div class="modern-calendar-day">Kamis</div>
-                    <div class="modern-calendar-day">Jumat</div>
-                    <div class="modern-calendar-day">Sabtu</div>
-                </div>
-                <div id="calendarGrid" class="grid grid-cols-7 gap-3 text-center text-sm"></div>
+    {{-- AREA KALENDER UTAMA + SIDEBAR --}}
+    <section id="kalender" class="bg-gray-50 px-4 md:px-8 py-10 min-h-screen scroll-mt-16">
+        <div class="max-w-7xl mx-auto">
+            
+            {{-- GRID LAYOUT: Kiri Kalender, Kanan Sidebar --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
-                {{-- TOMBOL EDIT KEGIATAN --}}
-                @auth
-                    @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
-                    <div class="flex justify-end mt-8">
-                        <button onclick="openAddModal()" class="modern-btn modern-btn-primary">
-                            + Tambah Kegiatan
-                        </button>
+                {{-- KOLOM 1: KALENDER (Lebar 8 kolom dari 12) --}}
+                <div class="lg:col-span-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    {{-- Header Kalender di dalam Card --}}
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 font-playfair">Kalender Kegiatan</h2>
+                        {{-- Tombol Navigasi Bulan Pindah Sini Biar Rapi --}}
+                        <div class="flex items-center gap-3">
+                            <button id="prevBtn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-orange-100 text-gray-600 hover:text-orange-600 transition">&lsaquo;</button>
+                            <span id="monthLabel" class="font-bold text-orange-500 min-w-[120px] text-center">
+                                {{ date('F, Y') }}
+                            </span>
+                            <button id="nextBtn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-orange-100 text-gray-600 hover:text-orange-600 transition">&rsaquo;</button>
+                        </div>
                     </div>
-                    @endif
-                @endauth
+
+                    {{-- Grid Hari --}}
+                    <div class="grid grid-cols-7 gap-2 mb-4 text-center border-b pb-4">
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Min</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sen</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sel</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Rab</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kam</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jum</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sab</div>
+                    </div>
+
+                    {{-- Grid Tanggal (Isi Kalender) --}}
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center text-sm"></div>
+                </div>
+
+                {{-- KOLOM 2: SIDEBAR INFORMASI (Lebar 4 kolom dari 12) --}}
+                <div class="lg:col-span-4 space-y-6">
+                    
+                    {{-- WIDGET 1: PENCARIAN & TAMBAH --}}
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="relative w-full mb-4">
+                            <input type="text" placeholder="Cari Kegiatan..."
+                                class="pl-10 pr-4 py-2.5 w-full text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 transition-colors">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21-5.2-5.2m0 0A7 7 0 1 0 5 5a7 7 0 0 0 10.8 10.8Z" /></svg>
+                        </div>
+                        
+                        @auth
+                            @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
+                            <button onclick="openAddModal()" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition shadow-lg shadow-orange-200">
+                                + Tambah Kegiatan Baru
+                            </button>
+                            @endif
+                        @endauth
+                    </div>
+
+                    {{-- WIDGET 2: LIST KEGIATAN PER TANGGAL (PENGGANTI DETAIL) --}}
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 min-h-[300px]">
+                        {{-- Judul Tanggal yang dipilih --}}
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider">Kegiatan Tanggal</h3>
+                            <p id="selectedDateLabel" class="text-lg font-bold text-gray-800 mt-1">
+                                - Pilih Tanggal -
+                            </p>
+                        </div>
+
+                        {{-- Container List --}}
+                        <div id="dailyEventsList" class="space-y-3">
+                            {{-- State Awal: Kosong --}}
+                            <div class="text-center py-10 text-gray-400">
+                                <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <p class="text-sm">Klik tanggal di kalender<br>untuk melihat daftar kegiatan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </section>
@@ -272,6 +298,17 @@
                             <p id="detailTempat" class="text-sm text-gray-800"></p>
                         </div>
                     </div>
+                    
+                    {{-- INFO PENGINPUT --}}
+                    <div class="flex items-start gap-4">
+                        <div class="modern-form-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-semibold text-gray-500 mb-1">Diinput Oleh</p>
+                            <p id="detailPenginput" class="text-sm text-gray-800 font-medium">-</p>
+                        </div>
+                    </div>
 
                     <!-- UPLOAD LPJ -->
                     <div class="pt-4 mt-2 border-t border-gray-100">
@@ -431,117 +468,132 @@
             </div>
         </section>
     @endif
-    
-    <!-- <section id="tes-minat" class="bg-white py-12 min-h-screen flex items-center justify-center scroll-mt-16">
-        <div class="w-full max-w-4xl mx-auto px-4">
-            <div class="modern-tes-minat text-center">
-                <h3 class="modern-tes-minat-title">TES MINAT</h3>
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        {{-- Admin BEM: Tombol Kelola Tes Minat --}}
-                        <a href="{{ route('tesminatbem.menu') }}"
-                            class="modern-btn modern-btn-primary inline-block">
-                            Kelola Tes Minat
-                        </a>
-                    @else
-                        {{-- User biasa: Tombol Ayo Mulai Tes --}}
-                        <a href="{{ route('tesminat.index') }}"
-                            class="modern-btn modern-btn-primary inline-block">
-                            Ayo Mulai Tes!
-                        </a>
-                    @endif
-                @else
-                    {{-- Guest: Tombol Ayo Mulai Tes --}}
-                    <a href="{{ route('tesminat.index') }}"
-                        class="modern-btn modern-btn-primary inline-block">
-                        Ayo Mulai Tes!
-                    </a>
-                @endauth
-            </div>
-        </div>
-    </section> -->
-<!-- 
-    {{-- TAMPILKAN HANYA JIKA USER ADALAH ADMIN BEM --}}
-    @if(auth()->user()->hasRole('adminbem'))
-        <section id="tes-minat" class="bg-white py-10 text-center">
-            <h3 class="text-sm font-semibold mb-3 tracking-wide">TES MINAT</h3>
-            <a href="{{ route('tesminatbem.results') }}"
-            class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600">
-            Kelola Tes Minat
-            </a>
-        </section>
-    @endif  -->
 @endsection
 
 @push('scripts')
 <script>
     // ==========================================
-    // 1. VARIABEL GLOBAL
+    // 1. SETUP DATA & VARIABEL GLOBAL
     // ==========================================
-    let activeKegiatanId = null; 
-    let currentEventId = null; // Variable lama (untuk jaga-jaga logic lama)
+    const events = JSON.parse(`{!! json_encode($sevents ?? []) !!}`); 
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+    let activeKegiatanId = null; // Menyimpan ID kegiatan yang sedang dibuka
     
-    // Ambil data events dari PHP
-    const events = JSON.parse(`{!! json_encode($sevents ?? []) !!}`);
-    let isEditMode = false;
+    const grid = document.getElementById('calendarGrid');
+    const monthLabel = document.getElementById('monthLabel');
 
     // ==========================================
-    // 2. FUNGSI-FUNGSI UTAMA (GLOBAL WINDOW)
+    // 2. FUNGSI RENDER KALENDER (Gaya Baru + Limit)
     // ==========================================
+    function renderCalendar(year, month) {
+        if(monthLabel) monthLabel.textContent = new Date(year, month).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+        if(grid) grid.innerHTML = '';
+        
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // --- A. ALERT CUSTOM (KATALON) ---
-    window.showCustomAlert = function(message, type = 'success', callback = null) {
-        const modal = document.getElementById('customAlertModal');
-        const icon = document.getElementById('alertIcon');
-        const title = document.getElementById('alertTitle');
-        const messageEl = document.getElementById('alertMessage');
-        const okBtn = document.getElementById('alertOkBtn');
-        const cancelBtn = document.getElementById('alertCancelBtn');
-        
-        messageEl.textContent = message;
-        
-        if (type === 'success') {
-            title.textContent = 'Berhasil';
-            icon.className = 'w-16 h-16 rounded-full flex items-center justify-center bg-green-100';
-            icon.innerHTML = '<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
-            okBtn.className = 'px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors';
-            cancelBtn.classList.add('hidden');
-        } else if (type === 'error') {
-            title.textContent = 'Error';
-            icon.className = 'w-16 h-16 rounded-full flex items-center justify-center bg-red-100';
-            icon.innerHTML = '<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
-            okBtn.className = 'px-6 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors';
-            cancelBtn.classList.add('hidden');
-        } else if (type === 'confirm') {
-            title.textContent = 'Konfirmasi';
-            icon.className = 'w-16 h-16 rounded-full flex items-center justify-center bg-orange-100';
-            icon.innerHTML = '<svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
-            okBtn.className = 'px-6 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-colors';
-            cancelBtn.classList.remove('hidden');
+        // Kotak Kosong
+        for (let i = 0; i < firstDay; i++) {
+            grid.appendChild(document.createElement('div'));
         }
-        
-        modal.classList.remove('hidden');
-        
-        okBtn.onclick = function() {
-            hideCustomAlert();
-            if (callback && type === 'confirm') callback(true);
-        };
-        
-        cancelBtn.onclick = function() {
-            hideCustomAlert();
-            if (callback && type === 'confirm') callback(false);
-        };
-    }
-    
-    window.hideCustomAlert = function() {
-        document.getElementById('customAlertModal').classList.add('hidden');
+
+        // Tanggal
+        for (let d = 1; d <= daysInMonth; d++) {
+            const cell = document.createElement('div');
+            cell.onclick = () => updateSidebarList(year, month, d);
+            cell.className = 'flex flex-col items-center justify-start cursor-pointer hover:bg-orange-50 transition p-1 min-h-[80px] rounded-lg border border-transparent hover:border-orange-100 relative';
+
+            const dateEl = document.createElement('div');
+            dateEl.textContent = d;
+            dateEl.className = 'text-sm mb-1 font-medium text-gray-700';
+            
+            if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+                dateEl.className = 'w-7 h-7 flex items-center justify-center bg-orange-500 text-white rounded-full text-xs font-bold shadow-md mb-1';
+            }
+            cell.appendChild(dateEl);
+
+            // LOGIKA LIMIT 3 ITEM
+            const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            if (events[key]) {
+                const eventList = Array.isArray(events[key]) ? events[key] : [events[key]];
+                const maxDisplay = 2; // Tampilkan 2 + sisa
+                
+                eventList.forEach((event, index) => {
+                    if (eventList.length <= 3) {
+                         createEventPill(cell, event.nama);
+                    } else {
+                        if (index < maxDisplay) {
+                            createEventPill(cell, event.nama);
+                        } else if (index === maxDisplay) {
+                            const more = document.createElement('div');
+                            more.className = 'text-[10px] text-gray-400 font-bold mt-0.5';
+                            more.textContent = `+ ${eventList.length - maxDisplay} lagi...`;
+                            cell.appendChild(more);
+                        }
+                    }
+                });
+            }
+            grid.appendChild(cell);
+        }
     }
 
-    // --- B. MODAL INPUT KEGIATAN (ADD/EDIT) ---
+    function createEventPill(parent, text) {
+        const ev = document.createElement('div');
+        ev.className = 'w-full bg-orange-100 text-orange-700 text-[10px] px-1 py-0.5 rounded truncate mt-0.5 font-medium border border-orange-200/50';
+        ev.textContent = text;
+        parent.appendChild(ev);
+    }
+
+    // ==========================================
+    // 3. FUNGSI UPDATE SIDEBAR (Klik Tanggal)
+    // ==========================================
+    function updateSidebarList(year, month, day) {
+        const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dateObj = new Date(year, month, day);
+        
+        const label = document.getElementById('selectedDateLabel');
+        if(label) label.textContent = dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+        const listContainer = document.getElementById('dailyEventsList');
+        if(!listContainer) return;
+        
+        listContainer.innerHTML = ''; 
+
+        if (events[key]) {
+            const eventList = Array.isArray(events[key]) ? events[key] : [events[key]];
+            
+            eventList.forEach(event => {
+                const item = document.createElement('div');
+                item.className = 'group p-3 rounded-xl border border-gray-100 bg-gray-50 hover:bg-orange-50 hover:border-orange-200 cursor-pointer transition-all duration-200';
+                
+                // KLIK LIST DI SIDEBAR -> BUKA MODAL DETAIL ADMIN
+                item.onclick = () => showSideDetail(event.id);
+                
+                item.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <h4 class="font-bold text-gray-800 text-sm group-hover:text-orange-600 line-clamp-2">${event.nama}</h4>
+                        <span class="text-[10px] px-2 py-0.5 bg-gray-50 border border-gray-200 rounded-full text-gray-500 group-hover:bg-white">Detail</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>${event.waktu_mulai ? event.waktu_mulai.substring(0,5) : '-'}</span>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        } else {
+            listContainer.innerHTML = `<div class="text-center py-8 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200"><p class="text-sm font-medium">Tidak ada kegiatan</p><p class="text-xs">Klik tombol (+) di atas untuk menambah</p></div>`;
+        }
+    }
+
+    // ==========================================
+    // 4. FUNGSI ADMIN: MODAL INPUT (Tambah/Edit)
+    // ==========================================
     window.openAddModal = function() {
         document.getElementById('kegiatanForm').reset();
-        document.getElementById('kegiatan_id').value = '';
-        isEditMode = false;
+        document.getElementById('kegiatan_id').value = ''; // Kosongkan ID (Mode Tambah)
         document.getElementById('modalTitle').textContent = 'Input Kegiatan';
         document.getElementById('editModeIndicator').classList.add('hidden');
         document.getElementById('addModal').classList.remove('hidden');
@@ -550,352 +602,212 @@
     window.closeAddModal = function() {
         document.getElementById('addModal').classList.add('hidden');
         document.getElementById('kegiatanForm').reset();
-        document.getElementById('kegiatan_id').value = '';
-        isEditMode = false;
-        document.getElementById('editModeIndicator').classList.add('hidden');
     }
 
-    // --- C. MODAL DETAIL & UPLOAD LPJ (YANG KITA PERBAIKI) ---
-    window.openDetailModal = function(eventId) {
-        activeKegiatanId = eventId;
-        currentEventId = eventId; // Sinkronkan
+    // Submit Form Tambah/Edit
+    document.getElementById('kegiatanForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        // Reset form upload
-        const form = document.getElementById('formUploadLPJ');
-        if(form) form.reset();
+        const id = document.getElementById('kegiatan_id').value;
+        const url = id ? `/kegiatan/${id}` : '/kegiatan';
+        const method = id ? 'PUT' : 'POST';
         
-        // Reset tampilan tombol upload
-        const btnUpload = document.getElementById('btnSubmitLpj');
-        const containerLpj = document.getElementById('statusLpjContainer');
-        
-        if(btnUpload) {
-            btnUpload.textContent = "Upload";
-            btnUpload.disabled = false;
-        }
-        if(containerLpj) containerLpj.classList.add('hidden');
+        // Ambil Data Form Manual (Biar aman)
+        const data = {
+            nama_kegiatan: document.getElementById('nama_kegiatan').value,
+            tanggal_kegiatan: document.getElementById('tanggal_kegiatan').value,
+            tempat: document.getElementById('tempat').value,
+            waktu_mulai: document.getElementById('waktu_mulai').value,
+            waktu_selesai: document.getElementById('waktu_selesai').value
+        };
 
-        // Fetch data detail
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) {
+                alert('Berhasil menyimpan kegiatan!');
+                location.reload();
+            } else {
+                alert('Gagal: ' + (res.message || 'Error validasi'));
+            }
+        })
+        .catch(err => alert('Terjadi kesalahan sistem'));
+    });
+
+    // ==========================================
+    // 5. FUNGSI ADMIN: MODAL DETAIL & LPJ
+    // ==========================================
+    
+    // Fungsi Buka Modal Detail (Dipanggil saat klik list sidebar)
+    window.showSideDetail = function(eventId) {
+        activeKegiatanId = eventId; // Simpan ID aktif
+
         fetch(`/kegiatan/${eventId}`)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
+                // Isi Info Dasar
                 document.getElementById('detailTitle').textContent = data.nama_kegiatan;
-                
-                // Format Tanggal
-                const date = new Date(data.tanggal_kegiatan);
-                const hari = date.toLocaleDateString('id-ID', { weekday: 'long' });
-                const tanggal = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                const waktu = data.waktu_mulai && data.waktu_selesai ? `${data.waktu_mulai} >> ${data.waktu_selesai}` : '';
-                
-                document.getElementById('detailJadwal').textContent = `${hari}, ${tanggal}, ${waktu}`;
                 document.getElementById('detailKegiatan').textContent = data.nama_kegiatan;
                 document.getElementById('detailTempat').textContent = data.tempat;
+                
+                // Isi Penginput
+                const penginput = (data.user && data.user.name) ? data.user.name : 'Admin';
+                document.getElementById('detailPenginput').textContent = penginput;
 
-                // LOGIKA STATUS LPJ
+                // Format Jadwal
+                const date = new Date(data.tanggal_kegiatan);
+                const hari = date.toLocaleDateString('id-ID', { weekday: 'long' });
+                const tgl = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                const jam = (data.waktu_mulai && data.waktu_selesai) ? `${data.waktu_mulai.substring(0,5)} - ${data.waktu_selesai.substring(0,5)}` : '';
+                document.getElementById('detailJadwal').textContent = `${hari}, ${tgl}, ${jam}`;
+
+                // --- LOGIKA LPJ (ADMIN) ---
+                const existingAlert = document.getElementById('existingLpjAlert');
                 const linkLpj = document.getElementById('linkLpj');
-                const alertLpj = document.getElementById('existingLpjAlert'); // Pastikan ID ini ada di HTML kamu
+                const btnSubmitLpj = document.getElementById('btnSubmitLpj');
 
                 if (data.lpj && data.lpj.file_lpj) {
-                    if(alertLpj) alertLpj.classList.remove('hidden');
-                    if(linkLpj) linkLpj.href = `/storage/${data.lpj.file_lpj}`;
-                    if(btnUpload) btnUpload.textContent = "Ganti File";
+                    existingAlert.classList.remove('hidden');
+                    // Link Download (Admin langsung download AES Decrypt)
+                    linkLpj.href = `/kegiatan/${eventId}/download-lpj`; 
+                    if(btnSubmitLpj) btnSubmitLpj.textContent = "Ganti File";
                 } else {
-                    if(alertLpj) alertLpj.classList.add('hidden');
+                    existingAlert.classList.add('hidden');
+                    if(btnSubmitLpj) btnSubmitLpj.textContent = "Upload";
                 }
 
+                // Reset Input File
+                const fileInput = document.getElementById('file_lpj');
+                if(fileInput) fileInput.value = '';
+
+                // Tampilkan Modal
                 document.getElementById('detailModal').classList.remove('hidden');
             })
-            .catch(error => {
-                console.error('Error:', error);
-                showCustomAlert('Gagal mengambil data kegiatan', 'error');
-            });
+            .catch(err => console.error(err));
     }
 
     window.closeDetailModal = function() {
         document.getElementById('detailModal').classList.add('hidden');
-        currentEventId = null;
-        activeKegiatanId = null;
     }
 
-    // --- D. FUNGSI UPLOAD FILE (ONCLICK) ---
+    // Fungsi Upload LPJ
     window.uploadFileLpj = function() {
-        if (!activeKegiatanId) {
-            showCustomAlert("Error: ID Kegiatan hilang. Coba refresh halaman.", 'error');
-            return;
-        }
+        if (!activeKegiatanId) return;
 
         const fileInput = document.getElementById('file_lpj');
         if (!fileInput || fileInput.files.length === 0) {
-            showCustomAlert('Pilih file LPJ terlebih dahulu!', 'error');
+            alert('Pilih file dulu bos!');
             return;
         }
 
-        const btn = document.getElementById('btnSubmitLpj');
-        const oldText = btn.textContent;
-        btn.textContent = 'Proses...';
-        btn.disabled = true;
-
         const formData = new FormData();
         formData.append('file_lpj', fileInput.files[0]);
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const btn = document.getElementById('btnSubmitLpj');
+        const oldText = btn.textContent;
+        btn.textContent = 'Uploading...';
+        btn.disabled = true;
 
         fetch(`/kegiatan/${activeKegiatanId}/upload-lpj`, {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken },
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
             body: formData
         })
         .then(res => res.json())
-        .then(data => {
+        .then(res => {
             btn.textContent = oldText;
             btn.disabled = false;
-            if (data.success) {
-                showCustomAlert('Berhasil Upload LPJ!', 'success');
-                openDetailModal(activeKegiatanId); // Refresh modal
+            if(res.success) {
+                alert('LPJ Berhasil Diupload!');
+                // Refresh modal detail untuk lihat perubahan
+                showSideDetail(activeKegiatanId);
             } else {
-                showCustomAlert('Gagal: ' + (data.message || 'Error server'), 'error');
+                alert('Gagal: ' + res.message);
             }
         })
         .catch(err => {
-            console.error(err);
             btn.textContent = oldText;
             btn.disabled = false;
-            showCustomAlert('Terjadi kesalahan koneksi', 'error');
+            alert('Error Upload');
         });
     }
 
-    // --- E. FUNGSI EDIT & DELETE (DARI MODAL DETAIL) ---
+    // Fungsi Edit (Buka Modal Input dengan Data)
     window.editKegiatan = function() {
         if (!activeKegiatanId) return;
         
+        // Fetch ulang data lengkap biar aman
         fetch(`/kegiatan/${activeKegiatanId}`)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                document.getElementById('kegiatan_id').value = data.id_kegiatan;
+                // Isi Form Input
+                document.getElementById('kegiatan_id').value = data.id_kegiatan; // ID untuk update
+                document.getElementById('nama_kegiatan').value = data.nama_kegiatan;
                 document.getElementById('tanggal_kegiatan').value = data.tanggal_kegiatan;
+                document.getElementById('tempat').value = data.tempat;
                 document.getElementById('waktu_mulai').value = data.waktu_mulai;
                 document.getElementById('waktu_selesai').value = data.waktu_selesai;
-                document.getElementById('nama_kegiatan').value = data.nama_kegiatan;
-                document.getElementById('tempat').value = data.tempat;
-                
-                isEditMode = true;
+
+                // Ganti Tampilan jadi Mode Edit
                 document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
                 document.getElementById('editModeIndicator').classList.remove('hidden');
                 
+                // Tutup modal detail, buka modal edit
                 closeDetailModal();
                 document.getElementById('addModal').classList.remove('hidden');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showCustomAlert('Gagal memuat data kegiatan', 'error');
             });
     }
 
+    // Fungsi Hapus
     window.deleteKegiatan = function() {
         if (!activeKegiatanId) return;
         
-        showCustomAlert('Apakah Anda yakin ingin menghapus kegiatan ini?', 'confirm', function(confirmed) {
-            if (!confirmed) return;
-            
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
+        if(confirm('Yakin ingin menghapus kegiatan ini?')) {
             fetch(`/kegiatan/${activeKegiatanId}`, {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showCustomAlert('Kegiatan berhasil dihapus', 'success');
-                    closeDetailModal();
-                    setTimeout(() => location.reload(), 1500);
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) {
+                    alert('Terhapus!');
+                    location.reload();
+                } else {
+                    alert('Gagal menghapus');
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showCustomAlert('Gagal menghapus kegiatan', 'error');
             });
-        });
+        }
     }
 
-
     // ==========================================
-    // 3. EVENT LISTENER (DOM READY)
+    // 6. INIT LISTENER
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
+        const pBtn = document.getElementById('prevBtn');
+        const nBtn = document.getElementById('nextBtn');
         
-        // --- A. LOGIKA SIMPAN (ADD/UPDATE) KEGIATAN ---
-        const kegiatanForm = document.getElementById('kegiatanForm');
-        if (kegiatanForm) {
-            kegiatanForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const nama_kegiatan = document.getElementById('nama_kegiatan').value;
-                const tanggal_kegiatan = document.getElementById('tanggal_kegiatan').value;
-                const tempat = document.getElementById('tempat').value;
-                const waktu_mulai = document.getElementById('waktu_mulai').value;
-                const waktu_selesai = document.getElementById('waktu_selesai').value;
-                const kegiatan_id = document.getElementById('kegiatan_id').value;
-                
-                const data = {
-                    nama_kegiatan: nama_kegiatan,
-                    tanggal_kegiatan: tanggal_kegiatan,
-                    tempat: tempat,
-                    waktu_mulai: waktu_mulai,
-                    waktu_selesai: waktu_selesai
-                };
-                
-                let url = kegiatan_id ? `/kegiatan/${kegiatan_id}` : '/kegiatan';
-                let method = kegiatan_id ? 'PUT' : 'POST';
-                let successMessage = kegiatan_id ? 'Kegiatan berhasil diupdate' : 'Kegiatan berhasil ditambahkan';
-                
-                fetch(url, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        showCustomAlert(successMessage, 'success');
-                        closeAddModal();
-                        setTimeout(() => location.reload(), 1500);
-                    } else {
-                        showCustomAlert('Error: ' + (data.message || 'Unknown error'), 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Fetch error:', error);
-                    showCustomAlert('Gagal menyimpan kegiatan: ' + error.message, 'error');
-                });
-            });
-        }
-
-        // --- B. LOGIKA KALENDER ---
-        const grid = document.getElementById('calendarGrid');
-        const monthLabel = document.getElementById('monthLabel');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const today = new Date();
-        let currentMonth = today.getMonth();
-        let currentYear = today.getFullYear();
-
-        function renderCalendar(year, month) {
-            if (monthLabel) monthLabel.textContent = new Date(year, month).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-            if (grid) grid.innerHTML = '';
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            for (let i = 0; i < firstDay; i++) {
-                const empty = document.createElement('div');
-                empty.className = 'h-10';
-                grid.appendChild(empty);
-            }
-
-            for (let d = 1; d <= daysInMonth; d++) {
-                const cell = document.createElement('div');
-                cell.className = 'modern-calendar-cell flex flex-col items-center justify-start';
-
-                const dateEl = document.createElement('div');
-                dateEl.textContent = d;
-                dateEl.className = 'modern-calendar-date text-sm mb-2';
-
-                if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
-                    dateEl.className = 'modern-calendar-today mb-2';
-                }
-                cell.appendChild(dateEl);
-
-                const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                if (events[key]) {
-                    const eventList = Array.isArray(events[key]) ? events[key] : [events[key]];
-                    eventList.forEach(event => {
-                        const ev = document.createElement('div');
-                        ev.className = 'modern-calendar-event w-full';
-                        
-                        if (typeof event === 'object') {
-                            ev.textContent = event.nama;
-                            ev.onclick = () => openDetailModal(event.id);
-                        } else {
-                            ev.textContent = event;
-                        }
-                        
-                        cell.appendChild(ev);
-                    });
-                }
-                grid.appendChild(cell);
-            }
-        }
-
-        if (prevBtn) prevBtn.addEventListener('click', () => {
+        if(pBtn) pBtn.onclick = () => {
             currentMonth--;
             if (currentMonth < 0) { currentMonth = 11; currentYear--; }
             renderCalendar(currentYear, currentMonth);
-        });
-        if (nextBtn) nextBtn.addEventListener('click', () => {
+        };
+        
+        if(nBtn) nBtn.onclick = () => {
             currentMonth++;
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             renderCalendar(currentYear, currentMonth);
-        });
+        };
+
         renderCalendar(currentYear, currentMonth);
-
-        // --- C. LOGIKA SCROLLSPY ---
-        const allLinks = Array.from(document.querySelectorAll('aside .nav-link'));
-        const links = allLinks.filter(l => {
-            const href = l.getAttribute('href') || '';
-            return href.startsWith('#');
-        });
-
-        if (links.length) {
-            const ACTIVE = ['bg-orange-50', 'border-l-4', 'border-orange-500', 'text-gray-900'];
-
-            function setActive(el) {
-                links.forEach(l => {
-                    l.classList.remove(...ACTIVE);
-                    l.classList.add('hover:bg-gray-100');
-                });
-                if (el) {
-                    el.classList.add(...ACTIVE);
-                    el.classList.remove('hover:bg-gray-100');
-                }
-            }
-
-            let skipObserverUntil = 0;
-            links.forEach(l => {
-                l.addEventListener('click', () => {
-                    setActive(l);
-                    skipObserverUntil = Date.now() + 700;
-                });
-            });
-
-            const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
-            if (sections.length) {
-                const observer = new IntersectionObserver((entries) => {
-                    if (Date.now() < skipObserverUntil) return;
-                    let best = entries[0];
-                    for (const e of entries) {
-                        if (e.intersectionRatio > (best?.intersectionRatio ?? 0)) best = e;
-                    }
-                    if (best && best.intersectionRatio > 0.01) {
-                        const id = '#' + best.target.id;
-                        const link = links.find(l => l.getAttribute('href') === id);
-                        if (link) setActive(link);
-                    }
-                }, { root: null, rootMargin: '-20% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
-
-                sections.forEach(s => observer.observe(s));
-            }
-        }
     });
 </script>
 @endpush
