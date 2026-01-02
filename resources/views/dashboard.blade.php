@@ -407,7 +407,42 @@
                             </div>
                         </a>
 
-                        {{-- TOMBOL EDIT KHUSUS ADMIN (Hanya tampil jika di-hover) --}}
+                        {{-- Ganti bagian tombol edit di dashboard Anda dengan kode ini --}}
+                            @auth
+                                @can('update', $item)
+                                <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    {{-- Tombol Edit --}}
+                                    <button onclick="editBerita({{ $item->id_berita }})" 
+                                            class="bg-orange-500 text-white p-2 rounded-full shadow-lg hover:bg-orange-600 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+
+                                    {{-- Tombol Hapus --}}
+                                    <button type="button" 
+                                            onclick="openDeleteModalBerita('{{ route('berita.destroy', $item->id_berita) }}')" 
+                                            class="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                    <!-- <form action="{{ route('berita.destroy', $item->id_berita) }}" method="POST" 
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    </form> -->
+                                </div>
+                                @endcan
+                            @endauth
+
+                            
+                        <!-- {{-- TOMBOL EDIT KHUSUS ADMIN (Hanya tampil jika di-hover) --}}
                         @auth
                             @can('update', $item)
                             <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -419,7 +454,7 @@
                                 </button>
                             </div>
                             @endcan
-                        @endauth
+                        @endauth -->
                     </article>
                 @endforeach
             </div>
@@ -516,6 +551,32 @@
         </div>
     </div>
     
+    <div id="deleteBeritaModal" class="hidden fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden transform transition-all scale-100">
+        <div class="p-6 text-center">
+            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2 font-playfair">Hapus Berita?</h3>
+            <p class="text-gray-500 text-sm mb-6">Berita yang dihapus tidak dapat dikembalikan. Apakah Anda yakin?</p>
+            
+            <div class="flex gap-3">
+                <button onclick="closeDeleteModalBerita()" class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition">
+                    Batal
+                </button>
+                <form id="deleteBeritaForm" method="POST" class="flex-1">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full px-4 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition shadow-lg shadow-red-200">
+                        Ya, Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -945,5 +1006,37 @@
                 document.getElementById('modalBerita').classList.remove('hidden');
             });
     }
+
+    /**
+     * 1. Fungsi Buka Modal Hapus
+     * @param {string} actionUrl - URL lengkap Laravel untuk menghapus (misal: /berita/4)
+     */
+    window.openDeleteModalBerita = function(actionUrl) {
+        const modal = document.getElementById('deleteBeritaModal');
+        const form = document.getElementById('deleteBeritaForm');
+        
+        // Pasang URL hapus berita secara dinamis ke form modal
+        form.action = actionUrl; 
+        
+        // Hilangkan class hidden untuk memunculkan modal
+        modal.classList.remove('hidden');
+    }
+
+    /**
+     * 2. Fungsi Tutup Modal Hapus
+     */
+    window.closeDeleteModalBerita = function() {
+        document.getElementById('deleteBeritaModal').classList.add('hidden');
+    }
+
+    /**
+     * 3. Tambahan Keamanan: Tutup modal jika klik di area luar modal (overlay)
+     */
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('deleteBeritaModal');
+        if (event.target === modal) {
+            closeDeleteModalBerita();
+        }
+});
 </script>
 @endpush
