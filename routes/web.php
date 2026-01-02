@@ -48,9 +48,11 @@ Route::get('/ormawa/{slug}', [OrmawaController::class, 'show'])->name('ormawa.sh
 
 // Update content in-place (only for AdminBEM)
 Route::post('/ormawa/{slug}/update-content', [OrmawaController::class, 'updateContent'])
-    ->middleware(['auth', 'adminbem'])
+    ->middleware(['auth', 'role:adminbem'])
     ->name('ormawa.updateContent');
-// ==========================================
+    /**
+     * Update specific field content via AJAX
+     */
 
 // ================= TES MINAT UKM =================
 // Route untuk halaman tes minat - Bisa diakses tanpa login (untuk mahasiswa)

@@ -386,7 +386,53 @@
 
 </div>
 
+
 {{-- EDIT MODE --}}
+<div class="structure-edit hidden">
+    <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; margin-bottom:15px;">
+        <div>Ketua</div>
+        <input id="ketuaInput" class="form-control" style="width:250px; border:1px solid #ddd; padding:5px 10px; border-radius:5px;"
+               value="{{ $structure['ketua'] ?? '' }}" placeholder="Nama Ketua">
+    </div>
+
+    <div id="jabatanWrapper">
+        @foreach ($structure['jabatan'] ?? [] as $index => $jabatan)
+            <div class="jabatan-item mt-4 p-3" style="border:1px dashed #ccc; border-radius:10px; position:relative;">
+                <div style="display:flex; justify-content:space-between; gap:10px;">
+                    <input class="form-control jabatan-nama" style="width:45%; font-weight:700; border:1px solid #ddd; padding:5px;"
+                           value="{{ $jabatan['jabatan'] }}" placeholder="Nama Jabatan (Contoh: Sekretaris)">
+                    <input class="form-control jabatan-orang" style="width:45%; border:1px solid #ddd; padding:5px;"
+                           value="{{ $jabatan['nama'] }}" placeholder="Nama Pengurus">
+                </div>
+
+                <div class="anggota-wrapper" style="margin-left:32px; margin-top:10px;">
+                    <label style="font-size:12px; color:#666;">Anggota (Opsional):</label>
+                    @foreach ($jabatan['anggota'] ?? [] as $anggota)
+                        <input class="form-control anggota-input mt-2" style="width:90%; border:1px solid #eee; padding:4px;" value="{{ $anggota }}">
+                    @endforeach
+                </div>
+
+                <button type="button" onclick="addAnggota(this)"
+                        class="btn btn-sm mt-2" style="margin-left:32px; font-size:12px; color:#ff7a1a; background:none; border:none; cursor:pointer;">
+                    + Add Anggota
+                </button>
+            </div>
+        @endforeach
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <button type="button" onclick="addJabatan()"
+                class="btn" style="background-color:#ff7a1a; color:white; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">
+            + Add Position
+        </button>
+        
+        <button type="button" id="saveStructureBtn" onclick="saveStructure()"
+                class="btn" style="background-color:#22c55e; color:white; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">
+            Simpan Struktur
+        </button>
+    </div>
+</div>
+<!-- {{-- EDIT MODE --}}
 <div class="structure-edit hidden">
 
     <div style="display:flex; justify-content:space-between; font-weight:700;">
@@ -423,9 +469,8 @@
             class="btn btn-sm btn-outline-warning mt-4">
         + Add Position
     </button>
-
 </div>
-
+ -->
 
     </div>
 </div>
@@ -578,6 +623,93 @@
                     console.error('Error:', error);
                 }
             }
+
+            // Fungsi Tambah Jabatan Baru
+function addJabatan() {
+    const wrapper = document.getElementById('jabatanWrapper');
+    const div = document.createElement('div');
+    div.className = 'jabatan-item mt-4 p-3';
+    div.style = 'border:1px dashed #ccc; border-radius:10px; position:relative;';
+    
+    div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; gap:10px;">
+            <input class="form-control jabatan-nama" style="width:45%; font-weight:700; border:1px solid #ddd; padding:5px;" placeholder="Nama Jabatan">
+            <input class="form-control jabatan-orang" style="width:45%; border:1px solid #ddd; padding:5px;" placeholder="Nama">
+        </div>
+        <div class="anggota-wrapper" style="margin-left:32px; margin-top:10px;">
+            <label style="font-size:12px; color:#666;">Anggota (Opsional):</label>
+        </div>
+        <button type="button" onclick="addAnggota(this)"
+                class="btn btn-sm mt-2" style="margin-left:32px; font-size:12px; color:#ff7a1a; background:none; border:none; cursor:pointer;">
+            + Add Anggota
+        </button>
+    `;
+    wrapper.appendChild(div);
+}
+
+// Fungsi Tambah Input Anggota
+function addAnggota(btn) {
+    const wrapper = btn.parentElement.querySelector('.anggota-wrapper');
+    const input = document.createElement('input');
+    input.className = 'form-control anggota-input mt-2';
+    input.style = 'width:90%; border:1px solid #eee; padding:4px; display:block;';
+    input.placeholder = 'Nama Anggota';
+    wrapper.appendChild(input);
+}
+
+// Fungsi Simpan Struktur ke Database
+async function saveStructure() {
+    const data = {
+        ketua: document.getElementById('ketuaInput').value,
+        jabatan: []
+    };
+
+    // Loop setiap item jabatan
+    document.querySelectorAll('.jabatan-item').forEach(item => {
+        const namaJabatan = item.querySelector('.jabatan-nama').value;
+        const namaOrang = item.querySelector('.jabatan-orang').value;
+        
+        // Hanya simpan jika nama jabatan diisi
+        if (namaJabatan.trim() !== "") {
+            const anggota = [];
+            item.querySelectorAll('.anggota-input').forEach(ang => {
+                if (ang.value.trim() !== "") {
+                    anggota.push(ang.value);
+                }
+            });
+
+            data.jabatan.push({
+                jabatan: namaJabatan,
+                nama: namaOrang,
+                anggota: anggota
+            });
+        }
+    });
+
+    try {
+        const response = await fetch('/ormawa/' + ormawaSlug + '/update-content', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                field: 'structure',
+                content: JSON.stringify(data) // Kirim sebagai string JSON
+            })
+        });
+
+        if (response.ok) {
+            alert('Struktur organisasi berhasil diperbarui!');
+            location.reload(); // Reload untuk melihat perubahan di View Mode
+        } else {
+            alert('Gagal menyimpan struktur.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan koneksi.');
+    }
+}
         </script>
     @endif
 @endauth

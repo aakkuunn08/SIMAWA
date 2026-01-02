@@ -9,10 +9,9 @@ class Ormawa extends Model
 {
     use HasFactory;
 
-    // Nama tabel (opsional karena defaultnya jamak: ormawas)
     protected $table = 'ormawa';
 
-    // Field yang boleh diisi (fillable)
+    // Tambahkan vision, mission, dan structure di sini agar bisa disimpan
     protected $fillable = [
         'user_id',
         'nama',
@@ -20,11 +19,18 @@ class Ormawa extends Model
         'logo',
         'tipe',
         'deskripsi',
+        'vision',    
+        'mission',   
+        'structure', 
     ];
 
     /**
-     * Relasi: 1 ormawa dimiliki oleh 1 user (adminukm)
+     * Casting structure agar otomatis menjadi array saat dipanggil di Blade
      */
+    protected $casts = [
+        'structure' => 'array',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
