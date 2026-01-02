@@ -58,7 +58,7 @@
                     {{-- Pencarian (Opsional untuk guest) --}}
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
                         <div class="relative w-full">
-                            <input type="text" placeholder="Cari Kegiatan..."
+                            <input type="text" id="searchInput" onkeyup="searchEvents()" placeholder="Cari Kegiatan..."
                                 class="pl-10 pr-4 py-2.5 w-full text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 transition-colors">
                             <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21-5.2-5.2m0 0A7 7 0 1 0 5 5a7 7 0 0 0 10.8 10.8Z" /></svg>
                         </div>
@@ -400,17 +400,77 @@
         document.getElementById('detailModal').classList.add('hidden');
     }
 
+    // ==========================================
+    // FUNGSI PENCARIAN KEGIATAN (GLOBAL)
+    // ==========================================
+    window.searchEvents = function() {
+        const keyword = document.getElementById('searchInput').value.toLowerCase();
+        const listContainer = document.getElementById('dailyEventsList');
+        const label = document.getElementById('selectedDateLabel');
+
+        if (keyword.length < 1) {
+            // Jika kolom pencarian kosong, kembalikan ke instruksi pilih tanggal
+            label.textContent = "- Pilih Tanggal -";
+            listContainer.innerHTML = `
+                <div class="text-center py-10 text-gray-400">
+                    <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <p class="text-sm">Klik tanggal di kalender<br>untuk melihat daftar kegiatan.</p>
+                </div>`;
+            return;
+        }
+
+        label.textContent = "Hasil Pencarian: " + keyword;
+        listContainer.innerHTML = ''; // Kosongkan list
+
+        let found = false;
+
+        // Iterasi melalui semua data events yang ada di variabel global 'events'
+        for (let dateKey in events) {
+            const dailyEvents = Array.isArray(events[dateKey]) ? events[dateKey] : [events[dateKey]];
+
+            dailyEvents.forEach(event => {
+                if (event.nama.toLowerCase().includes(keyword)) {
+                    found = true;
+                    const item = document.createElement('div');
+                    item.className = 'group p-3 rounded-xl border border-orange-100 bg-orange-50/30 hover:bg-orange-50 cursor-pointer transition-all duration-200 mb-3';
+
+                    // Tetap memfungsikan klik detail untuk Guest
+                    item.onclick = () => openDetailModal(event.id);
+
+                    item.innerHTML = `
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-gray-800 text-sm group-hover:text-orange-600 line-clamp-2">${event.nama}</h4>
+                            <span class="text-[10px] px-2 py-0.5 bg-white border border-orange-200 rounded-full text-orange-500">${dateKey}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>${event.waktu_mulai ? event.waktu_mulai.substring(0,5) : '-'}</span>
+                        </div>
+                    `;
+                    listContainer.appendChild(item);
+                }
+            });
+        }
+
+        if (!found) {
+            listContainer.innerHTML = `
+                <div class="text-center py-8 text-gray-400">
+                    <p class="text-sm font-medium">Kegiatan "${keyword}" tidak ditemukan.</p>
+                </div>`;
+        }
+    }
+
     // Init
     document.addEventListener('DOMContentLoaded', () => {
         const pBtn = document.getElementById('prevBtn');
         const nBtn = document.getElementById('nextBtn');
-        
+
         if(pBtn) pBtn.onclick = () => {
             currentMonth--;
             if (currentMonth < 0) { currentMonth = 11; currentYear--; }
             renderCalendar(currentYear, currentMonth);
         };
-        
+
         if(nBtn) nBtn.onclick = () => {
             currentMonth++;
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
@@ -421,9 +481,9 @@
         renderCalendar(currentYear, currentMonth);
 
         // --- SCROLLSPY (Biar Navigasi Oranye jalan) ---
-        const navLinks = document.querySelectorAll('nav a[href^="#"]'); 
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
         const sections = document.querySelectorAll('section[id]');
-        
+
         if(navLinks.length > 0 && sections.length > 0) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {

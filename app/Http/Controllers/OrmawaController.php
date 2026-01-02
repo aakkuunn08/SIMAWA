@@ -86,6 +86,28 @@ class OrmawaController extends Controller
             ->with('success', 'Informasi ormawa berhasil ditambahkan!');
     }
 
+public function updateContent(Request $request, $slug)
+{
+    $request->validate([
+        'field' => 'required|string',
+        'content' => 'required'
+    ]);
+
+    $ormawa = Ormawa::where('slug', $slug)->firstOrFail();
+    $field = $request->field;
+
+    // Simpan ke database
+    $ormawa->$field = $request->content;
+    
+    if ($ormawa->save()) {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil disimpan'
+        ], 200);
+    }
+
+    return response()->json(['status' => 'error'], 500);
+}
     // Note: edit() and update() methods have been removed
     // Ormawa information can only be created, not edited after creation
 }
