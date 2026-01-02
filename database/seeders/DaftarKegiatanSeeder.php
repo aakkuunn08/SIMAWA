@@ -16,20 +16,20 @@ class DaftarKegiatanSeeder extends Seeder
 
         // Kalau tabel users kosong melompong, kita pakai angka 1 (semoga tidak error FK)
         if (!$userId) {
-            $userId = 1;
+            $userId = 2;
         }
 
         // Data Dummy
         $kegiatan = [
             [
                 'nama_kegiatan' => 'Rapat Koordinasi Awal BEM',
-                'tempat' => 'Aula Gedung A',
+                'tempat' => 'Aula Kampus 1',
                 'waktu_mulai' => '08:00',
                 'waktu_selesai' => '10:00',
             ],
             [
                 'nama_kegiatan' => 'Seminar Teknologi & AI',
-                'tempat' => 'Ruang Teater Kampus 2',
+                'tempat' => 'Ruang 202 Kampus 2',
                 'waktu_mulai' => '10:30',
                 'waktu_selesai' => '12:30',
             ],
@@ -49,9 +49,9 @@ class DaftarKegiatanSeeder extends Seeder
 
         foreach ($kegiatan as $k) {
             DaftarKegiatan::create([
-                'user_id' => $userId, // Pasti Angka nih sekarang
+                'user_id' => $userId, 
                 'nama_kegiatan' => $k['nama_kegiatan'],
-                'tanggal_kegiatan' => '2025-12-29', // Tanggal disamakan
+                'tanggal_kegiatan' => '2026-01-10', // Tanggal disamakan
                 'tempat' => $k['tempat'],
                 'waktu_mulai' => $k['waktu_mulai'],
                 'waktu_selesai' => $k['waktu_selesai'],

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DaftarKegiatan;
+use DB;
+use Carbon\Carbon;
 use App\Models\Lpj;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\DaftarKegiatan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class DaftarKegiatanController extends Controller
 {
@@ -235,10 +236,10 @@ class DaftarKegiatanController extends Controller
             Lpj::updateOrCreate(
                 ['id_kegiatan' => $kegiatan->id_kegiatan], // Kriteria
                 [
-                    'file_lpj' => $filename, // Nama file terenkripsi
+                    'file_lpj' => $filename,
                     'nama_lpj' => $file->getClientOriginalName(),
                     'tanggal_upload' => Carbon::now(),
-                    'status_lpj' => 'Menunggu Review'
+                    'status_lpj' => 'Pending' 
                 ]
             );
 
@@ -348,7 +349,7 @@ class DaftarKegiatanController extends Controller
             [
                 'deadline' => $request->deadline,
                 // Kita set default status jika baris baru dibuat
-                'status_lpj' => \DB::raw('COALESCE(status_lpj, "Menunggu Upload")') 
+                'status_lpj' => DB::raw('COALESCE(status_lpj, "Pending")') 
             ]
         );
 

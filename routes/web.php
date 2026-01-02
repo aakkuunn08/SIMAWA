@@ -127,6 +127,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Rute Download (Hanya untuk User Login)
     Route::get('/kegiatan/{id}/download-lpj', [DaftarKegiatanController::class, 'downloadLpj'])
         ->middleware('auth');
+    
+    // 1. Route untuk Validasi LPJ (Terima/Revisi)
+    Route::post('/kegiatan/{id}/validasi-lpj', [DaftarKegiatanController::class, 'validasiLpj'])
+        ->name('kegiatan.validasi_lpj');
+
+    // 2. Route untuk Atur Deadline
+    Route::post('/kegiatan/{id}/atur-deadline', [DaftarKegiatanController::class, 'aturDeadline'])
+        ->name('kegiatan.atur_deadline');
+        
     });
 
 // Route yang HANYA bisa diakses oleh AdminBEM (Super Admin)

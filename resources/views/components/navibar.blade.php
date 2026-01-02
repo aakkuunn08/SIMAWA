@@ -23,7 +23,6 @@
                 </div>
             </div>
 
-            <!-- Right side: Dark mode toggle & Profile -->
             <div class="flex items-center gap-4">
 
                 {{-- LOGIN BUTTON --}}
