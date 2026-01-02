@@ -184,6 +184,20 @@ class DaftarKegiatanController extends Controller
     {
         $kegiatan = DaftarKegiatan::findOrFail($id);
 
+        $kegiatan = DaftarKegiatan::with('lpj')->findOrFail($id);
+
+        // --- CEK DEADLINE ---
+        if ($kegiatan->lpj && $kegiatan->lpj->deadline) {
+            $deadline = \Carbon\Carbon::parse($kegiatan->lpj->deadline);
+            // Tambah toleransi sampai jam 23:59 di hari deadline
+            if (now()->gt($deadline->endOfDay())) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Upload Ditolak: Anda sudah melewati deadline (' . $deadline->translatedFormat('d F Y') . ')'
+                ], 422); // 422 = Unprocessable Entity
+            }
+        }
+
         // --- CEK POLICY (SATPAM) ---
         // "Kalau kau tidak boleh edit kegiatan ini, kau juga tidak boleh upload LPJ-nya"
         $this->authorize('update', $kegiatan);
@@ -313,5 +327,31 @@ class DaftarKegiatanController extends Controller
             'success' => true,
             'message' => 'Status LPJ berhasil diperbarui menjadi ' . $request->status
         ]);
+    }
+
+        public function aturDeadline(Request $request, $id)
+    {
+        // 1. Cek User = BEM
+        if (!Auth::user()->hasRole('adminbem')) {
+            return response()->json(['message' => 'Hanya BEM yang bisa atur deadline!'], 403);
+        }
+
+        $request->validate([
+            'deadline' => 'required|date'
+        ]);
+
+        $kegiatan = DaftarKegiatan::findOrFail($id);
+
+        // 2. Simpan Deadline (Pakai updateOrCreate karena mungkin LPJ belum ada filenya)
+        Lpj::updateOrCreate(
+            ['id_kegiatan' => $kegiatan->id_kegiatan],
+            [
+                'deadline' => $request->deadline,
+                // Kita set default status jika baris baru dibuat
+                'status_lpj' => \DB::raw('COALESCE(status_lpj, "Menunggu Upload")') 
+            ]
+        );
+
+        return response()->json(['success' => true, 'message' => 'Deadline berhasil diatur!']);
     }
 }
