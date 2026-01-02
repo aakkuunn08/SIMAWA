@@ -49,6 +49,11 @@ class DatabaseSeeder extends Seeder
             DaftarKegiatanSeeder::class, // <--- TAMBAHKAN INI
         ]);
         
+        // Panggil BeritaSeeder
+        $this->call([
+            BeritaSeeder::class,
+        ]);
+        
         // $this->command->info('');
         // $this->command->info('===========================================');
         // $this->command->info('Database seeding completed successfully!');
