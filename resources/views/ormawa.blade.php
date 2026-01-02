@@ -2,6 +2,8 @@
 
 @section('content')
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 {{-- TOMBOL EDIT FIXED (HANYA UNTUK ADMINBEM) --}}
 @auth
     @if(auth()->user()->hasRole('adminbem'))
@@ -17,701 +19,251 @@
 
 @if ($ormawa->slug === 'bem')
     {{-- ================== LAYOUT BEM ================== --}}
-
-    {{-- BAGIAN FOTO GEDUNG + TEKS WELCOME --}}
     <div style="position:relative; height:340px; overflow:hidden; border-bottom-left-radius:20px; border-bottom-right-radius:20px;">
-        <img src="{{ asset('images/ith.jpg') }}"
-             alt="Gedung ITH"
-             style="width:100%; height:100%; object-fit:cover;">
-
-        <div style="
-            position:absolute; inset:0;
-            background:rgba(0,0,0,0.38);
-            display:flex; flex-direction:column;
-            align-items:center; justify-content:center;
-            text-align:center; padding:0 16px; color:white;">
-
+        <img src="{{ asset('images/ith.jpg') }}" alt="Gedung ITH" style="width:100%; height:100%; object-fit:cover;">
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.38); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 16px; color:white;">
             <div style="font-size:22px; letter-spacing:2px; font-weight:500;">WELCOME</div>
             <div style="font-size:15px; opacity:0.9;">TO</div>
-
-            <div style="font-size:30px; font-weight:800; margin-top:4px;">
-                Badan Eksekutif Mahasiswa
-            </div>
-
-            <div style="font-size:15px; margin-top:6px; opacity:0.95;">
-                Institut Teknologi Bacharuddin Jusuf Habibie
-            </div>
+            <div style="font-size:30px; font-weight:800; margin-top:4px;">Badan Eksekutif Mahasiswa</div>
+            <div style="font-size:15px; margin-top:6px; opacity:0.95;">Institut Teknologi Bacharuddin Jusuf Habibie</div>
         </div>
     </div>
 
-    {{-- BAGIAN PUTIH --}}
     <div style="background:white; padding:38px 24px 90px;">
-
-        {{-- LOGO --}}
         <div style="display:flex; justify-content:center; margin-bottom:28px; position:relative;">
-            <img src="{{ asset('images/logobem.png') }}"
-                 alt="BEM ITH 2025"
-                 style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));"> 
+            <img src="{{ asset('images/logobem.png') }}" alt="BEM ITH 2025" style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));"> 
         </div>
 
-        {{-- VISI DAN MISI BERSAMPINGAN --}}
-        <div style="
-            display:grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap:24px;
-            max-width:1100px;
-            margin:0 auto 24px;
-        ">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:24px; max-width:1100px; margin:0 auto 24px;">
             {{-- VISION --}}
-            <div style="
-                background:white; padding:24px;
-                border-radius:18px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                position:relative;
-            ">
-                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
-                    Vision
-                </div>
+            <div style="background:white; padding:24px; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,0.08); position:relative;">
+                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">Vision</div>
                 <div class="editable-content" data-field="vision" style="font-size:15px; color:#444; line-height:1.6;">
-                    Membuat BEM ITH menjadi organisasi yang peduli...
+                    {!! $ormawa->vision ?? 'Belum ada visi.' !!}
                 </div>
-                
-                {{-- Edit Button (Hidden by default) --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
-                                onclick="editContent(this, 'vision')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                        </button>
-                    @endif
-                @endauth
+                @auth @if(auth()->user()->hasRole('adminbem'))
+                    <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" onclick="editContent(this, 'vision')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                    </button>
+                @endif @endauth
             </div>
 
             {{-- MISSION --}}
-            <div style="
-                background:white; padding:24px;
-                border-radius:18px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                position:relative;
-            ">
-                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:14px;">
-                    Mission
+            <div style="background:white; padding:24px; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,0.08); position:relative;">
+                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:14px;">Mission</div>
+                <div class="editable-content" data-field="mission" style="font-size:15px; color:#444; line-height:1.65;">
+                    {!! $ormawa->mission ?? 'Belum ada misi.' !!}
                 </div>
-
-                <div class="editable-content" data-field="mission" style="font-size:15px; color:#444; line-height:1.65; display:flex; flex-direction:column; gap:14px;">
-
-                    <div>
-                        <div style="font-weight:700; margin-bottom:4px;">Mendengar dan Menanggapi Suara Mahasiswa</div>
-                        <div>Saya ingin memastikan setiap mahasiswa merasa didengarkan baik itu Aspirasi,keluhan,
-                             dan saran yang ada, akan saya respon dan tindaklanjuti dengan cepat dan terbuka, sehingga
-                             BEM bisa benar-benar menjadi tempat kita menyuarakan kebutuhan bersama.</div>
-                    </div>
-
-                    <div>
-                        <div style="font-weight:700; margin-bottom:4px;">Mendorong Pengembangan Diri</div>
-                        <div>Mahasiswa Saya akan menyediakan ruang bagi mahasiswa untuk belajar hal-hal baru, mengasah keterampilan,
-                             dan menemukan bakat mereka. Program pelatihan, mentoring, dan kegiatan pengembangan diri
-                             akan saya buat agar semua mahasiswa bisa tumbuh sesuai potensinya.</div>
-                    </div>
-
-                    <div>
-                        <div style="font-weight:700; margin-bottom:4px;">Membangun Rasa Kebersamaan</div>
-                        <div>Saya ingin menciptakan suasana kampus yang penuh keakraban dan kekeluargaan. Melalui
-                             kegiatan bersama antar-organisasi, saya akan memperkuat rasa saling mendukung dan kebersamaan
-                             di antara kita, sehingga kampus menjadi lingkungan yang nyaman bagi semua.</div>
-                    </div>
-
-                    <div>
-                        <div style="font-weight:700; margin-bottom:4px;">Menggerakkan Aksi Sosial</div>
-                        <div>Bersama-sama, kita bisa memberi dampak positif bagi masyarakat sekitar dan lingkungan.
-                             saya akan menginisiasi program-program yang menyentuh isu-isusosial dan lingkungan yang nyata,
-                             agar kita bisa ikut terlibat dan berkontribusi bagi sekitar.</div>
-                    </div>
-
-                </div>
-                
-                {{-- Edit Button (Hidden by default) --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
-                                onclick="editContent(this, 'mission')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                        </button>
-                    @endif
-                @endauth
+                @auth @if(auth()->user()->hasRole('adminbem'))
+                    <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" onclick="editContent(this, 'mission')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                    </button>
+                @endif @endauth
             </div>
         </div>
-
-        <!-- {{-- ORGANIZATIONAL STRUCTURE (TERPISAH DI BAWAH) --}}
-        <div style="max-width:1100px; margin:0 auto;">
-            <div style="
-                background:white; padding:24px;
-                border-radius:18px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                position:relative;
-            ">
-                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
-                    Organizational Structure
-                </div>
-                
-                 <div class="editable-content" data-field="structure" style="font-size:15px; color:#444; line-height:1.6;">
-                    The BEM consists of elected representatives...
-                </div> -->
-                
-                <!-- {{-- Edit Button (Hidden by default) --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
-                                onclick="editContent(this, 'structure')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                        </button>
-                    @endif
-                @endauth
-            </div>
-        </div> --> 
-
     </div>
 
 @else
-    {{-- =========== LAYOUT UNTUK UKM (HERO / HCC / SENI / OLAHRAGA) ============ --}}
+    {{-- =========== LAYOUT UNTUK UKM ============ --}}
     <div style="background:white; padding:38px 24px 90px;">
-
-        {{-- LOGO UKM --}}
         <div style="display:flex; justify-content:center; margin-bottom:28px; position:relative;">
-            <img src="{{ asset($ormawa->logo) }}"
-                 alt="{{ $ormawa->nama }}"
-                 style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));">
+            <img src="{{ asset($ormawa->logo) }}" alt="{{ $ormawa->nama }}" style="width:120px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.15));">
         </div>
 
-        {{-- VISI DAN MISI BERSAMPINGAN --}}
-        <div style="
-            display:grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap:24px;
-            max-width:1100px;
-            margin:0 auto 24px;
-        ">
-            {{-- VISION --}}
-            <div style="
-                background:white; padding:24px;
-                border-radius:18px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                position:relative;
-            ">
-                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">
-                    Vision
-                </div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:24px; max-width:1100px; margin:0 auto 24px;">
+            <div style="background:white; padding:24px; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,0.08); position:relative;">
+                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:10px;">Vision</div>
                 <div class="editable-content" data-field="vision" style="font-size:15px; color:#444; line-height:1.6;">
-                    @switch($ormawa->slug)
-                        @case('hero')
-                            Menjadi UKM robotika yang inovatif dan berprestasi di tingkat nasional,
-                            serta menjadi wadah pengembangan teknologi bagi mahasiswa ITH.
-                            @break
-                        @case('hcc')
-                            Menjadi komunitas coding yang produktif, inklusif, dan melahirkan
-                            developer muda yang siap bersaing di dunia industri.
-                            @break
-                        @case('seni')
-                            Menjadi ruang ekspresi seni mahasiswa yang kreatif, bernilai, dan
-                            membawa warna positif bagi kehidupan kampus.
-                            @break
-                        @case('olahraga')
-                            Menjadikan olahraga sebagai budaya hidup sehat di kampus dan
-                            mencetak atlet-atlet berprestasi dari lingkungan ITH.
-                            @break
-                        @default
-                            Menjadi organisasi mahasiswa yang aktif, bermanfaat, dan berdampak
-                            bagi anggotanya maupun lingkungan kampus.
-                    @endswitch
+                    {!! $ormawa->vision ?? 'Belum ada visi.' !!}
                 </div>
+                @auth @if(auth()->user()->hasRole('adminbem'))
+                    <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" onclick="editContent(this, 'vision')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                    </button>
+                @endif @endauth
+            </div>
+
+            <div style="background:white; padding:24px; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,0.08); position:relative;">
+                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:14px;">Mission</div>
+                <div class="editable-content" data-field="mission" style="font-size:15px; color:#444; line-height:1.65;">
+                    {!! $ormawa->mission ?? 'Belum ada misi.' !!}
+                </div>
+                @auth @if(auth()->user()->hasRole('adminbem'))
+                    <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" onclick="editContent(this, 'mission')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                    </button>
+                @endif @endauth
+            </div>
+        </div>
+
+        {{-- ORGANIZATIONAL STRUCTURE --}}
+        <div style="max-width:1100px; margin:0 auto;">
+            <div style="background:white; padding:24px; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,0.08);">
+                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:16px;">Organizational Structure</div>
                 
-                {{-- Edit Button (Hidden by default) --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
-                                onclick="editContent(this, 'vision')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                        </button>
-                    @endif
-                @endauth
-            </div>
+                @php $structure = json_decode($ormawa->structure ?? '{}', true); @endphp
 
-            {{-- MISSION --}}
-            <div style="
-                background:white; padding:24px;
-                border-radius:18px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.08);
-                position:relative;
-            ">
-                <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:14px;">
-                    Mission
-                </div>
-
-                <div class="editable-content" data-field="mission" style="font-size:15px; color:#444; line-height:1.65; display:flex; flex-direction:column; gap:14px;">
-                    @switch($ormawa->slug)
-                        @case('hero')
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mengembangkan Minat Robotika</div>
-                                <div>Menyelenggarakan pelatihan dasar hingga lanjutan mengenai elektronika,
-                                     pemrograman, dan perakitan robot bagi mahasiswa.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Meningkatkan Prestasi</div>
-                                <div>Mendorong anggota untuk aktif mengikuti kompetisi robotika tingkat lokal
-                                     maupun nasional.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Membangun Komunitas</div>
-                                <div>Mewujudkan suasana komunitas yang saling mendukung, belajar bersama,
-                                     dan berbagi pengetahuan.</div>
-                            </div>
-                            @break
-
-                        @case('hcc')
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Meningkatkan Skill Programming</div>
-                                <div>Mengadakan kelas rutin tentang web, mobile, dan teknologi pemrograman lainnya.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Membangun Portofolio</div>
-                                <div>Mendampingi anggota dalam mengerjakan project nyata yang bisa dijadikan
-                                     portofolio.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mendukung Kompetisi</div>
-                                <div>Mempersiapkan tim untuk mengikuti lomba pemrograman dan hackathon.</div>
-                            </div>
-                            @break
-
-                        @case('seni')
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mewadahi Bakat Seni</div>
-                                <div>Menyediakan ruang latihan dan penampilan bagi mahasiswa yang
-                                     memiliki minat di bidang seni.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mengadakan Event Seni</div>
-                                <div>Menginisiasi pameran, konser, dan festival seni di lingkungan kampus.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Membangun Kolaborasi</div>
-                                <div>Berkolaborasi dengan organisasi lain untuk menghadirkan acara seni yang
-                                     lebih besar dan berdampak.</div>
-                            </div>
-                            @break
-
-                        @case('olahraga')
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mendorong Gaya Hidup Sehat</div>
-                                <div>Mengajak mahasiswa rutin berolahraga melalui latihan terjadwal.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Meningkatkan Prestasi Olahraga</div>
-                                <div>Membentuk dan melatih tim-tim olahraga untuk mewakili kampus di berbagai turnamen.</div>
-                            </div>
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mempererat Kebersamaan</div>
-                                <div>Menggunakan kegiatan olahraga sebagai sarana mempererat hubungan
-                                     antar mahasiswa lintas prodi.</div>
-                            </div>
-                            @break
-
-                        @default
-                            <div>
-                                <div style="font-weight:700; margin-bottom:4px;">Mendukung Pengembangan Anggota</div>
-                                <div>Menyelenggarakan program-program yang membantu anggota berkembang
-                                     sesuai minat dan bakatnya.</div>
-                            </div>
-                    @endswitch
-                </div>
-                
-                {{-- Edit Button (Hidden by default) --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
-                                onclick="editContent(this, 'mission')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                        </button>
-                    @endif
-                @endauth
-            </div>
-        </div>
-
-{{-- ORGANIZATIONAL STRUCTURE --}}
-<div style="max-width:1100px; margin:0 auto;">
-    <div style="
-        background:white;
-        padding:24px;
-        border-radius:18px;
-        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    ">
-
-        <div style="font-size:20px; font-weight:700; color:#ff7a1a; margin-bottom:16px;">
-            Organizational Structure
-        </div>
-@php
-    $structure = json_decode($ormawa->structure ?? '{}', true);
-@endphp
-
-{{-- VIEW MODE --}}
-<div class="structure-view">
-
-    <div style="display:flex; justify-content:space-between; font-weight:700; border-bottom:1px solid #eee; padding:8px 0;">
-        <div>Ketua</div>
-        <div>{{ $structure['ketua'] ?? '' }}</div>
-    </div>
-
-    @foreach ($structure['jabatan'] ?? [] as $jabatan)
-        <div style="display:flex; justify-content:space-between; font-weight:700; padding:8px 0;">
-            <div>{{ $jabatan['jabatan'] }}</div>
-            <div style="font-weight:500">{{ $jabatan['nama'] }}</div>
-        </div>
-
-        @foreach ($jabatan['anggota'] ?? [] as $anggota)
-            <div style="margin-left:32px; font-size:14px; color:#555;">
-                {{ $anggota }}
-            </div>
-        @endforeach
-    @endforeach
-
-</div>
-
-
-{{-- EDIT MODE --}}
-<div class="structure-edit hidden">
-    <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; margin-bottom:15px;">
-        <div>Ketua</div>
-        <input id="ketuaInput" class="form-control" style="width:250px; border:1px solid #ddd; padding:5px 10px; border-radius:5px;"
-               value="{{ $structure['ketua'] ?? '' }}" placeholder="Nama Ketua">
-    </div>
-
-    <div id="jabatanWrapper">
-        @foreach ($structure['jabatan'] ?? [] as $index => $jabatan)
-            <div class="jabatan-item mt-4 p-3" style="border:1px dashed #ccc; border-radius:10px; position:relative;">
-                <div style="display:flex; justify-content:space-between; gap:10px;">
-                    <input class="form-control jabatan-nama" style="width:45%; font-weight:700; border:1px solid #ddd; padding:5px;"
-                           value="{{ $jabatan['jabatan'] }}" placeholder="Nama Jabatan (Contoh: Sekretaris)">
-                    <input class="form-control jabatan-orang" style="width:45%; border:1px solid #ddd; padding:5px;"
-                           value="{{ $jabatan['nama'] }}" placeholder="Nama Pengurus">
-                </div>
-
-                <div class="anggota-wrapper" style="margin-left:32px; margin-top:10px;">
-                    <label style="font-size:12px; color:#666;">Anggota (Opsional):</label>
-                    @foreach ($jabatan['anggota'] ?? [] as $anggota)
-                        <input class="form-control anggota-input mt-2" style="width:90%; border:1px solid #eee; padding:4px;" value="{{ $anggota }}">
+                <div class="structure-view">
+                    <div style="display:flex; justify-content:space-between; font-weight:700; border-bottom:1px solid #eee; padding:8px 0;">
+                        <div>Ketua</div>
+                        <div>{{ $structure['ketua'] ?? '' }}</div>
+                    </div>
+                    @foreach ($structure['jabatan'] ?? [] as $jabatan)
+                        <div style="display:flex; justify-content:space-between; font-weight:700; padding:8px 0;">
+                            <div>{{ $jabatan['jabatan'] }}</div>
+                            <div style="font-weight:500">{{ $jabatan['nama'] }}</div>
+                        </div>
+                        @foreach ($jabatan['anggota'] ?? [] as $anggota)
+                            <div style="margin-left:32px; font-size:14px; color:#555;">{{ $anggota }}</div>
+                        @endforeach
                     @endforeach
                 </div>
 
-                <button type="button" onclick="addAnggota(this)"
-                        class="btn btn-sm mt-2" style="margin-left:32px; font-size:12px; color:#ff7a1a; background:none; border:none; cursor:pointer;">
-                    + Add Anggota
-                </button>
-            </div>
-        @endforeach
-    </div>
-
-    <div style="display:flex; gap:10px; margin-top:20px;">
-        <button type="button" onclick="addJabatan()"
-                class="btn" style="background-color:#ff7a1a; color:white; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">
-            + Add Position
-        </button>
-        
-        <button type="button" id="saveStructureBtn" onclick="saveStructure()"
-                class="btn" style="background-color:#22c55e; color:white; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">
-            Simpan Struktur
-        </button>
-    </div>
-</div>
-<!-- {{-- EDIT MODE --}}
-<div class="structure-edit hidden">
-
-    <div style="display:flex; justify-content:space-between; font-weight:700;">
-        <div>Ketua</div>
-        <input id="ketuaInput" class="form-control" style="width:250px"
-               value="{{ $structure['ketua'] ?? '' }}" placeholder="Nama Ketua">
-    </div>
-
-    <div id="jabatanWrapper" class="mt-3">
-        @foreach ($structure['jabatan'] ?? [] as $jabatan)
-            <div class="jabatan-item mt-3">
-                <div style="display:flex; justify-content:space-between;">
-                    <input class="form-control jabatan-nama" style="width:45%; font-weight:700"
-                           value="{{ $jabatan['jabatan'] }}" placeholder="Nama Jabatan">
-                    <input class="form-control jabatan-orang" style="width:45%"
-                           value="{{ $jabatan['nama'] }}" placeholder="Nama">
+                <div class="structure-edit hidden">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; margin-bottom:15px;">
+                        <div>Ketua</div>
+                        <input id="ketuaInput" class="form-control" style="width:250px; border:1px solid #ddd; padding:5px 10px; border-radius:5px;" value="{{ $structure['ketua'] ?? '' }}" placeholder="Nama Ketua">
+                    </div>
+                    <div id="jabatanWrapper">
+                        @foreach ($structure['jabatan'] ?? [] as $jabatan)
+                            <div class="jabatan-item mt-4 p-3" style="border:1px dashed #ccc; border-radius:10px; position:relative;">
+                                <div style="display:flex; justify-content:space-between; gap:10px;">
+                                    <input class="form-control jabatan-nama" style="width:45%; font-weight:700; border:1px solid #ddd; padding:5px;" value="{{ $jabatan['jabatan'] }}" placeholder="Nama Jabatan">
+                                    <input class="form-control jabatan-orang" style="width:45%; border:1px solid #ddd; padding:5px;" value="{{ $jabatan['nama'] }}" placeholder="Nama">
+                                </div>
+                                <div class="anggota-wrapper" style="margin-left:32px; margin-top:10px;">
+                                    <label style="font-size:12px; color:#666;">Anggota (Opsional):</label>
+                                    @foreach ($jabatan['anggota'] ?? [] as $anggota)
+                                        <input class="form-control anggota-input mt-2" style="width:90%; border:1px solid #eee; padding:4px;" value="{{ $anggota }}">
+                                    @endforeach
+                                </div>
+                                <button type="button" onclick="addAnggota(this)" class="btn btn-sm mt-2" style="margin-left:32px; font-size:12px; color:#ff7a1a; background:none; border:none; cursor:pointer;">+ Add Anggota</button>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button type="button" onclick="addJabatan()" class="btn" style="background-color:#ff7a1a; color:white; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">+ Add Position</button>
+                        <button type="button" id="saveStructureBtn" onclick="saveStructure()" class="btn" style="background-color:#22c55e; color:white; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">Simpan Struktur</button>
+                    </div>
                 </div>
-
-                <div class="anggota-wrapper ml-8 mt-2">
-                    @foreach ($jabatan['anggota'] ?? [] as $anggota)
-                        <input class="form-control anggota-input mt-2" value="{{ $anggota }}">
-                    @endforeach
-                </div>
-
-                <button type="button" onclick="addAnggota(this)"
-                        class="ml-8 mt-2 btn btn-sm btn-outline-secondary">
-                    + Add Anggota
-                </button>
-            </div>
-        @endforeach
-    </div>
-
-    <button type="button" onclick="addJabatan()"
-            class="btn btn-sm btn-outline-warning mt-4">
-        + Add Position
-    </button>
-</div>
- -->
-
-    </div>
-</div>
-                     <!-- @switch($ormawa->slug)
-                        @case('hero')
-                            Struktur organisasi UKM HERO terdiri dari ketua, wakil, sekretaris,
-                            bendahara, divisi riset & pengembangan, serta divisi lomba dan pelatihan.
-                            @break
-                        @case('hcc')
-                            Struktur HCC (Habibie Coding Club) terdiri dari ketua, wakil, sekretaris,
-                            bendahara, divisi web, divisi mobile, dan divisi competitive programming.
-                            @break
-                        @case('seni')
-                            Struktur UKM Seni mencakup ketua, wakil, sekretaris, bendahara,
-                            divisi musik, divisi tari, dan divisi kreatif.
-                            @break
-                        @case('olahraga')
-                            Struktur UKM Olahraga terdiri dari ketua, wakil, sekretaris, bendahara,
-                            koordinator tiap cabang olahraga, serta divisi event.
-                            @break
-                        @default
-                            Struktur organisasi {{ $ormawa->nama }} terdiri dari pengurus inti
-                            dan beberapa divisi sesuai kebutuhan kegiatan.
-                    @endswitch -->
-                <!-- </div> --> 
-                
-                {{-- Edit Button (Hidden by default) --}}
-                @auth
-                    @if(auth()->user()->hasRole('adminbem'))
-                        <button class="edit-control hidden absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded" 
-                                onclick="editContent(this, 'structure')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                        </button>
-                    @endif
-                @endauth
             </div>
         </div>
-
     </div>
 @endif
 
-{{-- JAVASCRIPT FOR EDIT MODE --}}
-@auth
-    @if(auth()->user()->hasRole('adminbem'))
-        <script>
-            let editMode = false;
-            const toggleBtn = document.getElementById('toggleEditMode');
-            const editControls = document.querySelectorAll('.edit-control');
-            const editModeText = document.querySelector('.edit-mode-text');
-            const ormawaSlug = '{{ $ormawa->slug }}';
+{{-- JAVASCRIPT --}}
+@auth @if(auth()->user()->hasRole('adminbem'))
+<script>
+    let editMode = false;
+    const toggleBtn = document.getElementById('toggleEditMode');
+    const editControls = document.querySelectorAll('.edit-control');
+    const editModeText = document.querySelector('.edit-mode-text');
+    const ormawaSlug = '{{ $ormawa->slug }}';
 
-            // Toggle Edit Mode
-            toggleBtn.addEventListener('click', function() {
-                editMode = !editMode;
-                
-                //tambahan
-                document.querySelector('.structure-view')?.classList.toggle('hidden', editMode);
-                document.querySelector('.structure-edit')?.classList.toggle('hidden', !editMode);
-                const saveBtn = document.getElementById('saveStructureBtn');
-                saveBtn?.classList.toggle('hidden', !editMode);
-
-
-                if (editMode) {
-                    // Show all edit controls
-                    editControls.forEach(control => control.classList.remove('hidden'));
-                    toggleBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-                    toggleBtn.classList.add('bg-green-500', 'hover:bg-green-600');
-                    editModeText.textContent = 'Selesai';
-                } else {
-                    // Hide all edit controls
-                    editControls.forEach(control => control.classList.add('hidden'));
-                    toggleBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
-                    toggleBtn.classList.add('bg-orange-500', 'hover:bg-orange-600');
-                    editModeText.textContent = 'Edit';
-                }
-            });
-
-            // Edit Content Function
-            function editContent(button, field) {
-                const contentDiv = button.parentElement.querySelector('.editable-content');
-                const currentContent = contentDiv.innerHTML.trim();
-                
-                // Create textarea for editing
-                const textarea = document.createElement('textarea');
-                textarea.className = 'w-full p-3 border-2 border-blue-500 rounded focus:outline-none focus:border-blue-600';
-                textarea.style.minHeight = '150px';
-                textarea.style.fontSize = '15px';
-                textarea.value = currentContent.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-                
-                // Create save and cancel buttons
-                const buttonContainer = document.createElement('div');
-                buttonContainer.className = 'flex gap-2 mt-3';
-                
-                const saveBtn = document.createElement('button');
-                saveBtn.textContent = 'Simpan';
-                saveBtn.className = 'px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded';
-                saveBtn.onclick = function() {
-                    saveContent(field, textarea.value, contentDiv, button);
-                };
-                
-                const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = 'Batal';
-                cancelBtn.className = 'px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded';
-                cancelBtn.onclick = function() {
-                    contentDiv.innerHTML = currentContent;
-                    button.classList.remove('hidden');
-                };
-                
-                buttonContainer.appendChild(saveBtn);
-                buttonContainer.appendChild(cancelBtn);
-                
-                // Replace content with textarea
-                contentDiv.innerHTML = '';
-                contentDiv.appendChild(textarea);
-                contentDiv.appendChild(buttonContainer);
-                button.classList.add('hidden');
-                
-                textarea.focus();
-            }
-
-            // Save Content Function
-            async function saveContent(field, newContent, contentDiv, button) {
-                try {
-                    const response = await fetch('/ormawa/' + ormawaSlug + '/update-content', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({
-                            field: field,
-                            content: newContent
-                        })
-                    });
-
-                    if (response.ok) {
-                        // Update the display
-                        contentDiv.innerHTML = '<div style="font-size:15px; color:#444; line-height:1.6;">' + newContent + '</div>';
-                        button.classList.remove('hidden');
-                        
-                        // Show success message
-                        alert('Konten berhasil diupdate!');
-                    } else {
-                        throw new Error('Gagal menyimpan perubahan');
-                    }
-                } catch (error) {
-                    alert('Error: ' + error.message);
-                    console.error('Error:', error);
-                }
-            }
-
-            // Fungsi Tambah Jabatan Baru
-function addJabatan() {
-    const wrapper = document.getElementById('jabatanWrapper');
-    const div = document.createElement('div');
-    div.className = 'jabatan-item mt-4 p-3';
-    div.style = 'border:1px dashed #ccc; border-radius:10px; position:relative;';
-    
-    div.innerHTML = `
-        <div style="display:flex; justify-content:space-between; gap:10px;">
-            <input class="form-control jabatan-nama" style="width:45%; font-weight:700; border:1px solid #ddd; padding:5px;" placeholder="Nama Jabatan">
-            <input class="form-control jabatan-orang" style="width:45%; border:1px solid #ddd; padding:5px;" placeholder="Nama">
-        </div>
-        <div class="anggota-wrapper" style="margin-left:32px; margin-top:10px;">
-            <label style="font-size:12px; color:#666;">Anggota (Opsional):</label>
-        </div>
-        <button type="button" onclick="addAnggota(this)"
-                class="btn btn-sm mt-2" style="margin-left:32px; font-size:12px; color:#ff7a1a; background:none; border:none; cursor:pointer;">
-            + Add Anggota
-        </button>
-    `;
-    wrapper.appendChild(div);
-}
-
-// Fungsi Tambah Input Anggota
-function addAnggota(btn) {
-    const wrapper = btn.parentElement.querySelector('.anggota-wrapper');
-    const input = document.createElement('input');
-    input.className = 'form-control anggota-input mt-2';
-    input.style = 'width:90%; border:1px solid #eee; padding:4px; display:block;';
-    input.placeholder = 'Nama Anggota';
-    wrapper.appendChild(input);
-}
-
-// Fungsi Simpan Struktur ke Database
-async function saveStructure() {
-    const data = {
-        ketua: document.getElementById('ketuaInput').value,
-        jabatan: []
-    };
-
-    // Loop setiap item jabatan
-    document.querySelectorAll('.jabatan-item').forEach(item => {
-        const namaJabatan = item.querySelector('.jabatan-nama').value;
-        const namaOrang = item.querySelector('.jabatan-orang').value;
+    toggleBtn.addEventListener('click', function() {
+        editMode = !editMode;
+        document.querySelector('.structure-view')?.classList.toggle('hidden', editMode);
+        document.querySelector('.structure-edit')?.classList.toggle('hidden', !editMode);
         
-        // Hanya simpan jika nama jabatan diisi
-        if (namaJabatan.trim() !== "") {
-            const anggota = [];
-            item.querySelectorAll('.anggota-input').forEach(ang => {
-                if (ang.value.trim() !== "") {
-                    anggota.push(ang.value);
-                }
-            });
-
-            data.jabatan.push({
-                jabatan: namaJabatan,
-                nama: namaOrang,
-                anggota: anggota
-            });
+        if (editMode) {
+            editControls.forEach(control => control.classList.remove('hidden'));
+            toggleBtn.classList.replace('bg-orange-500', 'bg-green-500');
+            editModeText.textContent = 'Selesai';
+        } else {
+            editControls.forEach(control => control.classList.add('hidden'));
+            toggleBtn.classList.replace('bg-green-500', 'bg-orange-500');
+            editModeText.textContent = 'Edit';
         }
     });
 
-    try {
-        const response = await fetch('/ormawa/' + ormawaSlug + '/update-content', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-                field: 'structure',
-                content: JSON.stringify(data) // Kirim sebagai string JSON
-            })
+    function editContent(button, field) {
+        const contentDiv = button.parentElement.querySelector('.editable-content');
+        const currentContent = contentDiv.innerHTML.trim();
+        const textarea = document.createElement('textarea');
+        textarea.className = 'w-full p-3 border-2 border-blue-500 rounded focus:outline-none';
+        textarea.style.minHeight = '150px';
+        textarea.value = currentContent.replace(/<[^>]*>/g, '').trim();
+        
+        const container = document.createElement('div');
+        container.className = 'flex gap-2 mt-3';
+        
+        const sBtn = document.createElement('button');
+        sBtn.textContent = 'Simpan';
+        sBtn.className = 'px-4 py-2 bg-orange-500 text-white rounded';
+        sBtn.onclick = () => saveContent(field, textarea.value, contentDiv, button);
+        
+        const cBtn = document.createElement('button');
+        cBtn.textContent = 'Batal';
+        cBtn.className = 'px-4 py-2 bg-gray-500 text-white rounded';
+        cBtn.onclick = () => { contentDiv.innerHTML = currentContent; button.classList.remove('hidden'); };
+        
+        container.append(sBtn, cBtn);
+        contentDiv.innerHTML = '';
+        contentDiv.append(textarea, container);
+        button.classList.add('hidden');
+    }
+
+    async function saveContent(field, newContent, contentDiv, button) {
+        Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        try {
+            const response = await fetch(`/ormawa/${ormawaSlug}/update-content`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ field, content: newContent })
+            });
+            if (response.ok) {
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Konten diperbarui!', timer: 1500, showConfirmButton: false });
+                contentDiv.innerHTML = newContent;
+                button.classList.remove('hidden');
+            }
+        } catch (e) { Swal.fire('Error', 'Gagal menyimpan', 'error'); }
+    }
+
+    function addJabatan() {
+        const wrapper = document.getElementById('jabatanWrapper');
+        const div = document.createElement('div');
+        div.className = 'jabatan-item mt-4 p-3';
+        div.style = 'border:1px dashed #ccc; border-radius:10px; position:relative;';
+        div.innerHTML = `<div style="display:flex; justify-content:space-between; gap:10px;"><input class="form-control jabatan-nama" style="width:45%; font-weight:700; border:1px solid #ddd; padding:5px;" placeholder="Nama Jabatan"><input class="form-control jabatan-orang" style="width:45%; border:1px solid #ddd; padding:5px;" placeholder="Nama"></div><div class="anggota-wrapper" style="margin-left:32px; margin-top:10px;"><label style="font-size:12px; color:#666;">Anggota (Opsional):</label></div><button type="button" onclick="addAnggota(this)" class="btn btn-sm mt-2" style="margin-left:32px; font-size:12px; color:#ff7a1a; background:none; border:none; cursor:pointer;">+ Add Anggota</button>`;
+        wrapper.appendChild(div);
+    }
+
+    function addAnggota(btn) {
+        const wrapper = btn.parentElement.querySelector('.anggota-wrapper');
+        const input = document.createElement('input');
+        input.className = 'form-control anggota-input mt-2';
+        input.style = 'width:90%; border:1px solid #eee; padding:4px; display:block;';
+        input.placeholder = 'Nama Anggota';
+        wrapper.appendChild(input);
+    }
+
+    async function saveStructure() {
+        const data = { ketua: document.getElementById('ketuaInput').value, jabatan: [] };
+        document.querySelectorAll('.jabatan-item').forEach(item => {
+            const nj = item.querySelector('.jabatan-nama').value;
+            const no = item.querySelector('.jabatan-orang').value;
+            if (nj.trim() !== "") {
+                const ang = [];
+                item.querySelectorAll('.anggota-input').forEach(a => { if(a.value.trim() !== "") ang.push(a.value); });
+                data.jabatan.push({ jabatan: nj, nama: no, anggota: ang });
+            }
         });
 
-        if (response.ok) {
-            alert('Struktur organisasi berhasil diperbarui!');
-            location.reload(); // Reload untuk melihat perubahan di View Mode
-        } else {
-            alert('Gagal menyimpan struktur.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan koneksi.');
+        Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        try {
+            const response = await fetch(`/ormawa/${ormawaSlug}/update-content`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ field: 'structure', content: JSON.stringify(data) })
+            });
+            if (response.ok) {
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Struktur organisasi diperbarui!', confirmButtonColor: '#ff7a1a' }).then(() => location.reload());
+            } else { throw new Error(); }
+        } catch (e) { Swal.fire('Error', 'Gagal menyimpan struktur', 'error'); }
     }
-}
-        </script>
-    @endif
-@endauth
+</script>
+@endif @endauth
 
+<style> .hidden { display: none !important; } </style>
 @endsection
+
