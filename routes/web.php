@@ -1,13 +1,15 @@
 <?php
 
+use App\Models\Berita;
 use App\Models\Ormawa;
+use App\Models\Lpj;
 use App\Models\DaftarKegiatan;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\OrmawaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TesMinatController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\LpjController;
 use App\Http\Controllers\DaftarKegiatanController;
 
 
@@ -69,8 +71,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/dashboard', function () {
     $ormawas = Ormawa::all();
     $beritas = \App\Models\Berita::with('user')->where('published', true)->orderBy('tanggal_publikasi', 'desc')->get();
-    // Get events from database
     $kegiatan = DaftarKegiatan::all();
+    $lpjTerbaru = \App\Models\Lpj::with('kegiatan')->latest()->take(5)->get();
     $sevents = [];
     foreach ($kegiatan as $k) {
         $date = $k->tanggal_kegiatan;
@@ -87,7 +89,7 @@ Route::get('/dashboard', function () {
         ];
     }
     
-    return view('dashboard', compact('ormawas', 'sevents', 'beritas'));
+    return view('dashboard', compact('ormawas', 'sevents', 'beritas', 'lpjTerbaru'));
 })->name('dashboard');
 
     // Profile
@@ -126,7 +128,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/kegiatan/{id}/upload-lpj', [DaftarKegiatanController::class, 'uploadLpj'])->name('kegiatan.uploadLpj')->middleware(['auth', 'role:adminbem|adminukm']);
     // Rute Download (Hanya untuk User Login)
     Route::get('/kegiatan/{id}/download-lpj', [DaftarKegiatanController::class, 'downloadLpj'])
-        ->middleware('auth');
+        ->middleware('auth')
+        ->name('kegiatan.download_lpj');
     
     // 1. Route untuk Validasi LPJ (Terima/Revisi)
     Route::post('/kegiatan/{id}/validasi-lpj', [DaftarKegiatanController::class, 'validasiLpj'])
@@ -135,6 +138,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // 2. Route untuk Atur Deadline
     Route::post('/kegiatan/{id}/atur-deadline', [DaftarKegiatanController::class, 'aturDeadline'])
         ->name('kegiatan.atur_deadline');
+
+    // 3. Route kelola LPJ
+    Route::get('/kelola-lpj', [LpjController::class, 'index'])->name('lpj');
         
     });
 

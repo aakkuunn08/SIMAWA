@@ -2,6 +2,15 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
 
+            {{-- MOBILE: Burger or Back Button --}}
+            <div class="flex items-center gap-3 md:hidden">
+                @if(request()->routeIs('ormawa.show'))
+                    <button onclick="window.history.back()" class="text-gray-700 text-lg hover:text-orange-500">←</button>
+                @else
+                    <button onclick="toggleSidebar()" class="text-gray-700 text-xl hover:text-orange-500">☰</button>
+                @endif
+            </div>
+        
             <!-- Left nav -->
             <div class="flex items-center">
                 <div class="shrink-0">

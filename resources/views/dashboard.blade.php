@@ -100,8 +100,110 @@
         </div>
     </section>
 
+    {{-- LPJ --}}
+    <section id="lpj" class="py-10 scroll-mt-16">
+        <div class="flex items-center justify-between mb-6 px-1">
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="bg-orange-100 text-orange-600 p-2 rounded-lg mr-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+                    </span>
+                    Status Laporan Pertanggungjawaban
+                </h3>
+                <p class="text-sm text-gray-500 mt-1 ml-14">Pantau status dokumen kegiatan organisasi terbaru</p>
+            </div>
+        </div>
 
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50/50 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                            <th class="px-6 py-4">Nama Kegiatan</th>
+                            <th class="px-6 py-4 text-center">Status</th>
+                            <th class="px-6 py-4 text-right">Tanggal Upload</th>
+                            <th class="px-6 py-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse($lpjTerbaru as $lpj)
+                        <tr class="group hover:bg-orange-50/30 transition duration-150 ease-in-out">
+                            
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center mr-3 group-hover:bg-white group-hover:shadow-sm transition">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-orange-600 transition">
+                                            {{ $lpj->kegiatan->nama_kegiatan ?? 'Nama Kegiatan Hilang' }}
+                                        </div>
+                                        <div class="text-xs text-gray-500 flex items-center mt-0.5">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            {{ $lpj->kegiatan->tempat ?? 'Tempat tidak diketahui' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
 
+                            <td class="px-6 py-4 text-center">
+                                @php $status = $lpj->status_lpj; @endphp
+                                @if($status == 'disetujui' || $status == 'Diterima' || $status == 'approved')
+                                    <span class="px-3 py-1 inline-flex items-center text-xs font-medium rounded-full bg-green-100 text-green-800 border border-green-200 shadow-sm">
+                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></span>
+                                        Diterima
+                                    </span>
+                                @elseif($status == 'revisi' || $status == 'Revisi' || $status == 'rejected')
+                                    <span class="px-3 py-1 inline-flex items-center text-xs font-medium rounded-full bg-red-100 text-red-800 border border-red-200 shadow-sm">
+                                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
+                                        Revisi
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 inline-flex items-center text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 border border-yellow-200 shadow-sm">
+                                        <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-pulse mr-2"></span>
+                                        Pending
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-700">{{ $lpj->created_at->format('d M Y') }}</div>
+                                <div class="text-xs text-gray-400">{{ $lpj->created_at->format('H:i') }} WITA</div>
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                <a href="{{ route('kegiatan.download_lpj', $lpj->id_kegiatan) }}" 
+                                class="text-gray-400 hover:text-blue-600 transition p-2 hover:bg-blue-50 rounded-full inline-block" 
+                                title="Download Dokumen">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                </a>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="bg-gray-100 p-4 rounded-full mb-3">
+                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    </div>
+                                    <h4 class="text-gray-900 font-medium mb-1">Tidak ada LPJ Baru</h4>
+                                    <p class="text-sm text-gray-500">Belum ada dokumen yang diupload belakangan ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center">
+                <span class="text-xs text-gray-500 font-medium">5 Dokumen Terakhir</span>
+                <a href="{{ route('lpj') }}" class="text-xs text-orange-500 hover:text-orange-700 font-bold hover:underline">
+                    Lihat Arsip Lengkap &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
 
     {{-- BEM --}}
     <section id="bem" class="bg-white px-4 md:px-10 py-12 min-h-screen flex items-center">
@@ -109,7 +211,7 @@
             <h2 class="modern-section-title text-center">Badan Eksekutif Mahasiswa</h2>
             <div class="modern-bem-container">
                 <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
-                    <div class="modern-bem-logo w-36 h-36 flex items-center justify-center flex-shrink-0 p-4">
+                    <div class="modern-bem-logo  w-36 h-36 flex items-center justify-center flex-shrink-0 p-4">
                         <a href="{{ route('ormawa.show', 'bem') }}" title="BEM"
                             class="w-full h-full items-center justify-center block">
                             <img src="/images/logobem.png" alt="BEM Logo" class="w-full h-full object-contain">
@@ -168,34 +270,10 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
                                     </button>
-                                    <!-- <form action="{{ route('berita.destroy', $item->id_berita) }}" method="POST" 
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
-                                    </form> -->
                                 </div>
                                 @endcan
                             @endauth
 
-                            
-                        <!-- {{-- TOMBOL EDIT KHUSUS ADMIN (Hanya tampil jika di-hover) --}}
-                        @auth
-                            @can('update', $item)
-                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editBerita({{ $item->id_berita }})" 
-                                        class="bg-orange-500 text-white p-2 rounded-full shadow-lg hover:bg-orange-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            @endcan
-                        @endauth -->
                     </article>
                 @endforeach
             </div>
@@ -255,7 +333,6 @@
         </section>
     @endif
 
-    {{-- PANGGIL FILE MODAL YANG DIPISAH TADI --}}
     @include('components.dashboard-modals')
 
 @endsection
