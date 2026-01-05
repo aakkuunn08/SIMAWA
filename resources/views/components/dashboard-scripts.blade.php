@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // ==========================================
     // 1. SETUP DATA & VARIABEL GLOBAL
@@ -6,8 +7,8 @@
     const today = new Date();
     let currentMonth = today.getMonth();
     let currentYear = today.getFullYear();
-    let activeKegiatanId = null; // Menyimpan ID kegiatan yang sedang dibuka
-    
+    let activeKegiatanId = null; 
+
     const grid = document.getElementById('calendarGrid');
     const monthLabel = document.getElementById('monthLabel');
 
@@ -45,7 +46,7 @@
             const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             if (events[key]) {
                 const eventList = Array.isArray(events[key]) ? events[key] : [events[key]];
-                const maxDisplay = 2; // Tampilkan 2 + sisa
+                const maxDisplay = 2; 
                 
                 eventList.forEach((event, index) => {
                     if (eventList.length <= 3) {
@@ -95,7 +96,6 @@
                 const item = document.createElement('div');
                 item.className = 'group p-3 rounded-xl border border-gray-100 bg-gray-50 hover:bg-orange-50 hover:border-orange-200 cursor-pointer transition-all duration-200';
                 
-                // KLIK LIST DI SIDEBAR -> BUKA MODAL DETAIL ADMIN
                 item.onclick = () => showSideDetail(event.id);
                 
                 item.innerHTML = `
@@ -120,7 +120,7 @@
     // ==========================================
     window.openAddModal = function() {
         document.getElementById('kegiatanForm').reset();
-        document.getElementById('kegiatan_id').value = ''; // Kosongkan ID (Mode Tambah)
+        document.getElementById('kegiatan_id').value = ''; 
         document.getElementById('modalTitle').textContent = 'Input Kegiatan';
         document.getElementById('editModeIndicator').classList.add('hidden');
         document.getElementById('addModal').classList.remove('hidden');
@@ -131,7 +131,7 @@
         document.getElementById('kegiatanForm').reset();
     }
 
-    // Submit Form Tambah/Edit
+    // Submit Form Tambah/Edit (PAKAI SWEETALERT)
     document.getElementById('kegiatanForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -139,7 +139,6 @@
         const url = id ? `/kegiatan/${id}` : '/kegiatan';
         const method = id ? 'PUT' : 'POST';
         
-        // Ambil Data Form Manual
         const data = {
             nama_kegiatan: document.getElementById('nama_kegiatan').value,
             tanggal_kegiatan: document.getElementById('tanggal_kegiatan').value,
@@ -158,28 +157,30 @@
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json' // <--- PENTING: Supaya error-nya jadi JSON
+                'Accept': 'application/json'
             },
             body: JSON.stringify(data)
         })
         .then(async res => {
             const result = await res.json();
-            // Cek apakah request sukses (Status 200-299)
-            if (!res.ok) {
-                // Jika error 403 (Ditolak Policy) atau 422 (Validasi), lempar error
-                throw new Error(result.message || 'Gagal menyimpan data');
-            }
+            if (!res.ok) throw new Error(result.message || 'Gagal menyimpan data');
             return result;
         })
         .then(res => {
-            alert('Berhasil menyimpan kegiatan!');
-            location.reload();
+            // SUCCESS: Pakai SweetAlert, lalu Reload
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Data kegiatan berhasil disimpan.',
+                icon: 'success',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                location.reload(); // <--- RELOAD DI SINI
+            });
         })
         .catch(err => {
             btnSubmit.textContent = oldText;
             btnSubmit.disabled = false;
-            // Munculkan pesan error asli dari Policy (misal: "Akses Ditolak...")
-            alert(err.message);
+            Swal.fire('Gagal!', err.message, 'error');
         });
     });
 
@@ -187,23 +188,19 @@
     // 5. FUNGSI ADMIN: MODAL DETAIL & LPJ
     // ==========================================
     
-    // Fungsi Buka Modal Detail (Dipanggil saat klik list sidebar)
     window.showSideDetail = function(eventId) {
-        activeKegiatanId = eventId; // Simpan ID aktif
+        activeKegiatanId = eventId; 
 
         fetch(`/kegiatan/${eventId}`)
             .then(res => res.json())
             .then(data => {
-                // 1. Isi Info Dasar
                 document.getElementById('detailTitle').textContent = data.nama_kegiatan;
                 document.getElementById('detailKegiatan').textContent = data.nama_kegiatan;
                 document.getElementById('detailTempat').textContent = data.tempat;
                 
-                // Isi Penginput (Cek null safety)
                 const penginput = (data.user && data.user.name) ? data.user.name : 'Admin';
                 document.getElementById('detailPenginput').textContent = penginput;
 
-                // Format Jadwal
                 const date = new Date(data.tanggal_kegiatan);
                 const hari = date.toLocaleDateString('id-ID', { weekday: 'long' });
                 const tgl = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -224,10 +221,8 @@
                 const textDeadline = document.getElementById('textDeadline');
                 const formDeadline = document.getElementById('formDeadlineContainer');
 
-                // A. Selalu tampilkan area status (agar info deadline terlihat)
                 if(areaStatus) areaStatus.classList.remove('hidden');
 
-                // B. Isi Info Deadline (Safe Check)
                 if (data.lpj && data.lpj.deadline) {
                     const d = new Date(data.lpj.deadline);
                     textDeadline.textContent = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -235,14 +230,11 @@
                     textDeadline.textContent = "Belum ditentukan";
                 }
 
-                // C. Cek apakah File LPJ sudah ada?
+                // Cek apakah File LPJ sudah ada?
                 if (data.lpj && data.lpj.file_lpj) {
-                    
-                    // Set Status Badge (PENTING: Tambah || 'pending' biar tidak error jika null)
-                    let status = (data.lpj.status || 'pending'); 
+                    let status = (data.lpj.status_lpj || data.lpj.status || 'pending'); 
                     badgeStatus.textContent = status.toUpperCase();
                     
-                    // Reset class warna
                     badgeStatus.className = 'px-3 py-1 rounded-full text-xs font-bold border';
                     
                     if(status === 'diterima') {
@@ -250,7 +242,6 @@
                         alertRevisi.classList.add('hidden');
                     } else if(status === 'revisi') {
                         badgeStatus.classList.add('bg-red-100', 'text-red-700', 'border-red-200');
-                        // Tampilkan Catatan Revisi jika ada
                         if(data.lpj.catatan_revisi) {
                             alertRevisi.classList.remove('hidden');
                             textRevisi.textContent = data.lpj.catatan_revisi;
@@ -260,15 +251,12 @@
                         alertRevisi.classList.add('hidden');
                     }
 
-                    // Tampilkan Link Download
                     existingAlert.classList.remove('hidden');
                     linkLpj.href = `/kegiatan/${eventId}/download-lpj`; 
                     if(btnSubmitLpj) btnSubmitLpj.textContent = "Ganti File";
 
-                    // Munculkan Panel Validasi BEM (Jika User BEM)
                     if(panelBem) {
                         panelBem.classList.remove('hidden');
-                        // Reset tampilan form revisi
                         document.getElementById('formRevisiContainer').classList.add('hidden');
                         document.getElementById('btnMintaRevisi').classList.remove('hidden');
                         document.getElementById('btnKirimRevisi').classList.add('hidden');
@@ -276,32 +264,27 @@
                     }
 
                 } else {
-                    // Jika BELUM ada file
+                    // BELUM ADA FILE
                     existingAlert.classList.add('hidden');
                     if(alertRevisi) alertRevisi.classList.add('hidden');
                     if(btnSubmitLpj) btnSubmitLpj.textContent = "Upload";
                     
-                    // Status default
                     badgeStatus.textContent = "MENUNGGU UPLOAD";
                     badgeStatus.className = 'px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200';
                     
-                    // Sembunyikan validasi BEM karena belum ada file
                     if(panelBem) panelBem.classList.add('hidden'); 
                 }
 
-                // Reset Input File
                 const fileInput = document.getElementById('file_lpj');
                 if(fileInput) fileInput.value = '';
 
-                // Reset Form Deadline (BEM)
                 if(formDeadline) formDeadline.classList.add('hidden');
 
-                // 3. Tampilkan Modal Akhirnya
                 document.getElementById('detailModal').classList.remove('hidden');
             })
             .catch(err => {
                 console.error(err);
-                alert('Gagal mengambil data kegiatan. Cek console browser.');
+                Swal.fire('Error', 'Gagal mengambil data kegiatan.', 'error');
             });
     }
 
@@ -309,13 +292,13 @@
         document.getElementById('detailModal').classList.add('hidden');
     }
 
-    // Fungsi Upload LPJ
+    // Fungsi Upload LPJ (PAKAI SWEETALERT)
     window.uploadFileLpj = function() {
         if (!activeKegiatanId) return;
 
         const fileInput = document.getElementById('file_lpj');
         if (!fileInput || fileInput.files.length === 0) {
-            alert('Pilih file dulu bos!');
+            Swal.fire('Oops...', 'Pilih file LPJ dulu sebelum upload!', 'warning');
             return;
         }
 
@@ -334,149 +317,156 @@
             body: formData
         })
         .then(async res => {
-            // --- BAGIAN INI YANG PENTING ---
-            // Kita cek status HTTP-nya dulu
             const data = await res.json();
-
-            // Jika statusnya BUKAN sukses (misal 403 Forbidden atau 500 Error)
-            if (!res.ok) {
-                // Kita lempar error manual biar ditangkap sama .catch di bawah
-                // data.message itu isinya pesan dari Policy tadi ("Akses Ditolak: ...")
-                throw new Error(data.message || 'Terjadi kesalahan pada server');
-            }
-
+            if (!res.ok) throw new Error(data.message || 'Terjadi kesalahan pada server');
             return data;
         })
         .then(res => {
-            // Ini jalan kalau statusnya 200 (OK)
             btn.textContent = oldText;
             btn.disabled = false;
 
             if(res.success) {
-                alert(res.message); // "LPJ Berhasil Diupload!"
-                showSideDetail(activeKegiatanId);
+                Swal.fire('Berhasil!', res.message, 'success').then(() => {
+                    showSideDetail(activeKegiatanId); // Refresh tampilan modal
+                });
             } else {
-                alert('Gagal: ' + res.message);
+                Swal.fire('Gagal', res.message, 'error');
             }
         })
         .catch(err => {
-            // --- ERROR DITANGKAP DISINI ---
             btn.textContent = oldText;
             btn.disabled = false;
-            
-            // Tampilkan pesan error asli dari Laravel (Policy)
-            alert(err.message); 
+            Swal.fire('Gagal Upload', err.message, 'error');
         });
     }
 
-    // Fungsi Edit (Buka Modal Input dengan Data)
+    // Fungsi Edit
     window.editKegiatan = function() {
         if (!activeKegiatanId) return;
         
-        // Fetch ulang data lengkap biar aman
         fetch(`/kegiatan/${activeKegiatanId}`)
             .then(res => res.json())
             .then(data => {
-                // Isi Form Input
-                document.getElementById('kegiatan_id').value = data.id_kegiatan; // ID untuk update
+                document.getElementById('kegiatan_id').value = data.id_kegiatan;
                 document.getElementById('nama_kegiatan').value = data.nama_kegiatan;
                 document.getElementById('tanggal_kegiatan').value = data.tanggal_kegiatan;
                 document.getElementById('tempat').value = data.tempat;
                 document.getElementById('waktu_mulai').value = data.waktu_mulai;
                 document.getElementById('waktu_selesai').value = data.waktu_selesai;
 
-                // Ganti Tampilan jadi Mode Edit
                 document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
                 document.getElementById('editModeIndicator').classList.remove('hidden');
                 
-                // Tutup modal detail, buka modal edit
                 closeDetailModal();
                 document.getElementById('addModal').classList.remove('hidden');
             });
     }
 
-    // Fungsi Hapus
+    // Fungsi Hapus (PAKAI SWEETALERT CONFIRM)
     window.deleteKegiatan = function() {
         if (!activeKegiatanId) return;
         
-        if(confirm('Yakin ingin menghapus kegiatan ini?')) {
-            fetch(`/kegiatan/${activeKegiatanId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json' // <--- PENTING: Supaya tidak error token '<'
-                }
-            })
-            .then(async res => {
-                const result = await res.json();
-                if (!res.ok) {
-                    // Tangkap pesan error dari Policy
-                    throw new Error(result.message || 'Gagal menghapus');
-                }
-                return result;
-            })
-            .then(res => {
-                alert('Terhapus!');
-                location.reload();
-            })
-            .catch(err => {
-                // Tampilkan pesan error yang jelas
-                alert(err.message);
-            });
-        }
+        Swal.fire({
+            title: 'Yakin hapus?',
+            text: "Data kegiatan ini tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proses Hapus
+                fetch(`/kegiatan/${activeKegiatanId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(async res => {
+                    const result = await res.json();
+                    if (!res.ok) throw new Error(result.message || 'Gagal menghapus');
+                    return result;
+                })
+                .then(res => {
+                    Swal.fire('Terhapus!', 'Kegiatan telah dihapus.', 'success').then(() => {
+                        location.reload(); // RELOAD HALAMAN
+                    });
+                })
+                .catch(err => {
+                    Swal.fire('Gagal!', err.message, 'error');
+                });
+            }
+        })
     }
 
     // --- FUNGSI VALIDASI BEM ---
     
-    // 1. Toggle Tampilan Input Revisi
     window.toggleModeRevisi = function() {
         const container = document.getElementById('formRevisiContainer');
         const btnMinta = document.getElementById('btnMintaRevisi');
         const btnKirim = document.getElementById('btnKirimRevisi');
 
-        // Show Textarea & Button Kirim, Hide Button Minta
         container.classList.remove('hidden');
         btnMinta.classList.add('hidden');
         btnKirim.classList.remove('hidden');
     }
 
-    // 2. Submit ke Server
+    // Submit Validasi (PAKAI SWEETALERT)
     window.submitValidasi = function(statusKeputusan) {
         if(!activeKegiatanId) return;
 
         const catatan = document.getElementById('inputCatatanRevisi').value;
 
-        // Validasi simpel: Kalau pilih revisi, wajib isi catatan
         if(statusKeputusan === 'revisi' && !catatan.trim()) {
-            alert('Wajib mengisi catatan alasan revisi!');
+            Swal.fire('Peringatan', 'Wajib mengisi catatan alasan revisi!', 'warning');
             return;
         }
 
-        if(!confirm('Yakin ingin mengubah status LPJ ini?')) return;
-
-        fetch(`/kegiatan/${activeKegiatanId}/validasi-lpj`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                status: statusKeputusan,
-                catatan: catatan
-            })
-        })
-        .then(res => res.json())
-        .then(res => {
-            if(res.success) {
-                alert('Status berhasil diperbarui!');
-                showSideDetail(activeKegiatanId); // Refresh modal biar status berubah langsung
-            } else {
-                alert('Gagal: ' + res.message);
+        Swal.fire({
+            title: 'Konfirmasi Validasi',
+            text: `Anda yakin ingin mengubah status menjadi ${statusKeputusan.toUpperCase()}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Simpan',
+            confirmButtonColor: statusKeputusan === 'diterima' ? '#22c55e' : '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/kegiatan/${activeKegiatanId}/validasi-lpj`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: statusKeputusan,
+                        catatan: catatan
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if(res.success) {
+                        // SUKSES
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Status LPJ berhasil diperbarui',
+                            icon: 'success'
+                        }).then(() => {
+                            // OPSI 1: RELOAD SUPAYA DATA DI KALENDER JUGA BERUBAH WARNANYA
+                            // Kalau mau modal doang yg update, pakai showSideDetail(activeKegiatanId)
+                            location.reload(); 
+                        });
+                    } else {
+                        Swal.fire('Gagal', res.message, 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Error', 'Terjadi kesalahan sistem', 'error'));
             }
-        })
-        .catch(err => alert('Terjadi kesalahan sistem'));
+        });
     }
 
     // ==========================================
@@ -509,14 +499,12 @@
         const methodDiv = document.getElementById('beritaMethod');
 
         if (id) {
-            // Jika Mode Edit
             title.textContent = 'Edit Berita';
             form.action = `/berita/${id}`;
             methodDiv.innerHTML = '<input type="hidden" name="_method" value="PUT">';
             document.getElementById('berita_judul').value = judul;
             document.getElementById('berita_konten').value = konten;
         } else {
-            // Jika Mode Tambah
             title.textContent = 'Tambah Berita';
             form.action = "{{ route('berita.store') }}";
             methodDiv.innerHTML = '';
@@ -533,53 +521,37 @@
         fetch(`/berita/${id}/edit`)
             .then(res => res.json())
             .then(data => {
-                // Isi data ke dalam form modal berita
                 document.getElementById('berita_judul').value = data.judul_berita;
                 document.getElementById('berita_konten').value = data.konten;
                 
-                // Ubah Judul Modal & Action Form
                 document.getElementById('modalBeritaTitle').textContent = 'Edit Berita';
                 document.getElementById('formBerita').action = `/berita/${id}`;
                 document.getElementById('beritaMethod').innerHTML = '<input type="hidden" name="_method" value="PUT">';
                 
-                // Tampilkan Modal
                 document.getElementById('modalBerita').classList.remove('hidden');
             });
     }
 
-    /**
-     * 1. Fungsi Buka Modal Hapus
-     * @param {string} actionUrl - URL lengkap Laravel untuk menghapus (misal: /berita/4)
-     */
     window.openDeleteModalBerita = function(actionUrl) {
         const modal = document.getElementById('deleteBeritaModal');
         const form = document.getElementById('deleteBeritaForm');
-        
-        // Pasang URL hapus berita secara dinamis ke form modal
         form.action = actionUrl; 
-        
-        // Hilangkan class hidden untuk memunculkan modal
         modal.classList.remove('hidden');
     }
 
-    /**
-     * 2. Fungsi Tutup Modal Hapus
-     */
     window.closeDeleteModalBerita = function() {
         document.getElementById('deleteBeritaModal').classList.add('hidden');
     }
 
-    /**
-     * 3. Tambahan Keamanan: Tutup modal jika klik di area luar modal (overlay)
-     */
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('deleteBeritaModal');
         if (event.target === modal) {
             closeDeleteModalBerita();
         }
     });
+
     // ==========================================
-    // FUNGSI PENCARIAN KEGIATAN (GLOBAL)
+    // FUNGSI PENCARIAN
     // ==========================================
     window.searchEvents = function() {
         const keyword = document.getElementById('searchInput').value.toLowerCase();
@@ -587,7 +559,6 @@
         const label = document.getElementById('selectedDateLabel');
         
         if (keyword.length < 1) {
-            // Jika kolom pencarian kosong, kembalikan ke instruksi pilih tanggal
             label.textContent = "- Pilih Tanggal -";
             listContainer.innerHTML = `
                 <div class="text-center py-10 text-gray-400">
@@ -598,11 +569,10 @@
         }
 
         label.textContent = "Hasil Pencarian: " + keyword;
-        listContainer.innerHTML = ''; // Kosongkan list
+        listContainer.innerHTML = ''; 
 
         let found = false;
 
-        // Iterasi melalui semua data events yang ada di variabel global 'events'
         for (let dateKey in events) {
             const dailyEvents = Array.isArray(events[dateKey]) ? events[dateKey] : [events[dateKey]];
             
@@ -612,7 +582,6 @@
                     const item = document.createElement('div');
                     item.className = 'group p-3 rounded-xl border border-orange-100 bg-orange-50/30 hover:bg-orange-50 cursor-pointer transition-all duration-200 mb-3';
                     
-                    // Tetap memfungsikan klik detail untuk Admin
                     item.onclick = () => showSideDetail(event.id);
                     
                     item.innerHTML = `
@@ -649,7 +618,7 @@
         const tgl = document.getElementById('inputDeadline').value;
         
         if(!tgl) {
-            alert('Pilih tanggal dulu!');
+            Swal.fire('Oops...', 'Pilih tanggal dulu!', 'warning');
             return;
         }
 
@@ -665,12 +634,13 @@
         .then(res => res.json())
         .then(res => {
             if(res.success) {
-                alert('Deadline berhasil disimpan!');
-                showSideDetail(activeKegiatanId); // Refresh tampilan modal
+                Swal.fire('Berhasil!', 'Deadline berhasil disimpan.', 'success').then(() => {
+                     showSideDetail(activeKegiatanId); // Update modal tanpa reload
+                });
             } else {
-                alert('Gagal: ' + res.message);
+                Swal.fire('Gagal', res.message, 'error');
             }
         })
-        .catch(err => alert('Error sistem saat simpan deadline'));
+        .catch(err => Swal.fire('Error', 'Terjadi kesalahan sistem', 'error'));
     }
 </script>

@@ -18,6 +18,8 @@ class Lpj extends Model
         'nama_lpj',
         'tanggal_upload',
         'status_lpj',
+        'catatan_revisi',
+        'deadline'
     ];
 
     public function kegiatan()

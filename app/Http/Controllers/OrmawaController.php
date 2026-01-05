@@ -64,7 +64,7 @@ class OrmawaController extends Controller
         $validated = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:ormawa,slug'],
-            'tipe' => ['required', 'in:ukm,bem,komunitas'],
+            'tipe' => ['required', 'in:ukm,bem,komunitas,sc'],
             'deskripsi' => ['nullable', 'string'],
         ]);
 

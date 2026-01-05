@@ -23,14 +23,6 @@
             @endif 
         @endguest
     </div>
-
-    {{-- LOGIN BUTTON --}}
-    @guest
-        <button onclick="window.location.href='{{ route('login') }}'"
-            class="inline-block px-6 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold hover:bg-orange-600 transition">
-            LOGIN
-        </button>
-    @endguest
 </header>
 
 <script>

@@ -47,6 +47,12 @@
         class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             Kalender Kegiatan
         </a>
+        
+        {{-- LPJ --}}
+        <a href="{{ url('/dashboard#lpj') }}" 
+        class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
+            LPJ
+        </a>
 
         {{-- MENU BEM --}}
         <a href="{{ url('/dashboard#bem') }}" 
