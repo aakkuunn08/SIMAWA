@@ -1,4 +1,4 @@
-@extends('layouts.landing')
+@extends(auth()->check() ? 'layouts.main' : 'layouts.landing')
 
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

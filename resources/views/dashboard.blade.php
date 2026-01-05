@@ -189,7 +189,7 @@
 
     {{-- 4. BEM (Background: Orange Pudar | Full Screen) --}}
     <section id="bem" class="bg-orange-50 px-4 md:px-8 min-h-screen flex items-center justify-center scroll-mt-0">
-        <div class="max-w-7xl mx-auto w-full">
+        <div class="max-w-6xl mx-auto w-full">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Badan Eksekutif Mahasiswa</h2>
             <div class="modern-bem-container">
                 <div class="flex flex-col md:flex-row items-center md:items-start gap-8">

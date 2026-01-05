@@ -111,7 +111,7 @@
     {{-- 4. NEWS SECTION (Background: Orange Pudar | Full Screen) --}}
     <section id="news" class="bg-orange-50 px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-0">
         <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Berita Terbaru</h2>
+            <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">News</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 @foreach($beritas as $item)
                     <article class="modern-news-card relative group">
