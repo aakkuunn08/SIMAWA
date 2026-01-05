@@ -291,7 +291,7 @@
     </section>
 
     {{-- DAFTAR UKM --}}
-    <section id="ukm" class="bg-gradient-to-br from-orange-50 to-orange-100 px-4 md:px-10 py-12 min-h-screen flex items-center">
+    <section id="ukm" class="bg-gradient-to-br from-orange-50 to-orange-100 px-4 md:px-10 py-12 min-h-screen flex items-center scroll-mt-16">
         <div class="max-w-6xl mx-auto">
             <h2 class="modern-section-title text-center uppercase">Daftar UKM/SC</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
