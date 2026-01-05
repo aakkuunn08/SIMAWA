@@ -20,7 +20,7 @@
         @if ($ormawa->slug === 'bem')
             {{-- BEM --}}
             <div class="position-relative" style="height:300px; overflow:hidden;">
-                <img src="{{ asset('images/ith.jpg') }}" alt="Gedung ITH" class="w-100 h-100 object-fit-cover">
+                <img src="{{ asset('images/ith.jpg') }}" alt="Gedung ITH" class="w-full h-full object-fit-cover">
                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center p-3" style="background:rgba(0,0,0,0.45); color:white;">
                     <h5 class="text-uppercase" style="letter-spacing: 2px;">Welcome To</h5>
                     <h2 class="fw-bold">Badan Eksekutif Mahasiswa</h2>
@@ -41,13 +41,12 @@
 
         <div class="card-body p-4">
 
-
         {{-- Bagian Vision & Mission --}}
         <div class="row mb-5">
             <div class="col-md-6">
                 <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
                     <div class="d-flex align-items-center mb-3 gap-2">
-                        <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Vision</h4>
+                        <h4 class="section-header" style="color: #ff7a1a;">Vision</h4>
                         @auth
                             @if(auth()->user()->hasRole('adminbem'))
                                 <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle p-0" 
@@ -62,22 +61,11 @@
                         {!! $ormawa->vision ?? 'Belum ada visi.' !!}
                     </div>
                 </div>
-                <!-- <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Vision</h4>
-                        @auth @if(auth()->user()->hasRole('adminbem'))
-                            <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle" onclick="editContent('vision')">✎</button>
-                        @endif @endauth
-                    </div>
-                    <div class="editable-content text-secondary" data-field="vision">
-                        {!! $ormawa->vision ?? 'Belum ada visi.' !!}
-                    </div>
-                </div> -->
             </div>
 
             <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
                 <div class="d-flex align-items-center mb-3 gap-2">
-                    <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Mission</h4>
+                    <h4 class="section-header" style="color: #ff7a1a;">Mission</h4>
                     @auth
                         @if(auth()->user()->hasRole('adminbem'))
                             <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle p-0" 
@@ -92,24 +80,11 @@
                     {!! $ormawa->mission ?? 'Belum ada misi.' !!}
                 </div>
             </div>
-            <!-- <div class="col-md-6">
-                <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Mission</h4>
-                        @auth @if(auth()->user()->hasRole('adminbem'))
-                            <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle" onclick="editContent('mission')">✎</button>
-                        @endif @endauth
-                    </div>
-                    <div class="editable-content text-secondary" data-field="mission">
-                        {!! $ormawa->mission ?? 'Belum ada misi.' !!}
-                    </div>
-                </div>
-            </div> -->
         </div>
 
         {{-- Organizational Structure --}}
         <div class="p-4 rounded-4 shadow-sm border bg-white">
-            <h4 class="fw-bold mb-4" style="color: #ff7a1a;">Organizational Structure</h4>
+            <h4 class="section-header" style="color: #ff7a1a;">Organizational Structure</h4>
 
             @php
                 // Pastikan data struktur dipecah sesuai format: ketua = nama, jabatan = array jabatan
@@ -140,37 +115,6 @@
             </div>
         </div>
 
-<!-- {{-- Organizational Structure --}}
-<div class="p-4 rounded-4 shadow-sm border bg-white">
-    <h4 class="fw-bold mb-4" style="color: #ff7a1a;">Organizational Structure</h4>
-
-    @php
-        $structure = json_decode($ormawa->structure ?? '{"ketua":"","jabatan":[]}', true);
-    @endphp
-
-    <div class="structure-view">
-        {{-- Ketua --}}
-        <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
-            <span class="fw-bold text-dark">Ketua</span>
-            <span class="text-dark">{{ $structure['ketua'] ?? '-' }}</span>
-        </div>
-
-        {{-- Daftar Jabatan --}}
-        @foreach ($structure['jabatan'] ?? [] as $jabatan)
-            <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light" style="gap: 10px;">
-                <span class="fw-bold text-dark" style="min-width: 150px;">{{ $jabatan['jabatan'] }}</span>
-                <span class="text-dark">{{ $jabatan['nama'] }}</span>
-            </div>
-
-            {{-- Anggota --}}
-            @foreach ($jabatan['anggota'] ?? [] as $anggota)
-                <div class="d-flex justify-content-end py-1 text-muted small">
-                    <span class="fw-normal text-end">• {{ $anggota }}</span>
-                </div>
-            @endforeach
-        @endforeach
-    </div>
-</div> --> 
 
                 {{-- FORM EDIT STRUKTUR (KHUSUS ADMIN BEM) --}}
                 @auth @if(auth()->user()->hasRole('adminbem'))
@@ -343,6 +287,7 @@
 <style>
     .d-none { display: none !important; }
     .object-fit-cover { object-fit: cover; }
+    
     /* Menjaga Sidebar tetap aman */
     .container-fluid { width: 100% !important; max-width: 100% !important; }
     structure-view > div {
@@ -361,5 +306,20 @@
     font-size: 14px;
     cursor: pointer;
     }
+    .structure-view table tbody tr td {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+    }
+    .section-header {
+    color: #ff7a1a;
+    font-weight: 700;  /* sama dengan fw-bold */
+    font-size: 1.1rem;  /* bisa disesuaikan */
+    border-bottom: 2px solid #ff7a1a;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase; /* opsi agar uppercase */
+    letter-spacing: 1.5px;     /* opsi agar lebih rapi */
+}
 </style>
 @endsection
