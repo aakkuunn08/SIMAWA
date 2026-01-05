@@ -18,9 +18,9 @@
     <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px; background: white;">
         
         @if ($ormawa->slug === 'bem')
-            {{-- HERO BEM --}}
+            {{-- BEM --}}
             <div class="position-relative" style="height:300px; overflow:hidden;">
-                <img src="{{ asset('images/ith.jpg') }}" alt="Gedung ITH" class="w-100 h-100 object-fit-cover">
+                <img src="{{ asset('images/ith.jpg') }}" alt="Gedung ITH" class="w-full h-full object-fit-cover">
                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center p-3" style="background:rgba(0,0,0,0.45); color:white;">
                     <h5 class="text-uppercase" style="letter-spacing: 2px;">Welcome To</h5>
                     <h2 class="fw-bold">Badan Eksekutif Mahasiswa</h2>
@@ -41,117 +41,80 @@
 
         <div class="card-body p-4">
 
-
         {{-- Bagian Vision & Mission --}}
-<div class="row mb-5">
-    <div class="col-md-6">
-        <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Vision</h4>
-                @auth @if(auth()->user()->hasRole('adminbem'))
-                    <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle" onclick="editContent('vision')">✎</button>
-                @endif @endauth
-            </div>
-            <div class="editable-content text-secondary" data-field="vision">
-                {!! $ormawa->vision ?? 'Belum ada visi.' !!}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Mission</h4>
-                @auth @if(auth()->user()->hasRole('adminbem'))
-                    <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle" onclick="editContent('mission')">✎</button>
-                @endif @endauth
-            </div>
-            <div class="editable-content text-secondary" data-field="mission">
-                {!! $ormawa->mission ?? 'Belum ada misi.' !!}
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- ORGANIZATIONAL STRUCTURE --}}
-<div class="p-4 rounded-4 shadow-sm border bg-white">
-    <h4 class="fw-bold mb-4" style="color: #ff7a1a;">Organizational Structure</h4>
-
-    @php $structure = json_decode($ormawa->structure ?? '{"ketua":"","jabatan":[]}', true); @endphp
-
-    <div class="structure-view">
-        <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
-            <span class="fw-bold">Ketua</span>
-            <span class="text-secondary fw-normal text-end">{{ $structure['ketua'] ?? '-' }}</span>
-        </div>
-        @foreach ($structure['jabatan'] ?? [] as $jabatan)
-            <div class="d-flex align-items-center py-2 border-bottom border-light" style="gap: 10px;">
-                <span class="fw-bold text-dark" style="min-width: 150px;">{{ $jabatan['jabatan'] }}</span>
-                <span class="text-secondary fw-normal flex-grow-1 text-end">{{ $jabatan['nama'] }}</span>
-            </div>
-            @foreach ($jabatan['anggota'] ?? [] as $anggota)
-                <div class="d-flex justify-content-end py-1 text-muted small">
-                    <span class="fw-normal text-end">• {{ $anggota }}</span>
-                </div>
-            @endforeach
-        @endforeach
-    </div>
-</div>
-
-        <!-- {{-- Bagian Vision & Mission --}}
-<div class="row g-4 mb-5">
-    <div class="col-md-6 d-flex">
-        <div class="p-4 rounded-4 shadow-sm border bg-white flex-fill">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Vision</h4>
-                @auth @if(auth()->user()->hasRole('adminbem'))
-                    <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle" onclick="editContent('vision')">✎</button>
-                @endif @endauth
-            </div>
-            <div class="editable-content text-secondary" data-field="vision">
-                {!! $ormawa->vision ?? 'Belum ada visi.' !!}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 d-flex">
-        <div class="p-4 rounded-4 shadow-sm border bg-white flex-fill">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold mb-0" style="color: #ff7a1a;">Mission</h4>
-                @auth @if(auth()->user()->hasRole('adminbem'))
-                    <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle" onclick="editContent('mission')">✎</button>
-                @endif @endauth
-            </div>
-            <div class="editable-content text-secondary" data-field="mission">
-                {!! $ormawa->mission ?? 'Belum ada misi.' !!}
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    {{-- ORGANIZATIONAL STRUCTURE (JABATAN DI KIRI, NAMA DI KANAN) --}}
-    <div class="p-4 rounded-4 shadow-sm border bg-white">
-        <h4 class="fw-bold mb-4" style="color: #ff7a1a;">Organizational Structure</h4>
-
-        @php $structure = json_decode($ormawa->structure ?? '{"ketua":"","jabatan":[]}', true); @endphp
-
-        <div class="structure-view">
-            <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
-                <span class="fw-bold">Ketua</span>
-                <span class="text-secondary fw-normal text-end">{{ $structure['ketua'] ?? '-' }}</span>
-            </div>
-            @foreach ($structure['jabatan'] ?? [] as $jabatan)
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
-                    <span class="fw-bold text-dark">{{ $jabatan['jabatan'] }}</span>
-                    <span class="text-secondary fw-normal text-end">{{ $jabatan['nama'] }}</span>
-                </div>
-                @foreach ($jabatan['anggota'] ?? [] as $anggota)
-                    <div class="d-flex justify-content-end py-1 text-muted small">
-                        <span class="fw-normal text-end">• {{ $anggota }}</span>
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3 gap-2">
+                        <h4 class="section-header" style="color: #ff7a1a;">Vision</h4>
+                        @auth
+                            @if(auth()->user()->hasRole('adminbem'))
+                                <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle p-0" 
+                                        style="width: 28px; height: 28px; line-height: 1;" 
+                                        onclick="editContent('vision')" aria-label="Edit Vision">
+                                    ✎
+                                </button>
+                            @endif
+                        @endauth
                     </div>
-                @endforeach
-            @endforeach
+                    <div class="editable-content text-secondary" data-field="vision">
+                        {!! $ormawa->vision ?? 'Belum ada visi.' !!}
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-4 shadow-sm border bg-white h-100 d-flex flex-column">
+                <div class="d-flex align-items-center mb-3 gap-2">
+                    <h4 class="section-header" style="color: #ff7a1a;">Mission</h4>
+                    @auth
+                        @if(auth()->user()->hasRole('adminbem'))
+                            <button class="edit-control d-none btn btn-sm btn-primary border-0 rounded-circle p-0" 
+                                    style="width: 28px; height: 28px; line-height: 1;" 
+                                    onclick="editContent('mission')" aria-label="Edit Mision">
+                                ✎
+                            </button>
+                        @endif
+                    @endauth
+                </div>
+                <div class="editable-content text-secondary" data-field="mission">
+                    {!! $ormawa->mission ?? 'Belum ada misi.' !!}
+                </div>
+            </div>
         </div>
-    </div> -->
+
+        {{-- Organizational Structure --}}
+        <div class="p-4 rounded-4 shadow-sm border bg-white">
+            <h4 class="section-header" style="color: #ff7a1a;">Organizational Structure</h4>
+
+            @php
+                // Pastikan data struktur dipecah sesuai format: ketua = nama, jabatan = array jabatan
+                $structure = json_decode($ormawa->structure ?? '{"ketua":"","jabatan":[]}', true);
+            @endphp
+
+            <div class="structure-view">
+                {{-- Jabatan Ketua tetap hardcoded --}}
+                <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
+                    <span class="fw-bold text-dark" style="min-width: 150px;">Ketua</span>
+                    <span class="text-dark">{{ $structure['ketua'] ?? '-' }}</span>
+                </div>
+
+                {{-- Tampilkan semua jabatan --}}
+                @foreach ($structure['jabatan'] ?? [] as $jabatan)
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light" style="gap: 10px;">
+                        <span class="fw-bold text-dark" style="min-width: 150px;">{{ $jabatan['jabatan'] }}</span>
+                        <span class="text-dark">{{ $jabatan['nama'] }}</span>
+                    </div>
+
+                    {{-- Jika ada anggota, tampilkan dengan indentasi --}}
+                    @foreach ($jabatan['anggota'] ?? [] as $anggota)
+                        <div class="d-flex justify-content-end py-1 text-muted small" style="padding-right: 10px;">
+                            <span class="fw-normal text-end">• {{ $anggota }}</span>
+                        </div>
+                    @endforeach
+                @endforeach
+            </div>
+        </div>
+
 
                 {{-- FORM EDIT STRUKTUR (KHUSUS ADMIN BEM) --}}
                 @auth @if(auth()->user()->hasRole('adminbem'))
@@ -220,42 +183,55 @@
     });
 
     //edit wa agar bisa diinput
-async function saveToServer(field, content) {
-    Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-    try {
-        const res = await fetch(`/ormawa/${ormawaSlug}/update-content`, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' 
-            },
-            body: JSON.stringify({ field, content })
-        });
+    async function saveToServer(field, content) {
+        Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        try {
+            const res = await fetch(`/ormawa/${ormawaSlug}/update-content`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+                },
+                body: JSON.stringify({ field, content })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (res.ok) {
-            Swal.fire({ icon: 'success', title: 'Berhasil!', timer: 1000, showConfirmButton: false });
+            if (res.ok) {
+                Swal.fire({ icon: 'success', title: 'Berhasil!', timer: 1000, showConfirmButton: false });
 
-            if(field === 'whatsapp') {
-                // Update link tombol WhatsApp floating tanpa reload halaman
-                const phone = content.replace(/\D/g, '');
-                const waButton = document.querySelector('a[href^="https://api.whatsapp.com/send"]');
-                if(waButton){
-                    waButton.href = `https://api.whatsapp.com/send?phone=${phone}`;
+                if(field === 'whatsapp') {
+                    // Update link tombol WhatsApp floating tanpa reload halaman
+                    const phone = content.replace(/\D/g, '');
+                    const waButton = document.querySelector('a[href^="https://api.whatsapp.com/send"]');
+                    if(waButton){
+                        waButton.href = `https://api.whatsapp.com/send?phone=${phone}`;
+                    }
+                } else {
+                    // Reload halaman setelah save untuk field lain
+                    setTimeout(() => location.reload(), 1100);
                 }
-            } else {
-                // Reload halaman setelah save untuk field lain
-                setTimeout(() => location.reload(), 1100);
-            }
 
-        } else {
-            Swal.fire('Error', data.message || 'Gagal menyimpan. Cek koneksi server.', 'error');
+            } else {
+                Swal.fire('Error', data.message || 'Gagal menyimpan. Cek koneksi server.', 'error');
+            }
+        } catch (e) {
+            Swal.fire('Error', 'Gagal menyimpan. Cek koneksi server.', 'error');
         }
-    } catch (e) {
-        Swal.fire('Error', 'Gagal menyimpan. Cek koneksi server.', 'error');
     }
+
+    function editContent(field) {
+    const current = document.querySelector(`[data-field="${field}"]`).innerText.trim();
+    Swal.fire({
+        title: 'Edit ' + field.charAt(0).toUpperCase() + field.slice(1),
+        input: 'textarea',
+        inputValue: current,
+        showCancelButton: true,
+        confirmButtonColor: '#ff7a1a'
+    }).then(res => { 
+        if(res.isConfirmed) saveToServer(field, res.value);
+    });
 }
 
     function editWhatsApp() {
@@ -311,10 +287,39 @@ async function saveToServer(field, content) {
 <style>
     .d-none { display: none !important; }
     .object-fit-cover { object-fit: cover; }
+    
     /* Menjaga Sidebar tetap aman */
     .container-fluid { width: 100% !important; max-width: 100% !important; }
     structure-view > div {
     padding-left: 0.5rem;
     padding-right: 0.5rem;}
+    .structure-view > div.d-flex {
+    gap: 10px;
+    }
+
+    .structure-view span.fw-bold {
+        min-width: 150px;
+        display: inline-block;
+    }
+    .edit-control.btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 14px;
+    cursor: pointer;
+    }
+    .structure-view table tbody tr td {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+    }
+    .section-header {
+    color: #ff7a1a;
+    font-weight: 700;  /* sama dengan fw-bold */
+    font-size: 1.1rem;  /* bisa disesuaikan */
+    border-bottom: 2px solid #ff7a1a;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase; /* opsi agar uppercase */
+    letter-spacing: 1.5px;     /* opsi agar lebih rapi */
+}
 </style>
 @endsection
