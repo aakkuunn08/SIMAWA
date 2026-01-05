@@ -2,7 +2,7 @@
 
 @section('content')
 
-    {{-- 1. SECTION HERO (Full Screen) --}}
+    {{-- 1. SECTION HERO --}}
     <section id="home" class="relative w-full h-screen flex items-center justify-center overflow-hidden">
         <img src="/images/ith.jpg" class="absolute inset-0 w-full h-full object-cover" alt="ITH">
         <div class="absolute inset-0 bg-orange-500 opacity-40"></div>
@@ -19,8 +19,8 @@
         </div>
     </section>
 
-    {{-- 2. AREA KALENDER (Background: Orange Pudar | Full Screen) --}}
-    <section id="kalender" class="bg-orange-50 px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-0">
+    {{-- 2. AREA KALENDER --}}
+    <section id="kalender" class="bg-orange-50 px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-10">
         <div class="max-w-7xl mx-auto w-full py-10">
             
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -84,7 +84,7 @@
         </div>
     </section>
 
-    {{-- 3. BEM (Background: Putih | Full Screen) --}}
+    {{-- 3. BEM --}}
     <section id="bem" class="bg-white px-4 md:px-8 min-h-screen flex items-center justify-center scroll-mt-0">
         <div class="max-w-7xl mx-auto w-full">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Badan Eksekutif Mahasiswa</h2>
@@ -108,7 +108,7 @@
         </div>
     </section>
 
-    {{-- 4. NEWS SECTION (Background: Orange Pudar | Full Screen) --}}
+    {{-- 4. NEWS SECTION --}}
     <section id="news" class="bg-orange-50 px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-0">
         <div class="max-w-6xl mx-auto px-4">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">News</h2>
@@ -134,8 +134,8 @@
         </div>
     </section>
 
-    {{-- 5. DAFTAR UKM (Background: Putih | Full Screen) --}}
-    <section id="ukm" class="bg-white px-4 md:px-8 min-h-screen flex items-center justify-center scroll-mt-0">
+    {{-- 5. DAFTAR UKM --}}
+    <section id="ukm" class="bg-white px-4 md:px-8 min-h-screen flex items-center justify-center scroll-mt-16">
         <div class="max-w-7xl mx-auto w-full">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Daftar UKM/SC</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -153,7 +153,7 @@
         </div>
     </section>
 
-    {{-- 6. TES MINAT (Background: Orange Pudar | Full Screen) --}}
+    {{-- 6. TES MINAT --}}
     <section id="tes-minat" class="bg-orange-50 min-h-screen flex items-center justify-center px-4 md:px-8">
         <div class="text-center max-w-xl">
             <h2 class="text-2xl md:text-3xl font-extrabold uppercase tracking-widest text-gray-800 mb-4">

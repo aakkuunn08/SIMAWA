@@ -19,7 +19,7 @@
         </div>
     </section>
 
-    {{-- 2. AREA KALENDER (Background: Orange Pudar | Full Screen) --}}
+    {{-- 2. AREA KALENDER --}}
     <section id="kalender" class="bg-orange-50 px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-10">
         <div class="max-w-7xl mx-auto w-full py-10">
             
@@ -88,7 +88,7 @@
         </div>
     </section>
 
-    {{-- 3. LPJ (Background: Putih | Full Screen) --}}
+    {{-- 3. LPJ --}}
     <section id="lpj" class="bg-white px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-0">
         <div class="max-w-7xl mx-auto w-full py-10">
             <div class="flex items-center justify-between mb-8 px-1">
@@ -187,7 +187,7 @@
         </div>
     </section>
 
-    {{-- 4. BEM (Background: Orange Pudar | Full Screen) --}}
+    {{-- 4. BEM --}}
     <section id="bem" class="bg-orange-50 px-4 md:px-8 min-h-screen flex items-center justify-center scroll-mt-0">
         <div class="max-w-6xl mx-auto w-full">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Badan Eksekutif Mahasiswa</h2>
@@ -209,8 +209,8 @@
         </div>
     </section>
 
-    {{-- 5. NEWS SECTION (Background: Putih | Full Screen) --}}
-    <section id="news" class="bg-white px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-0">
+    {{-- 5. NEWS --}}
+    <section id="news" class="bg-white px-4 md:px-8 min-h-screen flex flex-col justify-center scroll-mt-10">
         <div class="max-w-7xl mx-auto w-full py-10">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">News</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -261,7 +261,7 @@
         </div>
     </section>
 
-    {{-- 6. DAFTAR UKM (Background: Orange Pudar | Full Screen) --}}
+    {{-- 6. DAFTAR UKM --}}
     <section id="ukm" class="bg-orange-50 px-4 md:px-8 min-h-screen flex items-center justify-center scroll-mt-0">
         <div class="max-w-6xl mx-auto">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Daftar UKM/SC</h2>
@@ -280,7 +280,7 @@
         </div>
     </section>
 
-    {{-- 7. TES MINAT (Background: Putih | Full Screen) --}}
+    {{-- 7. TES MINAT --}}
     @if(auth()->guest() || !auth()->user()->hasRole('adminukm'))
         <section id="tes-minat" class="bg-white min-h-screen flex items-center justify-center px-4 md:px-8">
             <div class="text-center max-w-xl">

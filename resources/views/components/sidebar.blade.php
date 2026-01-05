@@ -22,12 +22,11 @@
 
         // 4. Cek halaman Akun dan Panduan
         $isAccountPage = Request::routeIs('adminbem.accounts*') || Request::routeIs('profile*');
-        $isPanduanPage = Request::is('panduan') || Request::is('panduan/*');
 
         // 5. Cek halaman Tes Minat (untuk highlighting)
         $isTesMinatPage = Request::routeIs('tesminatbem*') || Request::routeIs('tesminat*');
 
-        // 6. Style Class (Sesuai request warna oranye sebelumnya)
+        // 6. Style Class 
         $activeClass = 'border-l-4 border-orange-500 bg-orange-50 text-gray-900 font-medium'; 
         $inactiveClass = 'border-l-4 border-transparent hover:bg-gray-100 text-gray-600';
 
@@ -42,7 +41,7 @@
     <nav class="flex-1 pt-4 text-sm overflow-y-auto" id="nav-container">
         
         {{-- Kalender --}}
-        {{-- LOGIKA BARU: Cek apakah URL adalah '/' (Home) ATAU 'dashboard' --}}
+        {{-- Cek apakah URL adalah '/' (Home) ATAU 'dashboard' --}}
         <a href="{{ url('/dashboard#kalender') }}" 
         class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             Kalender Kegiatan
@@ -50,7 +49,7 @@
         
         {{-- LPJ --}}
         <a href="{{ url('/dashboard#lpj') }}" 
-        class="nav-link flex items-center px-6 py-2 {{ $isBemActive ? $activeClass : $inactiveClass }}">
+        class="nav-link flex items-center px-6 py-2 {{ $inactiveClass }}">
             LPJ
         </a>
 
