@@ -104,10 +104,10 @@ Route::get('/dashboard', function () {
 });
 
 // Route yang hanya bisa diakses oleh Admin dan AdminBEM
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'role:adminukm|adminbem'])->group(function () {
     
     // Berita Management - AdminBEM dan AdminUKM bisa mengelola berita
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::middleware(['auth', 'role:adminukm|adminbem'])->group(function () {
         Route::resource('berita', BeritaController::class)->except(['show']);
     });
     // Placeholder untuk fitur admin
@@ -117,7 +117,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 // Route yang bisa diakses oleh AdminBEM dan AdminUKM
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'role:adminukm|adminbem'])->group(function () {
     // Kegiatan Management - AdminBEM dan AdminUKM bisa mengelola kegiatan mereka
     Route::get('/kegiatan/events', [DaftarKegiatanController::class, 'getEvents'])->name('kegiatan.events');
     Route::post('/kegiatan', [DaftarKegiatanController::class, 'store'])->name('kegiatan.store');
@@ -145,7 +145,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 
 // Route yang HANYA bisa diakses oleh AdminBEM (Super Admin)
-Route::middleware(['auth', 'adminbem'])->group(function () {
+Route::middleware(['auth', 'role:adminbem'])->group(function () {
     // Account Management - hanya AdminBEM yang bisa mengelola akun
     Route::get('/adminbem/accounts', [App\Http\Controllers\Admin\AccountController::class, 'index'])->name('adminbem.accounts.index');
     Route::get('/adminbem/accounts/create', [App\Http\Controllers\Admin\AccountController::class, 'create'])->name('adminbem.accounts.create');
