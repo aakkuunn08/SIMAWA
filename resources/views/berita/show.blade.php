@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends(auth()->check() ? 'layouts.main' : 'layouts.landing')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-12">
