@@ -11,28 +11,30 @@ class Ormawa extends Model
 
     protected $table = 'ormawa';
 
-    // Tambahkan vision, mission, dan structure di sini agar bisa disimpan
     protected $fillable = [
         'user_id',
         'nama',
         'slug',
         'logo',
-        'tipe',
-        'deskripsi',
+        'tipe_ormawa_id', // Ini untuk menyimpan angka ID (Foreign Key)
         'vision',    
         'mission',   
         'structure', 
     ];
 
-    /**
-     * Casting structure agar otomatis menjadi array saat dipanggil di Blade
-     */
     protected $casts = [
         'structure' => 'array',
     ];
 
+    // Relasi ke User (Pemilik Akun)
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    //  RELASI Ke tabel TipeOrmawa
+    public function tipe()
+    {
+        return $this->belongsTo(TipeOrmawa::class, 'tipe_ormawa_id');
     }
 }

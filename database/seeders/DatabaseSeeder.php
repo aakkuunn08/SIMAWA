@@ -44,14 +44,11 @@ class DatabaseSeeder extends Seeder
 
         // Panggil OrmawaSeeder dan SoalSeeder
         $this->call([
-            OrmawaSeeder::class,
             SoalSeeder::class,
-            DaftarKegiatanSeeder::class, // <--- TAMBAHKAN INI
-        ]);
-        
-        // Panggil BeritaSeeder
-        $this->call([
+            DaftarKegiatanSeeder::class, 
+            TipeOrmawaSeeder::class,
             BeritaSeeder::class,
+            OrmawaSeeder::class,
         ]);
         
         // $this->command->info('');

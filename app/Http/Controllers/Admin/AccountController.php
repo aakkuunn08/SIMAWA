@@ -2,170 +2,150 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\DataOrganisasi;
+use App\Models\Ormawa;
+use App\Models\TipeOrmawa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules;
 
 class AccountController extends Controller
 {
-    /**
-     * Display a listing of accounts (organizations with their users)
-     * Only accessible by adminbem
-     */
     public function index()
     {
-        // Get all users with their ormawa information (adminukm accounts)
-        $accounts = User::with(['dataOrganisasi', 'ormawa'])
+        $accounts = User::with(['ormawa.tipe'])
             ->where('role', 'adminukm')
-            ->orWhereHas('roles', function($query) {
-                $query->where('name', 'adminukm');
-            })
             ->get();
 
         return view('admin.accounts.index', compact('accounts'));
     }
 
-    /**
-     * Show the form for creating a new account
-     */
     public function create()
     {
+        // Ambil tipe sesuai urutan ID dari seeder (UKM & SC biasanya ID 1 & 2)
+        $tipes = TipeOrmawa::orderBy('id', 'ASC')->get();
+
         return view('admin.accounts.form', [
             'account' => null,
-            'isEdit' => false
+            'isEdit' => false,
+            'tipes' => $tipes
         ]);
     }
 
-    /**
-     * Store a newly created account in storage
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'profile_photo' => ['nullable', 'image', 'max:2048'], // max 2MB
+            'profile_photo' => ['nullable', 'image', 'max:2048'],
+            'tipe_ormawa_id' => ['required', 'exists:tipe_ormawas,id'],
         ]);
 
-        // Create user
         $user = User::create([
             'name' => $validated['name'],
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => 'adminukm',
         ]);
-
-        // Assign role using Spatie
+        
         $user->assignRole('adminukm');
 
-        // Handle profile photo upload
+        $path = null;
         if ($request->hasFile('profile_photo')) {
             $path = $request->file('profile_photo')->store('logos', 'public');
             $user->update(['profile_photo_path' => $path]);
         }
 
-        // Redirect to ormawa form to add organization information
-        return redirect()->route('adminbem.ormawa.create', $user->id)
-            ->with('success', 'Akun berhasil dibuat! Silakan tambahkan informasi organisasi.');
+        Ormawa::create([
+            'user_id' => $user->id,
+            'nama' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+            'tipe_ormawa_id' => $validated['tipe_ormawa_id'],
+            'logo' => $path ? 'storage/' . $path : 'images/logobem.png',
+            'deskripsi' => 'Profil organisasi ' . $validated['name'],
+        ]);
+
+        return redirect()->route('adminbem.accounts.index')->with('success', 'Akun berhasil dibuat!');
     }
 
-    /**
-     * Show the form for editing the specified account
-     */
     public function edit($id)
     {
-        $account = User::findOrFail($id);
-
-        // Ensure only adminukm accounts can be edited
-        if (!$account->hasRole('adminukm') && $account->role !== 'adminukm') {
-            abort(403, 'Hanya akun adminukm yang bisa diedit');
-        }
+        $account = User::with('ormawa')->findOrFail($id);
+        $tipes = TipeOrmawa::orderBy('id', 'ASC')->get();
 
         return view('admin.accounts.form', [
             'account' => $account,
-            'isEdit' => true
+            'isEdit' => true,
+            'tipes' => $tipes
         ]);
     }
 
-    /**
-     * Update the specified account in storage
-     */
     public function update(Request $request, $id)
     {
-        $account = User::findOrFail($id);
-
-        // Ensure only adminukm accounts can be edited
-        if (!$account->hasRole('adminukm') && $account->role !== 'adminukm') {
-            abort(403, 'Hanya akun adminukm yang bisa diedit');
-        }
+        $user = User::findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
+            'tipe_ormawa_id' => ['required', 'exists:tipe_ormawas,id'],
         ]);
 
-        // Update basic info
-        $account->update([
-            'name' => $validated['name'],
-            'username' => $validated['username'],
-        ]);
+        $user->update(['name' => $validated['name'], 'username' => $validated['username']]);
 
-        // Update password only if provided
-        if (!empty($validated['password'])) {
-            $account->update([
-                'password' => Hash::make($validated['password'])
-            ]);
+        if ($request->filled('password')) {
+            $user->update(['password' => Hash::make($request->password)]);
         }
 
-        // Handle profile photo upload
+        $ormawaData = [
+            'nama' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+            'tipe_ormawa_id' => $validated['tipe_ormawa_id'],
+        ];
+
         if ($request->hasFile('profile_photo')) {
-            // Delete old photo if exists
-            if ($account->profile_photo_path) {
-                Storage::disk('public')->delete($account->profile_photo_path);
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
             }
-
             $path = $request->file('profile_photo')->store('logos', 'public');
-            $account->update(['profile_photo_path' => $path]);
-            
-            // Update logo in ormawa if exists
-            if ($account->ormawa) {
-                $account->ormawa->update([
-                    'logo' => 'storage/' . $path
-                ]);
-            }
+            $user->update(['profile_photo_path' => $path]);
+            $ormawaData['logo'] = 'storage/' . $path;
         }
 
-        return redirect()->route('adminbem.accounts.index')
-            ->with('success', 'Akun berhasil diperbarui!');
+        $user->ormawa()->updateOrCreate(['user_id' => $user->id], $ormawaData);
+
+        return redirect()->route('adminbem.accounts.index')->with('success', 'Akun diperbarui!');
     }
 
-    /**
-     * Remove the specified account from storage
-     */
+    public function storeTipe(Request $request)
+    {
+        $request->validate(['nama_tipe' => 'required|string|unique:tipe_ormawas,nama_tipe']);
+        TipeOrmawa::create(['nama_tipe' => $request->nama_tipe]);
+        return back()->with('success', 'Tipe baru berhasil ditambahkan!');
+    }
+
+    public function destroyTipe($id)
+    {
+        $tipe = TipeOrmawa::findOrFail($id);
+        if (Ormawa::where('tipe_ormawa_id', $id)->exists()) {
+            return back()->with('error', 'Tipe tidak bisa dihapus karena masih digunakan!');
+        }
+        $tipe->delete();
+        return back()->with('success', 'Tipe berhasil dihapus!');
+    }
+
     public function destroy($id)
     {
-        $account = User::findOrFail($id);
-
-        // Ensure only adminukm accounts can be deleted
-        if (!$account->hasRole('adminukm') && $account->role !== 'adminukm') {
-            abort(403, 'Hanya akun adminukm yang bisa dihapus');
+        $user = User::findOrFail($id);
+        if ($user->profile_photo_path) {
+            Storage::disk('public')->delete($user->profile_photo_path);
         }
-
-        // Delete profile photo if exists
-        if ($account->profile_photo_path) {
-            Storage::disk('public')->delete($account->profile_photo_path);
-        }
-
-        $account->delete();
-
-        return redirect()->route('adminbem.accounts.index')
-            ->with('success', 'Akun berhasil dihapus!');
+        $user->delete();
+        return back()->with('success', 'Akun dihapus!');
     }
 }

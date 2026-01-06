@@ -14,7 +14,7 @@ use App\Http\Controllers\DaftarKegiatanController;
 
 
 Route::get('/', function () {
-    $ormawas = Ormawa::all();
+    $ormawas = Ormawa::with('tipe')->get();
     
     // Get events from database
     $kegiatan = DaftarKegiatan::all();
@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
 
 // Dashboard
 Route::get('/dashboard', function () {
-    $ormawas = Ormawa::all();
+    $ormawas = Ormawa::with('tipe')->get();
     $beritas = \App\Models\Berita::with('user')->where('published', true)->orderBy('tanggal_publikasi', 'desc')->get();
     $kegiatan = DaftarKegiatan::all();
     $lpjTerbaru = \App\Models\Lpj::with('kegiatan')->latest()->take(5)->get();
@@ -153,13 +153,10 @@ Route::middleware(['auth', 'role:adminbem'])->group(function () {
     Route::get('/adminbem/accounts/{id}/edit', [App\Http\Controllers\Admin\AccountController::class, 'edit'])->name('adminbem.accounts.edit');
     Route::put('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'update'])->name('adminbem.accounts.update');
     Route::delete('/adminbem/accounts/{id}', [App\Http\Controllers\Admin\AccountController::class, 'destroy'])->name('adminbem.accounts.destroy');
-    
-    // Ormawa Management - hanya AdminBEM yang bisa mengelola informasi ormawa
-    // Note: Edit functionality has been removed - ormawa info can only be created, not edited
-    Route::get('/adminbem/accounts/{userId}/ormawa/create', [OrmawaController::class, 'create'])->name('adminbem.ormawa.create');
-    Route::post('/adminbem/accounts/{userId}/ormawa', [OrmawaController::class, 'store'])->name('adminbem.ormawa.store');
-    // Route::get('/adminbem/ormawa/{id}/edit', [OrmawaController::class, 'edit'])->name('adminbem.ormawa.edit'); // REMOVED
-    // Route::put('/adminbem/ormawa/{id}', [OrmawaController::class, 'update'])->name('adminbem.ormawa.update'); // REMOVED
+
+    Route::post('/adminbem/tipe-ormawa', [App\Http\Controllers\Admin\AccountController::class, 'storeTipe'])
+        ->name('adminbem.tipe.store');
+    Route::delete('/adminbem/tipe-ormawa/{id}', [App\Http\Controllers\Admin\AccountController::class, 'destroyTipe'])->name('adminbem.tipe.destroy');
     
     // Hasil Tes Minat - hanya AdminBEM yang bisa melihat dan mengelola
     Route::get('/tesminatbem/menu', [TesMinatController::class, 'showMenu'])->name('tesminatbem.menu');

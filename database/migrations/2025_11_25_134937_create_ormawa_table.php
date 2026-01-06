@@ -13,13 +13,21 @@ return new class extends Migration
     {
         Schema::create('ormawa', function (Blueprint $table) {
             $table->id();
+            
+            // Relasi ke tabel users (Wajib ada supaya akun & ormawa nyambung)
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            
+            // Relasi ke tabel tipe_ormawas (Tiang penyangga yang tadi error)
+            $table->foreignId('tipe_ormawa_id')->nullable()->constrained('tipe_ormawas')->onDelete('set null');
 
-            // Kolom tambahan
-            $table->string('nama');         // HERO, HCC, SENI, OLAHRAGA, dll
-            $table->string('slug')->unique(); // hero, hcc, seni, olahraga, bem
-            $table->string('logo')->nullable(); // path logo
-            $table->string('tipe')->nullable(); // ukm / bem / komunitas
-            $table->text('deskripsi')->nullable(); // deskripsi detail
+            $table->string('nama');
+            $table->string('slug')->unique();
+            $table->string('logo')->nullable();
+            
+            // Tambahkan kolom visi, mission, structure agar modelnya tidak error nanti
+            $table->text('vision')->nullable();
+            $table->text('mission')->nullable();
+            $table->text('structure')->nullable(); // Disimpan sebagai JSON/Array
 
             $table->timestamps();
         });

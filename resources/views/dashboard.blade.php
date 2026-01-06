@@ -266,7 +266,7 @@
         <div class="max-w-6xl mx-auto">
             <h2 class="text-center text-3xl font-bold text-gray-800 mb-10 tracking-wide uppercase">Daftar UKM/SC</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                @foreach ($ormawas->where('tipe', 'ukm') as $item)
+                @foreach ($ormawas->filter(fn($ormawa) => optional($ormawa->tipe)->nama_tipe !== 'BEM (Badan Eksekutif Mahasiswa)') as $item)
                     <div class="modern-ukm-card">
                         <div class="modern-ukm-logo-container">
                             <a href="{{ route('ormawa.show', $item->slug) }}" class="w-full h-full flex items-center justify-center">
