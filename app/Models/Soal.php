@@ -14,6 +14,7 @@ class Soal extends Model
 
     protected $fillable = [
         'pertanyaan',
+        'kategori',      
         'skala_likert',
     ];
 

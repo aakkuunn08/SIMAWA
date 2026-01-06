@@ -6,50 +6,169 @@ use Illuminate\Http\Request;
 use App\Models\Soal;
 use App\Models\TesMinat;
 use App\Models\Ormawa;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Controller untuk mengelola Tes Minat UKM
- * Menangani form biodata, kuesioner, dan rekomendasi UKM
+ * Menangani pengolahan skor minat dan manajemen pertanyaan
  */
 class TesMinatController extends Controller
 {
     /**
-     * Menampilkan halaman tes minat
-     *
-     * @return \Illuminate\View\View
+     * Menampilkan halaman tes minat untuk mahasiswa
      */
     public function index()
     {
-        // Ambil semua soal dari database untuk ditampilkan di kuesioner
-        $soals = Soal::all();
-
-        // Acak urutan pertanyaan agar tidak berurutan berdasarkan UKM
-        $soals = $soals->shuffle();
-
+        // Ambil semua soal dan acak urutannya agar adil
+        $soals = Soal::all()->shuffle();
         return view('tesminat', compact('soals'));
     }
 
     /**
-     * Menampilkan halaman hasil tes minat untuk admin BEM
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\View\View
+     * Memproses submit form tes minat dan memberikan rekomendasi UKM
+     */
+    public function submit(Request $request)
+    {
+        try {
+            // 1. Validasi input biodata mahasiswa
+            $validated = $request->validate([
+                'nama_lengkap' => 'required|string|max:255',
+                'nim'          => 'required',
+                'program_studi' => 'required|string|max:255',
+                'angkatan'     => 'required',
+            ]);
+
+            $soals = Soal::all();
+            
+            // 2. Inisialisasi skor kategori secara dinamis dari database
+            $categories = $soals->pluck('kategori')->unique();
+            $scores = [];
+            foreach ($categories as $cat) { 
+                if ($cat) $scores[$cat] = 0; 
+            }
+
+            // 3. Hitung Skor berdasarkan jawaban yang dikirim
+            foreach ($soals as $soal) {
+                $jawabanKey = 'q' . $soal->id_soal;
+                if ($request->has($jawabanKey) && isset($scores[$soal->kategori])) {
+                    $scores[$soal->kategori] += (int) $request->input($jawabanKey, 0);
+                }
+            }
+
+            // Urutkan kategori dari skor tertinggi
+            arsort($scores);
+            $topKategori = array_key_first($scores);
+
+            if (!$topKategori) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghitung kategori minat.'], 400);
+            }
+            
+            // 4. Hitung persentase skor tertinggi
+            $soalDiKategoriIni = $soals->where('kategori', $topKategori)->count();
+            $maxPossibleScore = $soalDiKategoriIni * 5;
+            $topScorePercent = $maxPossibleScore > 0 ? ($scores[$topKategori] / $maxPossibleScore) * 100 : 0;
+
+            // 5. Cari Ormawa yang sesuai berdasarkan nama kategori
+            // Perbaikan: Mencari tanpa filter kolom 'tipe' untuk menghindari SQL Error
+            $rekomendasi = Ormawa::where('nama', 'LIKE', "%{$topKategori}%")->first();
+
+            // Fallback: Jika tidak ditemukan yang spesifik, ambil data pertama agar sistem tidak crash
+            if (!$rekomendasi) {
+                $rekomendasi = Ormawa::first();
+            }
+
+            if (!$rekomendasi) {
+                return response()->json(['success' => false, 'message' => 'Data UKM belum tersedia.'], 404);
+            }
+
+            // 6. Simpan Hasil Tes ke Database
+            TesMinat::create([
+                'user_id'           => auth()->id(),
+                'nama_lengkap'      => $validated['nama_lengkap'],
+                'nim'               => $validated['nim'],
+                'program_studi'     => $validated['program_studi'],
+                'angkatan'          => $validated['angkatan'],
+                'hasil_rekomendasi' => $rekomendasi->nama . ' (' . round($topScorePercent, 2) . '%)',
+                'id_soal'           => null, // Nullable sesuai struktur tabel
+                'id_jawaban'        => null,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'rekomendasi' => [
+                    'nama' => $rekomendasi->nama,
+                    'logo' => $rekomendasi->logo ? asset($rekomendasi->logo) : null,
+                    'deskripsi' => $rekomendasi->deskripsi ?? 'UKM ini sangat cocok dengan minat Anda.',
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Tes Minat Error: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Menyimpan pertanyaan baru dengan kategori yang diwajibkan
+     */
+    public function storeQuestion(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'pertanyaan' => 'required|string',
+                'kategori'   => 'required|string', // Kategori wajib diisi untuk menghindari error database
+                'skala_likert' => 'nullable|integer|min:1|max:10'
+            ]);
+
+            $soal = Soal::create([
+                'pertanyaan' => $validated['pertanyaan'],
+                'kategori'   => $validated['kategori'],
+                'skala_likert' => $validated['skala_likert'] ?? 5
+            ]);
+
+            return response()->json([
+                'success' => true, 
+                'message' => 'Pertanyaan berhasil ditambahkan', 
+                'question' => $soal
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Memperbarui data pertanyaan
+     */
+    public function updateQuestion(Request $request, $id)
+    {
+        try {
+            $soal = Soal::findOrFail($id);
+            $validated = $request->validate([
+                'pertanyaan' => 'required|string',
+                'kategori'   => 'required|string',
+                'skala_likert' => 'nullable|integer'
+            ]);
+
+            $soal->update($validated);
+
+            return response()->json(['success' => true, 'message' => 'Pertanyaan berhasil diperbarui']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Menampilkan daftar hasil tes untuk Admin BEM
      */
     public function showResults(Request $request)
     {
-        // Ambil query search jika ada
         $search = $request->get('search', '');
-        
-        // Query tes minat dengan relasi user (untuk fallback data lama)
         $query = TesMinat::with('user')->orderBy('created_at', 'desc');
         
-        // Filter berdasarkan search (nama atau NIM)
         if ($search) {
             $query->where(function($q) use ($search) {
-                // Search di kolom baru
                 $q->where('nama_lengkap', 'LIKE', "%{$search}%")
                   ->orWhere('nim', 'LIKE', "%{$search}%")
-                  // Search di relasi user (untuk data lama)
                   ->orWhereHas('user', function($subQ) use ($search) {
                       $subQ->where('name', 'LIKE', "%{$search}%")
                            ->orWhere('username', 'LIKE', "%{$search}%");
@@ -58,228 +177,27 @@ class TesMinatController extends Controller
         }
         
         $tesMinats = $query->get();
-        
         return view('tesminatbem', compact('tesMinats', 'search'));
     }
 
-    /**
-     * Menghapus hasil tes minat
-     * 
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function delete($id)
-    {
-        $tesMinat = TesMinat::findOrFail($id);
-        $tesMinat->delete();
-        
-        return redirect()->route('tesminatbem.results')
-            ->with('success', 'Hasil tes minat berhasil dihapus');
-    }
+    public function showMenu() { return view('tesminat-menu'); }
+    
+    public function manageQuestions() { return view('kelola-pertanyaan'); }
 
-    /**
-     * Menampilkan halaman menu kelola tes minat
-     * 
-     * @return \Illuminate\View\View
-     */
-    public function showMenu()
-    {
-        return view('tesminat-menu');
-    }
-
-    /**
-     * Menampilkan halaman kelola pertanyaan
-     * 
-     * @return \Illuminate\View\View
-     */
-    public function manageQuestions()
-    {
-        return view('kelola-pertanyaan');
-    }
-
-    /**
-     * Get questions data (API endpoint)
-     * 
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getQuestionsData()
     {
-        $questions = Soal::orderBy('id_soal', 'asc')->get();
-        
-        return response()->json([
-            'success' => true,
-            'questions' => $questions
-        ]);
+        return response()->json(['success' => true, 'questions' => Soal::orderBy('id_soal', 'asc')->get()]);
     }
 
-    /**
-     * Menyimpan pertanyaan baru
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function storeQuestion(Request $request)
+    public function delete($id)
     {
-        $validated = $request->validate([
-            'pertanyaan' => 'required|string',
-            'skala_likert' => 'nullable|integer|min:1|max:10'
-        ]);
-
-        $soal = Soal::create([
-            'pertanyaan' => $validated['pertanyaan'],
-            'skala_likert' => $validated['skala_likert'] ?? 5
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pertanyaan berhasil ditambahkan',
-            'question' => $soal
-        ]);
+        TesMinat::findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
 
-    /**
-     * Update pertanyaan
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function updateQuestion(Request $request, $id)
-    {
-        $soal = Soal::findOrFail($id);
-
-        $validated = $request->validate([
-            'pertanyaan' => 'required|string',
-            'skala_likert' => 'nullable|integer|min:1|max:10'
-        ]);
-
-        $soal->update([
-            'pertanyaan' => $validated['pertanyaan'],
-            'skala_likert' => $validated['skala_likert'] ?? $soal->skala_likert
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pertanyaan berhasil diperbarui',
-            'question' => $soal
-        ]);
-    }
-
-    /**
-     * Hapus pertanyaan
-     * 
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function deleteQuestion($id)
     {
-        $soal = Soal::findOrFail($id);
-        $soal->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pertanyaan berhasil dihapus'
-        ]);
-    }
-
-    /**
-     * Memproses submit form tes minat dan memberikan rekomendasi UKM
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function submit(Request $request)
-    {
-        // Validasi input biodata mahasiswa
-        $validated = $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'nim' => 'required|numeric',
-            'program_studi' => 'required|string|max:255',
-            'angkatan' => 'required|numeric',
-        ]);
-
-        // Ambil semua soal dari database untuk mendapatkan kategori
-        $soals = Soal::all();
-
-        // Inisialisasi score untuk setiap UKM
-        $scores = [
-            'HERO' => 0,      // Robotika/Hardware
-            'HCC' => 0,       // Pemrograman/Software
-            'MPM' => 0,       // Agama/Rohani
-            'Seni' => 0,      // Seni/Budaya
-            'Olahraga' => 0,  // Olahraga
-        ];
-
-        // Looping data jawaban user, kelompokkan dan jumlahkan skor berdasarkan kategori UKM
-        foreach ($soals as $soal) {
-            $jawabanKey = 'q' . $soal->id_soal;
-            $jawaban = (int) $request->input($jawabanKey, 0);
-
-            // Tambahkan jawaban ke kategori yang sesuai
-            if (isset($scores[$soal->kategori])) {
-                $scores[$soal->kategori] += $jawaban;
-            }
-        }
-
-        // Urutkan hasil dari yang terbesar ke terkecil
-        arsort($scores);
-
-        // Hitung persentase murni: (Total Skor / 25) * 100
-        $topUkmName = array_key_first($scores);
-        $topScore = ($scores[$topUkmName] / 25) * 100;
-
-        // Ambil data UKM dari database berdasarkan nama
-        $rekomendasi = Ormawa::where('tipe', 'ukm')
-            ->where('nama', 'LIKE', "%{$topUkmName}%")
-            ->first();
-
-        // Jika tidak ditemukan, ambil UKM pertama yang tersedia
-        if (!$rekomendasi) {
-            $rekomendasi = Ormawa::where('tipe', 'ukm')->first();
-        }
-
-        // Pastikan ada UKM yang tersedia
-        if (!$rekomendasi) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tidak ada UKM yang tersedia'
-            ], 404);
-        }
-
-        // Simpan hasil tes ke database (1 record untuk keseluruhan tes)
-        // Pastikan user_id adalah integer atau null
-        $userId = null;
-        if (auth()->check() && is_numeric(auth()->id())) {
-            $userId = (int) auth()->id();
-        }
-
-        TesMinat::create([
-            'user_id' => $userId,
-            'nama_lengkap' => $validated['nama_lengkap'],
-            'nim' => $validated['nim'],
-            'program_studi' => $validated['program_studi'],
-            'angkatan' => $validated['angkatan'],
-            'id_soal' => null, // Tidak perlu id_soal karena ini hasil keseluruhan
-            'id_jawaban' => null,
-            'hasil_rekomendasi' => $rekomendasi->nama . ' (Score: ' . round($topScore, 2) . '%)',
-        ]);
-
-        // Hitung persentase untuk semua skor
-        $allScoresPercent = [];
-        foreach ($scores as $kategori => $score) {
-            $allScoresPercent[$kategori] = round(($score / 25) * 100, 2);
-        }
-
-        // Return response JSON dengan data rekomendasi
-        return response()->json([
-            'success' => true,
-            'rekomendasi' => [
-                'nama' => $rekomendasi->nama,
-                'logo' => asset($rekomendasi->logo),
-                'deskripsi' => $rekomendasi->deskripsi ?? 'Unit Kegiatan Mahasiswa yang sesuai dengan minat dan bakat Anda.',
-                'score' => round($topScore, 2),
-                'all_scores' => $allScoresPercent,
-            ]
-        ]);
+        Soal::findOrFail($id)->delete();
+        return response()->json(['success' => true, 'message' => 'Pertanyaan berhasil dihapus']);
     }
 }
