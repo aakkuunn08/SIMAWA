@@ -62,7 +62,7 @@
                         
                         @auth
                             @if(auth()->user()->hasAnyRole(['adminbem','adminukm']))
-                            <button onclick="openAddModal()" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition shadow-lg shadow-orange-200">
+                            <button onclick="openAddModal()" class="w-full py-2.5 bg-pink-500 hover:bg-pink-600 text-white text-sm font-semibold rounded-xl transition shadow-lg shadow-orange-200">
                                 + Tambah Kegiatan Baru
                             </button>
                             @endif
@@ -111,7 +111,7 @@
                                 <th class="px-6 py-4">Nama Kegiatan</th>
                                 <th class="px-6 py-4 text-center">Status</th>
                                 <th class="px-6 py-4 text-right">Tanggal Upload</th>
-                                <th class="px-6 py-4 text-center">Aksi</th>
+                                <th class="px-6 py-4 text-center">Download</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -233,7 +233,7 @@
                         @auth
                             @can('update', $item)
                             <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 z-10">
-                                <button onclick="editBerita({{ $item->id_berita }})" 
+                                <button onclick="editBerita('{{ $item->id_berita }}')" 
                                         class="bg-orange-500 text-white p-2 rounded-full shadow-lg hover:bg-orange-600 transition">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
